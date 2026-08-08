@@ -1,0 +1,147 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Guru {
+  id       Int      @id @default(autoincrement())
+  nip      String   @unique
+  nama     String
+  email    String?  @unique
+  hp       String?
+  nik      String?
+  kk       String?
+  foto     String?
+  password String?
+  
+  rpps     Rpp[]
+  informasi Informasi[]
+}
+
+model Siswa {
+  id               Int                @id @default(autoincrement())
+  nisn             String             @unique
+  nis              String?            @unique
+  nama             String
+  gender           String?
+  email            String?            @unique
+  nik              String?
+  kk               String?
+  tmp_lahir        String?
+  tgl_lahir        DateTime?
+  akta_lahir       String?
+  alamat           String?            @db.Text
+  hp               String?
+  hp_ortu          String?
+  foto             String?
+  password         String?
+  kelas_id         Int
+  
+  kelas            Kelas              @relation(fields: [kelas_id], references: [id])
+  presensi         Presensi[]
+  pengumpulanTugas PengumpulanTugas[]
+}
+
+model Kelas {
+  id         Int      @id @default(autoincrement())
+  nama       String
+  siswa      Siswa[]
+  rpps       Rpp[]
+}
+
+model Mapel {
+  id    Int    @id @default(autoincrement())
+  nama  String
+  rpps  Rpp[]
+}
+
+model TahunPelajaran {
+  id        Int      @id @default(autoincrement())
+  nama      String
+  is_active Boolean  @default(false)
+  rpps      Rpp[]
+}
+
+model Rpp {
+  id                     Int       @id @default(autoincrement())
+  pertemuan_ke           Int
+  judul                  String
+  tujuan_pembelajaran    String    @db.Text
+  aktivitas_pembelajaran String    @db.Text
+  upload_file            String?
+  status_terlaksana      Boolean   @default(false)
+  
+  guru_id                Int
+  kelas_id               Int
+  mapel_id               Int
+  tahun_pelajaran_id     Int
+  
+  guru                   Guru      @relation(fields: [guru_id], references: [id])
+  kelas                  Kelas     @relation(fields: [kelas_id], references: [id])
+  mapel                  Mapel     @relation(fields: [mapel_id], references: [id])
+  tahun_pelajaran        TahunPelajaran @relation(fields: [tahun_pelajaran_id], references: [id])
+  
+  tugas                  Tugas[]
+  presensi               Presensi[]
+}
+
+model Tugas {
+  id               Int       @id @default(autoincrement())
+  judul            String
+  deskripsi        String    @db.Text
+  deadline         DateTime?
+  poin_maks        Int       @default(100)
+  file             String?
+  
+  rpp_id           Int
+  rpp              Rpp       @relation(fields: [rpp_id], references: [id])
+  
+  pengumpulan      PengumpulanTugas[]
+}
+
+model Presensi {
+  id         Int      @id @default(autoincrement())
+  status     String
+  keterangan String?
+  
+  rpp_id     Int
+  siswa_id   Int
+  
+  rpp        Rpp      @relation(fields: [rpp_id], references: [id])
+  siswa      Siswa    @relation(fields: [siswa_id], references: [id])
+
+  @@unique([rpp_id, siswa_id])
+}
+
+model PengumpulanTugas {
+  id             Int       @id @default(autoincrement())
+  input_jawaban  String?   @db.Text
+  upload_file    String?
+  nilai          Int?
+  
+  tugas_id       Int
+  siswa_id       Int
+  
+  tugas          Tugas     @relation(fields: [tugas_id], references: [id])
+  siswa          Siswa     @relation(fields: [siswa_id], references: [id])
+  
+  @@unique([tugas_id, siswa_id])
+}
+
+model Informasi {
+  id        Int      @id @default(autoincrement())
+  judul     String
+  informasi String   @db.Text
+  file      String?  
+  guru_id   Int
+  guru      Guru     @relation(fields: [guru_id], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
