@@ -275,12 +275,22 @@ export async function deleteSiswa(id) {
 
 export async function importSiswaBulk(siswaArray, kelasId) {
   try {
-    // siswaArray adalah array of { nisn, nama, gender } dsb
+    // siswaArray adalah array of { nisn, nama, gender, dsb }
     const dataToInsert = siswaArray.map(s => ({
       nisn: String(s.nisn),
       nama: s.nama,
       gender: s.gender || null,
       kelas_id: parseInt(kelasId),
+      nis: s.nis ? String(s.nis) : null,
+      email: s.email ? String(s.email) : null,
+      nik: s.nik ? String(s.nik) : null,
+      kk: s.kk ? String(s.kk) : null,
+      tmp_lahir: s.tmp_lahir ? String(s.tmp_lahir) : null,
+      tgl_lahir: s.tgl_lahir ? new Date(s.tgl_lahir) : null,
+      akta_lahir: s.akta_lahir ? String(s.akta_lahir) : null,
+      alamat: s.alamat ? String(s.alamat) : null,
+      hp: s.hp ? String(s.hp) : null,
+      hp_ortu: s.hp_ortu ? String(s.hp_ortu) : null,
     }));
 
     // Gunakan transaksi untuk insert satu persatu supaya ignore yg duplikat, atau createMany skipDuplicates (jika didukung MySQL driver)

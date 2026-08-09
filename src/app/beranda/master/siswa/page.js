@@ -138,7 +138,7 @@ export default function SiswaPage() {
         const ws = wb.Sheets[wsname];
         const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
         
-        const rows = data.slice(1).filter(r => r[0] && r[1]); 
+        const rows = data.slice(1).filter(r => r[0] && r[2]); 
         
         if (rows.length === 0) {
           return Swal.fire("Gagal", "File Excel kosong atau format tidak sesuai (Butuh NISN dan NAMA)", "error");
@@ -146,8 +146,18 @@ export default function SiswaPage() {
 
         const formattedData = rows.map(r => ({
           nisn: String(r[0]).trim(),
-          nama: String(r[1]).trim(),
-          gender: r[2] ? (String(r[2]).toUpperCase() === 'P' ? 'P' : 'L') : 'L'
+          nis: r[1] ? String(r[1]).trim() : null,
+          nama: String(r[2]).trim(),
+          gender: r[3] ? (String(r[3]).toUpperCase() === 'P' ? 'P' : 'L') : 'L',
+          email: r[4] ? String(r[4]).trim() : null,
+          nik: r[5] ? String(r[5]).trim() : null,
+          kk: r[6] ? String(r[6]).trim() : null,
+          tmp_lahir: r[7] ? String(r[7]).trim() : null,
+          tgl_lahir: r[8] ? String(r[8]).trim() : null,
+          akta_lahir: r[9] ? String(r[9]).trim() : null,
+          alamat: r[10] ? String(r[10]).trim() : null,
+          hp: r[11] ? String(r[11]).trim() : null,
+          hp_ortu: r[12] ? String(r[12]).trim() : null,
         }));
 
         Swal.fire({ title: "Mengimpor Data...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
@@ -172,9 +182,9 @@ export default function SiswaPage() {
 
   const downloadTemplate = () => {
     const ws = XLSX.utils.aoa_to_sheet([
-      ["NISN", "NAMA", "L/P (Gender)"],
-      ["1234567890", "Ahmad Dahlan", "L"],
-      ["0987654321", "Siti Aminah", "P"]
+      ["NISN", "NIS", "NAMA", "L/P (Gender)", "EMAIL", "NIK", "KK", "TEMPAT LAHIR", "TANGGAL LAHIR (YYYY-MM-DD)", "NO AKTA", "ALAMAT LENGKAP", "NO HP SISWA", "NO HP ORTU"],
+      ["1234567890", "1001", "Ahmad Dahlan", "L", "ahmad@sekolah.com", "3500000000", "3500000001", "Jakarta", "2010-05-20", "AK-12345", "Jl. Merdeka No 1", "0812345678", "0819999999"],
+      ["0987654321", "1002", "Siti Aminah", "P", "", "", "", "Surabaya", "2010-08-15", "", "Jl. Pahlawan", "", ""]
     ]);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Template Siswa");
