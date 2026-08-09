@@ -10,7 +10,9 @@ process.on('uncaughtException', (err) => {
   process.exit(1);
 });
 
-const dev = process.env.NODE_ENV !== 'production';
+// Memaksa mode produksi untuk mencegah Next.js menjalankan mode Dev (yang butuh Turbopack/SWC)
+process.env.NODE_ENV = 'production';
+const dev = false;
 const port = process.env.PORT || 3000;
 
 // SANGAT PENTING: Passenger cPanel sering salah membaca direktori root
