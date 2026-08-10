@@ -6,6 +6,7 @@ import { BookOpen, LogOut, Home, ClipboardList, User, Menu, X } from "lucide-rea
 import DbIndicator from "@/components/DbIndicator";
 import { logout } from "@/actions/auth";
 import { getNewTugasCount } from "@/actions/tugas-siswa";
+import { getAjuanStatusSiswa } from "@/actions/profil-siswa";
 import Swal from "sweetalert2";
 
 export default function BerandaSiswaLayout({ children }) {
@@ -13,13 +14,17 @@ export default function BerandaSiswaLayout({ children }) {
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [newTugasCount, setNewTugasCount] = useState(0);
+  const [ajuanStatus, setAjuanStatus] = useState(null);
 
   useEffect(() => {
-    async function fetchCount() {
+    async function fetchData() {
       const count = await getNewTugasCount();
       setNewTugasCount(count);
+      
+      const ajuanInfo = await getAjuanStatusSiswa();
+      setAjuanStatus(ajuanInfo?.status || null);
     }
-    fetchCount();
+    fetchData();
   }, [pathname]);
 
   const handleLogout = () => {
@@ -126,6 +131,11 @@ export default function BerandaSiswaLayout({ children }) {
               <p className="text-sm font-semibold text-slate-800 truncate group-hover:text-green-700">Akun Siswa</p>
               <p className="text-xs text-slate-500 truncate group-hover:text-green-500">Lihat Profil</p>
             </div>
+            {ajuanStatus === 'DITOLAK' && (
+              <span className="bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm shrink-0">
+                !
+              </span>
+            )}
           </button>
           <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-rose-600 hover:bg-rose-50 rounded-xl font-medium transition-colors">
             <LogOut size={18} /> Keluar

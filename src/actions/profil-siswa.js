@@ -151,25 +151,25 @@ export async function updateProfilSiswa(formDataPayload) {
   }
 }
 
-export async function getPendingAjuanSiswa() {
+export async function getAjuanStatusSiswa() {
   try {
     const cookieStore = await cookies();
     const session = cookieStore.get('session');
-    if (!session) return false;
+    if (!session) return { status: null };
     
     const parsed = JSON.parse(session.value);
-    if (parsed.role !== "siswa") return false;
+    if (parsed.role !== "siswa") return { status: null };
 
-    const count = await prisma.ajuanProfilSiswa.count({
-      where: {
-        siswa_id: parseInt(parsed.id),
-        status: "MENUNGGU"
-      }
+    const latestAjuan = await prisma.ajuanProfilSiswa.findFirst({
+      where: { siswa_id: parseInt(parsed.id) },
+      orderBy: { created_at: 'desc' }
     });
 
-    return count > 0;
+    if (!latestAjuan) return { status: null };
+
+    return { status: latestAjuan.status };
   } catch (error) {
-    console.error("Error getPendingAjuan:", error);
-    return false;
+    console.error("Error getAjuanStatusSiswa:", error);
+    return { status: null };
   }
 }

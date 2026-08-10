@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { getMyProfilSiswa, updateProfilSiswa, getPendingAjuanSiswa } from "@/actions/profil-siswa";
+import { getMyProfilSiswa, updateProfilSiswa, getAjuanStatusSiswa } from "@/actions/profil-siswa";
 import { User, Save, Lock, Mail, Phone, CreditCard, Upload, MapPin, Calendar, Heart, GraduationCap, ShieldAlert, Map, ExternalLink, Clock } from "lucide-react";
 import Swal from "sweetalert2";
 import dynamic from 'next/dynamic';
@@ -14,7 +14,7 @@ export default function ProfilSiswaPage() {
   const [previewImage, setPreviewImage] = useState(null);
   const [modalImage, setModalImage] = useState(null); 
   const [showMapPicker, setShowMapPicker] = useState(false);
-  const [isPending, setIsPending] = useState(false);
+  const [ajuanStatus, setAjuanStatus] = useState(null);
 
   const [formData, setFormData] = useState({
     nama: "",
@@ -43,7 +43,7 @@ export default function ProfilSiswaPage() {
   const fetchData = async () => {
     setLoading(true);
     const data = await getMyProfilSiswa();
-    const pendingStatus = await getPendingAjuanSiswa();
+    const pendingStatus = await getAjuanStatusSiswa();
     
     if (data) {
       setFormData({
@@ -67,7 +67,7 @@ export default function ProfilSiswaPage() {
     } else {
       Swal.fire("Gagal", "Tidak dapat memuat profil. Sesi mungkin telah berakhir.", "error");
     }
-    setIsPending(pendingStatus);
+    setAjuanStatus(pendingStatus?.status || null);
     setLoading(false);
   };
 
@@ -107,7 +107,7 @@ export default function ProfilSiswaPage() {
 
     const res = await updateProfilSiswa(submission);
     if (res.success) {
-      Swal.fire("Berhasil", "Profil Anda berhasil diperbarui!", "success");
+      Swal.fire("Berhasil", res.message, "success");
       fetchData(); 
     } else {
       Swal.fire("Gagal", res.message, "error");
@@ -183,12 +183,22 @@ export default function ProfilSiswaPage() {
         <p className="text-slate-500 text-sm mt-1">Kelola data diri, kontak, dan keamanan akun Anda.</p>
       </div>
 
-      {isPending && (
+      {ajuanStatus === 'MENUNGGU' && (
         <div className="mb-6 bg-orange-50 border border-orange-200 text-orange-800 p-4 rounded-xl flex items-start gap-3 shadow-sm">
           <Clock className="w-5 h-5 text-orange-500 mt-0.5 shrink-0" />
           <div>
             <h4 className="font-bold text-sm">Pengajuan Sedang Diproses</h4>
             <p className="text-xs mt-1 opacity-90">Anda memiliki perubahan profil yang sedang menunggu persetujuan dari Admin/Guru. Anda tetap bisa mengajukan perubahan baru, namun ajuan sebelumnya akan ditimpa.</p>
+          </div>
+        </div>
+      )}
+      
+      {ajuanStatus === 'DITOLAK' && (
+        <div className="mb-6 bg-red-50 border border-red-200 text-red-800 p-4 rounded-xl flex items-start gap-3 shadow-sm">
+          <ShieldAlert className="w-5 h-5 text-red-500 mt-0.5 shrink-0" />
+          <div>
+            <h4 className="font-bold text-sm">Pengajuan Ditolak</h4>
+            <p className="text-xs mt-1 opacity-90">Pengajuan perubahan profil terakhir Anda telah ditolak oleh Admin/Guru. Silakan periksa kembali data yang dimasukkan atau hubungi Guru secara langsung.</p>
           </div>
         </div>
       )}
