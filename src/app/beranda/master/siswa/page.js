@@ -165,15 +165,32 @@ export default function SiswaPage() {
           status: r[17] ? String(r[17]).trim() : 'Aktif',
         }));
 
-        Swal.fire({ title: "Mengimpor Data...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-        const res = await importSiswaBulk(formattedData, importKelasId);
-        
-        if (res.success) {
-          Swal.fire("Berhasil", `${res.count} data siswa berhasil diimpor!`, "success");
-          setIsImportOpen(false);
-          fetchData();
+        const confirm = await Swal.fire({
+          title: "Konfirmasi Import",
+          text: `Ditemukan ${formattedData.length} data siswa. Apakah Anda yakin ingin mengimpornya? Data dengan NISN yang sudah ada akan diabaikan.`,
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonColor: "#10b981",
+          confirmButtonText: "Ya, Import",
+          cancelButtonText: "Batal"
+        });
+
+        if (confirm.isConfirmed) {
+          Swal.fire({ title: "Mengimpor Data...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+          const res = await importSiswaBulk(formattedData, importKelasId);
+          
+          if (res.success) {
+            Swal.fire("Berhasil", `${res.count} data siswa berhasil diimpor!`, "success");
+            setIsImportOpen(false);
+            fetchData();
+          } else {
+            Swal.fire("Gagal", res.message, "error");
+          }
         } else {
-          Swal.fire("Gagal", res.message, "error");
+          // Reset input file jika dibatalkan
+          if (importFileInputRef.current) {
+            importFileInputRef.current.value = "";
+          }
         }
 
       } catch (error) {
