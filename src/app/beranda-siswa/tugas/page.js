@@ -119,24 +119,29 @@ export default function KbmSiswaPage() {
                     <span className="text-xs font-bold px-3 py-1 bg-pink-100 text-pink-700 rounded-full flex items-center gap-1">
                        <Layers size={12}/> {kbm.mapel?.nama || "Mata Pelajaran"}
                     </span>
-                    <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
+                    <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1 rounded-full" title="Tanggal Pelaksanaan">
                       {formatDate(kbm.tanggal_pelaksanaan)}
                     </span>
                     
                     {hasTugas && (
-                      hasSubmitted ? (
-                        <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full border border-emerald-200">
-                          <CheckCircle2 size={12} /> TUGAS SELESAI
+                      <>
+                        <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded-full border border-indigo-200 shadow-sm flex items-center gap-1">
+                          ⏱️ Deadline: {formatDate(currentTugas.deadline)}
                         </span>
-                      ) : pastDeadline ? (
-                        <span className="flex items-center gap-1 text-[10px] font-bold text-red-600 bg-red-50 px-2 py-1 rounded-full border border-red-200">
-                          <AlertCircle size={12} /> MELEWATI DEADLINE
-                        </span>
-                      ) : (
-                        <span className="flex items-center gap-1 text-[10px] font-bold text-rose-600 bg-rose-50 px-2 py-1 rounded-full border border-rose-200 shadow-sm animate-pulse">
-                          <AlertCircle size={12} /> TUGAS BELUM DIKERJAKAN
-                        </span>
-                      )
+                        {hasSubmitted ? (
+                          <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full border border-emerald-200">
+                            <CheckCircle2 size={12} /> TUGAS SELESAI
+                          </span>
+                        ) : pastDeadline ? (
+                          <span className="flex items-center gap-1 text-[10px] font-bold text-red-600 bg-red-50 px-2 py-1 rounded-full border border-red-200">
+                            <AlertCircle size={12} /> MELEWATI DEADLINE
+                          </span>
+                        ) : (
+                          <span className="flex items-center gap-1 text-[10px] font-bold text-rose-600 bg-rose-50 px-2 py-1 rounded-full border border-rose-200 shadow-sm animate-pulse">
+                            <AlertCircle size={12} /> TUGAS BELUM DIKERJAKAN
+                          </span>
+                        )}
+                      </>
                     )}
                   </div>
                   
