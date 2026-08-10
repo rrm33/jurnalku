@@ -172,12 +172,12 @@ export default function InformasiPage() {
                       
                       {/* Accordion Content */}
                       {isExpanded && (
-                        <div className="px-4 md:px-5 pb-5 pt-2 ml-0 md:ml-14 animate-in slide-in-from-top-2 fade-in duration-200">
-                          <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 text-slate-700 text-sm whitespace-pre-wrap leading-relaxed">
+                        <div className="px-4 md:px-5 pb-4 pt-1 animate-in slide-in-from-top-2 fade-in duration-200">
+                          <div className="bg-slate-50 rounded-xl p-3 border border-slate-100 text-slate-700 text-sm whitespace-pre-wrap leading-relaxed">
                             {item.informasi}
                           </div>
                           
-                          <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
+                          <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
                             <div>
                               {item.file && (
                                 <button onClick={() => setPreviewFile(item.file)} className="inline-flex items-center gap-2 px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg text-sm font-bold transition-colors">
