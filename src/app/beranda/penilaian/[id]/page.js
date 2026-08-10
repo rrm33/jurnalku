@@ -97,9 +97,16 @@ export default function PenilaianPage() {
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return "Tanpa tenggat waktu";
+    if (!dateString) return "-";
     const date = new Date(dateString);
-    return new Intl.DateTimeFormat('id-ID', { dateStyle: 'full', timeStyle: 'short' }).format(date);
+    return date.toLocaleDateString('id-ID', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }) + ' WIB';
   };
 
   if (loading) {

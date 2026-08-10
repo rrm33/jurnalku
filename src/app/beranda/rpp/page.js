@@ -89,7 +89,7 @@ export default function BerandaPage() {
       ada_tugas: !!tugas,
       judul_tugas: tugas ? tugas.judul : "",
       deskripsi_tugas: tugas ? tugas.deskripsi : "",
-      deadline_tugas: tugas && tugas.deadline ? new Date(tugas.deadline).toISOString().split('T')[0] : "",
+      deadline_tugas: tugas && tugas.deadline ? new Date(tugas.deadline).toISOString().slice(0, 16) : "",
       existing_file_tugas: tugas ? (tugas.file || "") : "",
     });
     setIsOpen(true);
@@ -410,7 +410,7 @@ export default function BerandaPage() {
                     </div>
                     <div>
                       <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Batas Waktu (Deadline)</label>
-                      <input type="date" value={formData.deadline_tugas} onChange={e => setFormData({...formData, deadline_tugas: e.target.value})} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-100 transition-all font-medium bg-white" />
+                      <input type="datetime-local" value={formData.deadline_tugas} onChange={e => setFormData({...formData, deadline_tugas: e.target.value})} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-100 transition-all font-medium bg-white" />
                     </div>
                     <div>
                       <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Lampiran File Tugas (Opsional)</label>

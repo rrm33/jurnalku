@@ -25,9 +25,16 @@ export default function DaftarPenilaianPage() {
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return "Tanpa tenggat waktu";
+    if (!dateString) return "-";
     const date = new Date(dateString);
-    return new Intl.DateTimeFormat('id-ID', { dateStyle: 'full', timeStyle: 'short' }).format(date);
+    return date.toLocaleDateString('id-ID', {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }) + ' WIB';
   };
 
   return (

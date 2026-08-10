@@ -66,9 +66,16 @@ export default function KbmSiswaPage() {
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return "Tidak ada batas waktu";
+    if (!dateString) return "-";
     const date = new Date(dateString);
-    return new Intl.DateTimeFormat('id-ID', { dateStyle: 'full', timeStyle: 'short' }).format(date);
+    return date.toLocaleDateString('id-ID', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }) + ' WIB';
   };
 
   const isDeadlinePassed = (dateString) => {
@@ -134,7 +141,7 @@ export default function KbmSiswaPage() {
                   </div>
                   
                   <h3 className="font-extrabold text-slate-800 text-xl mb-2 group-hover:text-pink-600 transition-colors">{kbm.tujuan_pembelajaran}</h3>
-                  <p className="text-sm text-slate-600 mb-4 line-clamp-2 leading-relaxed">{kbm.kegiatan_inti}</p>
+                  <p className="text-sm text-slate-600 mb-4 line-clamp-2 leading-relaxed">{kbm.aktivitas_pembelajaran}</p>
                   
                   <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
                     <div className="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-slate-500">
@@ -199,13 +206,8 @@ export default function KbmSiswaPage() {
                       Kegiatan Inti KBM
                     </h3>
                     <div className="prose prose-slate max-w-none">
-                      <p className="text-slate-700 whitespace-pre-line leading-relaxed">{selectedKbm.kegiatan_inti}</p>
+                      <p className="text-slate-700 whitespace-pre-line leading-relaxed">{selectedKbm.aktivitas_pembelajaran}</p>
                     </div>
-                  </div>
-
-                  <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                     <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-2">Metode & Alat:</h3>
-                     <p className="text-slate-700">{selectedKbm.metode} / {selectedKbm.alat_bahan}</p>
                   </div>
                 </div>
 
