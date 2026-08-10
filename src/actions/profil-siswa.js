@@ -77,7 +77,6 @@ export async function updateProfilSiswa(formDataPayload) {
     };
 
     // Jika password diupdate, kita ubah password SEKARANG JUGA secara permanen
-    // agar siswa tidak terjebak di layar "Ubah Password"
     if (password) {
       await prisma.siswa.update({
         where: { id: id },
@@ -101,16 +100,43 @@ export async function updateProfilSiswa(formDataPayload) {
       }
     }
 
-    // Buang password dari dataUpdate agar tidak ditimpa ulang nanti (opsional, tapi lebih baik)
-    if (dataUpdate.password) {
-      delete dataUpdate.password;
+    // Ambil data siswa saat ini untuk membandingkan apakah ada perubahan
+    const currentSiswa = await prisma.siswa.findUnique({ where: { id: id } });
+    
+    // Bandingkan dan kumpulkan hanya data yang benar-benar berubah
+    const actualChanges = {};
+    for (const key in dataUpdate) {
+      if (key === 'password') continue;
+      
+      let oldVal = currentSiswa[key];
+      let newVal = dataUpdate[key];
+      
+      // Khusus tanggal lahir, bandingkan string ISO-nya agar akurat
+      if (key === 'tgl_lahir') {
+        oldVal = oldVal ? oldVal.toISOString().split('T')[0] : null;
+        newVal = newVal ? newVal.toISOString().split('T')[0] : null;
+      }
+      
+      if (oldVal !== newVal) {
+        actualChanges[key] = dataUpdate[key];
+      }
     }
 
-    // Simpan data selain password sebagai ajuan
+    // Jika tidak ada data yang berubah (atau hanya password yang berubah)
+    if (Object.keys(actualChanges).length === 0) {
+      revalidatePath("/beranda-siswa/profil");
+      if (password) {
+        return { success: true, message: "Password berhasil diperbarui!" };
+      } else {
+        return { success: true, message: "Tidak ada perubahan data." };
+      }
+    }
+
+    // Simpan data yang BENAR-BENAR BERUBAH sebagai ajuan
     await prisma.ajuanProfilSiswa.create({
       data: {
         siswa_id: id,
-        data_perubahan: JSON.stringify(dataUpdate),
+        data_perubahan: JSON.stringify(actualChanges),
         status: "MENUNGGU"
       }
     });
