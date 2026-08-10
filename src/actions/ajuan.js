@@ -53,7 +53,7 @@ export async function getAllAjuanSiswa() {
     const students = Array.from(studentMap.values());
 
     // Urutkan siswa: yang punya ajuan MENUNGGU ditaruh paling atas
-    return students.sort((a, b) => {
+    const sortedStudents = students.sort((a, b) => {
       const aHasPending = a.ajuanProfil.some(aj => aj.status === "MENUNGGU");
       const bHasPending = b.ajuanProfil.some(aj => aj.status === "MENUNGGU");
       if (aHasPending && !bHasPending) return -1;
@@ -64,6 +64,9 @@ export async function getAllAjuanSiswa() {
       const bLatest = b.ajuanProfil[0]?.created_at || 0;
       return new Date(bLatest) - new Date(aLatest);
     });
+
+    // Wajib diserialisasi karena Next.js Server Actions (React 18) menolak raw Prisma object
+    return JSON.parse(JSON.stringify(sortedStudents));
   } catch (error) {
     console.error("Error getAllAjuanSiswa:", error);
     return [];
