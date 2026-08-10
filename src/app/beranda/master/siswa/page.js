@@ -20,6 +20,12 @@ export default function SiswaPage() {
   // Filter & Search
   const [search, setSearch] = useState("");
   const [filterKelas, setFilterKelas] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 50;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, filterKelas]);
 
   // Modal State
   const [isOpen, setIsOpen] = useState(false);
@@ -214,6 +220,9 @@ export default function SiswaPage() {
   };
 
   const filteredData = dataList.filter(s => s.nama.toLowerCase().includes(search.toLowerCase()) || s.nisn.includes(search));
+  
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  const paginatedData = filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const formatDateForInput = (dateString) => {
     if (!dateString) return "";
@@ -286,9 +295,9 @@ export default function SiswaPage() {
                 <tr><td colSpan="7" className="p-8 text-center text-slate-400 font-medium">Memuat data...</td></tr>
               ) : filteredData.length === 0 ? (
                 <tr><td colSpan="7" className="p-8 text-center text-slate-400 font-medium">Data siswa tidak ditemukan.</td></tr>
-              ) : filteredData.map((item, idx) => (
+              ) : paginatedData.map((item, idx) => (
                 <tr key={item.id} className="hover:bg-slate-50 transition-colors">
-                  <td className="p-4 text-center text-slate-400 font-medium">{idx + 1}</td>
+                  <td className="p-4 text-center text-slate-400 font-medium">{(currentPage - 1) * itemsPerPage + idx + 1}</td>
                   <td className="p-4">
                     <div 
                       onClick={() => item.foto && setModalImage(item.foto)}
@@ -372,7 +381,7 @@ export default function SiswaPage() {
                       <Edit size={16} />
                     </button>
                     <button 
-                      onClick={() => handleDelete(s.id)}
+                      onClick={() => handleDelete(item.id)}
                       className="p-2 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors title='Hapus'"
                     >
                       <Trash2 size={16} />
@@ -382,6 +391,32 @@ export default function SiswaPage() {
               ))}
             </tbody>
           </table>
+        </div>
+        
+        {/* Pagination Controls */}
+        <div className="p-4 border-t border-slate-200 bg-slate-50 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="text-sm text-slate-500">
+            Menampilkan <span className="font-bold text-slate-700">{filteredData.length === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1}</span> hingga <span className="font-bold text-slate-700">{Math.min(currentPage * itemsPerPage, filteredData.length)}</span> dari <span className="font-bold text-slate-700">{filteredData.length}</span> data siswa
+          </div>
+          <div className="flex items-center gap-1">
+            <button 
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              className="px-3 py-1.5 text-sm font-medium rounded-lg text-slate-600 hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              Sebelumnya
+            </button>
+            <div className="px-3 py-1.5 text-sm font-bold text-slate-800 bg-white rounded-lg border border-slate-200">
+              {currentPage} / {totalPages || 1}
+            </div>
+            <button 
+              disabled={currentPage === totalPages || totalPages === 0}
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              className="px-3 py-1.5 text-sm font-medium rounded-lg text-slate-600 hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              Selanjutnya
+            </button>
+          </div>
         </div>
       </div>
 
