@@ -17,7 +17,24 @@ export default function BerandaLayout({ children }) {
   useEffect(() => {
     async function fetchNotifs() {
       const data = await getAdminNotifications();
-      if (data) setNotifications(data);
+      if (data) {
+        setNotifications(data);
+        
+        // Tampilkan modal info jika berada di beranda dan ada notifikasi
+        if (pathname === "/beranda" && (data.ajuan > 0 || data.penilaian > 0)) {
+          let msg = [];
+          if (data.penilaian > 0) msg.push(`<b>${data.penilaian}</b> tugas menunggu dinilai`);
+          if (data.ajuan > 0) msg.push(`<b>${data.ajuan}</b> ajuan profil`);
+          
+          Swal.fire({
+            title: 'Informasi Baru!',
+            html: `Saat ini terdapat:<br><br>${msg.join('<br>')}`,
+            icon: 'info',
+            confirmButtonColor: '#10b981',
+            confirmButtonText: 'Tutup'
+          });
+        }
+      }
     }
     fetchNotifs();
   }, [pathname]);

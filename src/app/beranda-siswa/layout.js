@@ -23,6 +23,16 @@ export default function BerandaSiswaLayout({ children }) {
       
       const ajuanInfo = await getAjuanStatusSiswa();
       setAjuanStatus(ajuanInfo?.status || null);
+
+      if (pathname === "/beranda-siswa" && count > 0) {
+        Swal.fire({
+          title: 'Ada Tugas Baru!',
+          html: `Kamu memiliki <b>${count}</b> tugas/kegiatan KBM yang belum diselesaikan.<br>Silakan periksa menu KBM.`,
+          icon: 'info',
+          confirmButtonColor: '#10b981',
+          confirmButtonText: 'Baik, Mengerti'
+        });
+      }
     }
     fetchData();
   }, [pathname]);
@@ -109,7 +119,7 @@ export default function BerandaSiswaLayout({ children }) {
           
           <button onClick={() => handleNavigation("/beranda-siswa/tugas")} className={`${getMenuClass("/beranda-siswa/tugas")} justify-between`}>
             <div className="flex items-center gap-3">
-              <ClipboardList size={18} /> Kegiatan KBM
+              <ClipboardList size={18} /> KBM
             </div>
             {newTugasCount > 0 && (
               <span className="bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm">
