@@ -5,12 +5,22 @@ import { usePathname, useRouter } from "next/navigation";
 import { BookOpen, Users, LogOut, FileText, User, Menu, X, Megaphone, Home, Map, CheckSquare, ClipboardList } from "lucide-react";
 import DbIndicator from "@/components/DbIndicator";
 import { logout } from "@/actions/auth";
+import { getAdminNotifications } from "@/actions/notifications";
 import Swal from "sweetalert2";
 
 export default function BerandaLayout({ children }) {
   const router = useRouter();
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [notifications, setNotifications] = useState({ ajuan: 0, penilaian: 0 });
+
+  useEffect(() => {
+    async function fetchNotifs() {
+      const data = await getAdminNotifications();
+      if (data) setNotifications(data);
+    }
+    fetchNotifs();
+  }, [pathname]);
 
   const handleLogout = () => {
     Swal.fire({
@@ -101,8 +111,15 @@ export default function BerandaLayout({ children }) {
             <FileText size={18} /> Daftar RPP
           </button>
           
-          <button onClick={() => handleNavigation("/beranda/penilaian")} className={getMenuClass("/beranda/penilaian")}>
-            <CheckSquare size={18} /> Penilaian
+          <button onClick={() => handleNavigation("/beranda/penilaian")} className={`${getMenuClass("/beranda/penilaian")} justify-between`}>
+            <div className="flex items-center gap-3">
+              <CheckSquare size={18} /> Penilaian
+            </div>
+            {notifications.penilaian > 0 && (
+              <span className="bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm">
+                {notifications.penilaian}
+              </span>
+            )}
           </button>
           
           <button onClick={() => handleNavigation("/beranda/informasi")} className={getMenuClass("/beranda/informasi")}>
@@ -115,8 +132,15 @@ export default function BerandaLayout({ children }) {
             <Users size={18} /> Data Siswa
           </button>
           
-          <button onClick={() => handleNavigation("/beranda/master/ajuan-profil")} className={getMenuClass("/beranda/master/ajuan-profil")}>
-            <ClipboardList size={18} /> Ajuan Profil
+          <button onClick={() => handleNavigation("/beranda/master/ajuan-profil")} className={`${getMenuClass("/beranda/master/ajuan-profil")} justify-between`}>
+            <div className="flex items-center gap-3">
+              <ClipboardList size={18} /> Ajuan Profil
+            </div>
+            {notifications.ajuan > 0 && (
+              <span className="bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm">
+                {notifications.ajuan}
+              </span>
+            )}
           </button>
           
           <button onClick={() => handleNavigation("/beranda/maps")} className={getMenuClass("/beranda/maps")}>
