@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { getInformasiList, saveInformasi, deleteInformasi } from "@/actions/informasi";
-import { Trash2, Edit, Plus, FileText, Download, Play, Megaphone, Image as ImageIcon } from "lucide-react";
+import { Trash2, Edit, Plus, FileText, Download, Play, Megaphone, Image as ImageIcon, Search, ChevronDown, ChevronUp } from "lucide-react";
 import Swal from "sweetalert2";
 
 export default function InformasiPage() {
@@ -11,6 +11,8 @@ export default function InformasiPage() {
   const [showModal, setShowModal] = useState(false);
   const [previewFile, setPreviewFile] = useState(null);
   const [formData, setFormData] = useState({ id: "", judul: "", informasi: "", existing_file: "" });
+  const [search, setSearch] = useState("");
+  const [expandedId, setExpandedId] = useState(null);
   const fileInputRef = useRef(null);
 
   const fetchData = async () => {
@@ -114,6 +116,19 @@ export default function InformasiPage() {
         </button>
       </div>
 
+      <div className="flex flex-col md:flex-row gap-4 mb-4">
+        <div className="relative flex-1">
+          <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+          <input 
+            type="text" 
+            placeholder="Cari judul atau isi informasi..." 
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pl-11 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-medium text-slate-700 shadow-sm"
+          />
+        </div>
+      </div>
+
       <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
         {loading ? (
           <div className="p-12 text-center text-slate-400 font-medium">Memuat data informasi...</div>
@@ -123,48 +138,67 @@ export default function InformasiPage() {
             Belum ada informasi. Silakan tambahkan informasi baru.
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-slate-600">
-              <thead className="bg-slate-50 border-b border-slate-200 text-slate-800 font-semibold">
-                <tr>
-                  <th className="p-4">Tgl</th>
-                  <th className="p-4">Judul</th>
-                  <th className="p-4 max-w-xs">Isi Singkat</th>
-                  <th className="p-4 text-center">Lampiran</th>
-                  <th className="p-4 text-center">Aksi</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {dataList.map((item, idx) => (
-                  <tr key={item.id} className="hover:bg-slate-50 transition-colors">
-                    <td className="p-4 align-top whitespace-nowrap">
-                      {new Date(item.createdAt).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}
-                    </td>
-                    <td className="p-4 align-top font-bold text-slate-800">{item.judul}</td>
-                    <td className="p-4 align-top max-w-xs truncate">{item.informasi}</td>
-                    <td className="p-4 align-top text-center">
-                      {item.file ? (
-                        <button onClick={() => setPreviewFile(item.file)} className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 hover:text-rose-600 rounded-lg text-xs font-bold transition-colors">
-                          {renderFileIcon(item.file)} Buka File
-                        </button>
-                      ) : (
-                        <span className="text-slate-400 text-xs">-</span>
-                      )}
-                    </td>
-                    <td className="p-4 align-top text-center">
-                      <div className="flex items-center justify-center gap-2">
-                        <button onClick={() => handleEdit(item)} className="p-2 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors" title="Edit">
-                          <Edit size={16} />
-                        </button>
-                        <button onClick={() => handleDelete(item.id)} className="p-2 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors" title="Hapus">
-                          <Trash2 size={16} />
-                        </button>
+          <div className="divide-y divide-slate-100">
+            {dataList.filter(i => i.judul.toLowerCase().includes(search.toLowerCase()) || i.informasi.toLowerCase().includes(search.toLowerCase())).length === 0 ? (
+               <div className="p-8 text-center text-slate-400 font-medium">Pencarian tidak ditemukan.</div>
+            ) : dataList
+                .filter(i => i.judul.toLowerCase().includes(search.toLowerCase()) || i.informasi.toLowerCase().includes(search.toLowerCase()))
+                .map((item) => {
+                  const isExpanded = expandedId === item.id;
+                  return (
+                    <div key={item.id} className="transition-colors hover:bg-slate-50">
+                      <div 
+                        className="p-4 md:p-5 flex items-start md:items-center justify-between gap-4 cursor-pointer"
+                        onClick={() => setExpandedId(isExpanded ? null : item.id)}
+                      >
+                        <div className="flex items-start gap-4 flex-1">
+                          <div className="w-10 h-10 rounded-full bg-rose-50 flex flex-shrink-0 items-center justify-center text-rose-500">
+                            <Megaphone size={18} />
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-bold text-slate-800 text-base leading-tight">{item.judul}</h3>
+                            <div className="flex items-center gap-3 mt-1.5 text-xs font-medium text-slate-500">
+                              <span className="bg-slate-100 px-2 py-0.5 rounded-md text-slate-600">
+                                {new Date(item.createdAt).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })}
+                              </span>
+                              {item.file && <span className="flex items-center gap-1 text-rose-600"><FileText size={12} /> Ada Lampiran</span>}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-slate-400 shrink-0">
+                          {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                        </div>
                       </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                      
+                      {/* Accordion Content */}
+                      {isExpanded && (
+                        <div className="px-4 md:px-5 pb-5 pt-2 ml-0 md:ml-14 animate-in slide-in-from-top-2 fade-in duration-200">
+                          <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 text-slate-700 text-sm whitespace-pre-wrap leading-relaxed">
+                            {item.informasi}
+                          </div>
+                          
+                          <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
+                            <div>
+                              {item.file && (
+                                <button onClick={() => setPreviewFile(item.file)} className="inline-flex items-center gap-2 px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg text-sm font-bold transition-colors">
+                                  {renderFileIcon(item.file)} Buka Lampiran
+                                </button>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <button onClick={() => handleEdit(item)} className="flex items-center gap-1.5 px-3 py-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg text-sm font-bold transition-colors">
+                                <Edit size={14} /> Edit
+                              </button>
+                              <button onClick={() => handleDelete(item.id)} className="flex items-center gap-1.5 px-3 py-1.5 text-rose-600 hover:bg-rose-50 rounded-lg text-sm font-bold transition-colors">
+                                <Trash2 size={14} /> Hapus
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+            })}
           </div>
         )}
       </div>
