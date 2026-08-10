@@ -286,7 +286,15 @@ export async function importSiswaBulk(siswaArray, kelasId) {
       nik: s.nik ? String(s.nik) : null,
       kk: s.kk ? String(s.kk) : null,
       tmp_lahir: s.tmp_lahir ? String(s.tmp_lahir) : null,
-      tgl_lahir: s.tgl_lahir ? new Date(s.tgl_lahir) : null,
+      tgl_lahir: (() => {
+        if (!s.tgl_lahir) return null;
+        if (!isNaN(s.tgl_lahir) && Number(s.tgl_lahir) > 10000) {
+          // Parse Excel Serial Date
+          return new Date(Math.round((Number(s.tgl_lahir) - 25569) * 86400 * 1000));
+        }
+        const d = new Date(s.tgl_lahir);
+        return isNaN(d.getTime()) ? null : d;
+      })(),
       akta_lahir: s.akta_lahir ? String(s.akta_lahir) : null,
       alamat: s.alamat ? String(s.alamat) : null,
       hp: s.hp ? String(s.hp) : null,
