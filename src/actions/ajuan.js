@@ -22,15 +22,35 @@ export async function getAjuanMenunggu() {
 
 export async function getAllAjuanSiswa() {
   try {
-    const students = await prisma.siswa.findMany({
-      where: { ajuanProfil: { some: {} } },
+    // Ambil langsung dari tabel ajuan agar pasti dapat datanya
+    const ajuans = await prisma.ajuanProfilSiswa.findMany({
       include: {
-        kelas: { select: { nama: true } },
-        ajuanProfil: {
-          orderBy: { created_at: "desc" }
-        }
-      }
+        siswa: { select: { id: true, nama: true, nisn: true, kelas: { select: { nama: true } } } }
+      },
+      orderBy: { created_at: "desc" }
     });
+
+    // Kelompokkan berdasarkan Siswa
+    const studentMap = new Map();
+    for (const aj of ajuans) {
+      if (!aj.siswa) continue; // Skip jika siswa tidak ditemukan
+      
+      if (!studentMap.has(aj.siswa_id)) {
+        studentMap.set(aj.siswa_id, {
+          id: aj.siswa.id,
+          nama: aj.siswa.nama,
+          nisn: aj.siswa.nisn,
+          kelas: aj.siswa.kelas,
+          ajuanProfil: []
+        });
+      }
+      
+      // Bersihkan object siswa dari dalam aj untuk menghindari redundansi
+      const { siswa, ...ajuanData } = aj;
+      studentMap.get(aj.siswa_id).ajuanProfil.push(ajuanData);
+    }
+
+    const students = Array.from(studentMap.values());
 
     // Urutkan siswa: yang punya ajuan MENUNGGU ditaruh paling atas
     return students.sort((a, b) => {
@@ -82,7 +102,17 @@ export async function approveAjuan(ajuanId) {
     return { success: true, message: "Ajuan disetujui, profil siswa berhasil diperbarui." };
   } catch (error) {
     console.error("Error approveAjuan:", error);
-    return { success: false, message: error.message };
+    
+    // Penanganan khusus jika melanggar unique constraint (misal: email, nisn, nik sudah dipakai)
+    if (error.code === 'P2002') {
+      const field = error.meta?.target ? error.meta.target.join(', ') : 'Data unik';
+      return { 
+        success: false, 
+        message: `Gagal menyetujui ajuan: ${field} yang diajukan sudah digunakan oleh siswa lain. Minta siswa untuk merevisi ajuannya.` 
+      };
+    }
+    
+    return { success: false, message: error.message || "Terjadi kesalahan saat menyetujui ajuan." };
   }
 }
 

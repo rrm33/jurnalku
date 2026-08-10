@@ -31,7 +31,7 @@ model Siswa {
   nis              String?            @unique
   nama             String
   gender           String?
-  email            String?            @unique
+  email            String?
   nik              String?
   kk               String?
   tmp_lahir        String?

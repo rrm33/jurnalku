@@ -1,0 +1,36 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/beranda/layout,_N_T_/beranda/master/layout,_N_T_/beranda/master/tahun-pelajaran/layout,_N_T_/beranda/master/tahun-pelajaran/page,_N_T_/beranda/master/tahun-pelajaran"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/beranda/master/tahun-pelajaran/__PAGE__"
+  ],
+  "prefetchHints": {
+    "hints": 64,
+    "slots": {
+      "children": {
+        "hints": 96,
+        "slots": {
+          "children": {
+            "hints": 96,
+            "slots": {
+              "children": {
+                "hints": 96,
+                "slots": {
+                  "children": {
+                    "hints": 160,
+                    "slots": null
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
