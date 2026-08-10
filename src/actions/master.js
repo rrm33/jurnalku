@@ -291,6 +291,11 @@ export async function importSiswaBulk(siswaArray, kelasId) {
       alamat: s.alamat ? String(s.alamat) : null,
       hp: s.hp ? String(s.hp) : null,
       hp_ortu: s.hp_ortu ? String(s.hp_ortu) : null,
+      nama_ortu: s.nama_ortu ? String(s.nama_ortu) : null,
+      pekerjaan_ortu: s.pekerjaan_ortu ? String(s.pekerjaan_ortu) : null,
+      ekskul: s.ekskul ? String(s.ekskul) : null,
+      catatan: s.catatan ? String(s.catatan) : null,
+      status: s.status ? String(s.status) : 'Aktif',
     }));
 
     // Gunakan transaksi untuk insert satu persatu supaya ignore yg duplikat, atau createMany skipDuplicates (jika didukung MySQL driver)

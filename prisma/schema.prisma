@@ -40,6 +40,11 @@ model Siswa {
   alamat           String?            @db.Text
   hp               String?
   hp_ortu          String?
+  nama_ortu        String?
+  pekerjaan_ortu   String?
+  ekskul           String?
+  catatan          String?            @db.Text
+  status           String?            @default("Aktif")
   foto             String?
   password         String?
   kelas_id         Int

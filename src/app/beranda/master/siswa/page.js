@@ -158,6 +158,11 @@ export default function SiswaPage() {
           alamat: r[10] ? String(r[10]).trim() : null,
           hp: r[11] ? String(r[11]).trim() : null,
           hp_ortu: r[12] ? String(r[12]).trim() : null,
+          nama_ortu: r[13] ? String(r[13]).trim() : null,
+          pekerjaan_ortu: r[14] ? String(r[14]).trim() : null,
+          ekskul: r[15] ? String(r[15]).trim() : null,
+          catatan: r[16] ? String(r[16]).trim() : null,
+          status: r[17] ? String(r[17]).trim() : 'Aktif',
         }));
 
         Swal.fire({ title: "Mengimpor Data...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
@@ -182,9 +187,9 @@ export default function SiswaPage() {
 
   const downloadTemplate = () => {
     const ws = XLSX.utils.aoa_to_sheet([
-      ["NISN", "NIS", "NAMA", "L/P (Gender)", "EMAIL", "NIK", "KK", "TEMPAT LAHIR", "TANGGAL LAHIR (YYYY-MM-DD)", "NO AKTA", "ALAMAT LENGKAP", "NO HP SISWA", "NO HP ORTU"],
-      ["1234567890", "1001", "Ahmad Dahlan", "L", "ahmad@sekolah.com", "3500000000", "3500000001", "Jakarta", "2010-05-20", "AK-12345", "Jl. Merdeka No 1", "0812345678", "0819999999"],
-      ["0987654321", "1002", "Siti Aminah", "P", "", "", "", "Surabaya", "2010-08-15", "", "Jl. Pahlawan", "", ""]
+      ["NISN", "NIS", "NAMA", "L/P (Gender)", "EMAIL", "NIK", "KK", "TEMPAT LAHIR", "TANGGAL LAHIR (YYYY-MM-DD)", "NO AKTA", "ALAMAT LENGKAP", "NO HP SISWA", "NO HP ORTU", "NAMA ORTU", "PEKERJAAN ORTU", "EKSKUL", "CATATAN", "STATUS (Aktif/Lulus/Pindah)"],
+      ["1234567890", "1001", "Ahmad Dahlan", "L", "ahmad@sekolah.com", "3500000000", "3500000001", "Jakarta", "2010-05-20", "AK-12345", "Jl. Merdeka No 1", "0812345678", "0819999999", "Budi Dahlan", "PNS", "Pramuka", "Siswa Teladan", "Aktif"],
+      ["0987654321", "1002", "Siti Aminah", "P", "", "", "", "Surabaya", "2010-08-15", "", "Jl. Pahlawan", "", "", "", "", "", "", "Aktif"]
     ]);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Template Siswa");
