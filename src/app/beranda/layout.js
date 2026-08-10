@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { BookOpen, Users, LogOut, FileText, User, Menu, X, Megaphone, Home, Map, CheckSquare, ClipboardList } from "lucide-react";
 import DbIndicator from "@/components/DbIndicator";
