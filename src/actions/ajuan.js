@@ -108,7 +108,10 @@ export async function approveAjuan(ajuanId) {
     
     // Penanganan khusus jika melanggar unique constraint (misal: email, nisn, nik sudah dipakai)
     if (error.code === 'P2002') {
-      const field = error.meta?.target ? error.meta.target.join(', ') : 'Data unik';
+      let field = 'Data unik';
+      if (error.meta && error.meta.target) {
+        field = Array.isArray(error.meta.target) ? error.meta.target.join(', ') : error.meta.target;
+      }
       return { 
         success: false, 
         message: `Gagal menyetujui ajuan: ${field} yang diajukan sudah digunakan oleh siswa lain. Minta siswa untuk merevisi ajuannya.` 
