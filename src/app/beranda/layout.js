@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { BookOpen, Users, LogOut, FileText, User, Menu, X, Megaphone, Home, Map, CheckSquare } from "lucide-react";
+import { BookOpen, Users, LogOut, FileText, User, Menu, X, Megaphone, Home, Map, CheckSquare, ClipboardList } from "lucide-react";
 import DbIndicator from "@/components/DbIndicator";
 import { logout } from "@/actions/auth";
 import Swal from "sweetalert2";
@@ -113,6 +113,10 @@ export default function BerandaLayout({ children }) {
           
           <button onClick={() => handleNavigation("/beranda/master/siswa")} className={getMenuClass("/beranda/master/siswa")}>
             <Users size={18} /> Data Siswa
+          </button>
+          
+          <button onClick={() => handleNavigation("/beranda/master/ajuan-profil")} className={getMenuClass("/beranda/master/ajuan-profil")}>
+            <ClipboardList size={18} /> Ajuan Profil
           </button>
           
           <button onClick={() => handleNavigation("/beranda/maps")} className={getMenuClass("/beranda/maps")}>

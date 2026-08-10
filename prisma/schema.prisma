@@ -52,6 +52,18 @@ model Siswa {
   kelas            Kelas              @relation(fields: [kelas_id], references: [id])
   presensi         Presensi[]
   pengumpulanTugas PengumpulanTugas[]
+  ajuanProfil      AjuanProfilSiswa[]
+}
+
+model AjuanProfilSiswa {
+  id               Int      @id @default(autoincrement())
+  siswa_id         Int
+  data_perubahan   String   @db.Text
+  status           String   @default("MENUNGGU") // MENUNGGU, DISETUJUI, DITOLAK
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  siswa            Siswa    @relation(fields: [siswa_id], references: [id], onDelete: Cascade)
 }
 
 model Kelas {

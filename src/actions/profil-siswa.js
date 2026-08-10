@@ -76,21 +76,14 @@ export async function updateProfilSiswa(formDataPayload) {
       foto: fotoPath,
     };
 
+    // Jika password diupdate, kita ubah password SEKARANG JUGA secara permanen
+    // agar siswa tidak terjebak di layar "Ubah Password"
     if (password) {
-      dataUpdate.password = password;
-    }
-
-    await prisma.siswa.update({
-      where: { id: id },
-      data: dataUpdate
-    });
-
-    revalidatePath("/beranda-siswa/profil");
-    revalidatePath("/beranda/master/siswa");
-    revalidatePath("/beranda/maps");
-    
-    // Jika password diupdate, perbarui cookie session agar needsPassword false
-    if (password) {
+      await prisma.siswa.update({
+        where: { id: id },
+        data: { password: password }
+      });
+      
       const cookieStore = await cookies();
       const session = cookieStore.get('session');
       if (session) {
@@ -108,9 +101,49 @@ export async function updateProfilSiswa(formDataPayload) {
       }
     }
 
-    return { success: true, foto: fotoPath };
+    // Buang password dari dataUpdate agar tidak ditimpa ulang nanti (opsional, tapi lebih baik)
+    if (dataUpdate.password) {
+      delete dataUpdate.password;
+    }
+
+    // Simpan data selain password sebagai ajuan
+    await prisma.ajuanProfilSiswa.create({
+      data: {
+        siswa_id: id,
+        data_perubahan: JSON.stringify(dataUpdate),
+        status: "MENUNGGU"
+      }
+    });
+
+    revalidatePath("/beranda-siswa/profil");
+    revalidatePath("/beranda/master/ajuan-profil");
+
+    return { success: true, message: "Pengajuan perubahan profil berhasil dikirim dan menunggu persetujuan Admin/Guru." };
   } catch (error) {
     console.error("Error updateProfilSiswa:", error);
     return { success: false, message: error.message };
+  }
+}
+
+export async function getPendingAjuanSiswa() {
+  try {
+    const cookieStore = await cookies();
+    const session = cookieStore.get('session');
+    if (!session) return false;
+    
+    const parsed = JSON.parse(session.value);
+    if (parsed.role !== "siswa") return false;
+
+    const count = await prisma.ajuanProfilSiswa.count({
+      where: {
+        siswa_id: parseInt(parsed.id),
+        status: "MENUNGGU"
+      }
+    });
+
+    return count > 0;
+  } catch (error) {
+    console.error("Error getPendingAjuan:", error);
+    return false;
   }
 }
