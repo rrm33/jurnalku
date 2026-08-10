@@ -159,9 +159,6 @@ export default function LoginPage() {
         {/* Form Guru */}
         {role === "guru" ? (
           <form onSubmit={handleLoginGuru} className="space-y-5 animate-in fade-in duration-300">
-            <div className="mb-4 text-xs text-rose-600 bg-rose-50 p-2 rounded">
-              Gunakan NIP: <b>123456789</b> dan Password: <b>password123</b> untuk testing.
-            </div>
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-1.5">NIP Guru</label>
               <input
