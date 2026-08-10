@@ -20,6 +20,36 @@ export async function getAjuanMenunggu() {
   }
 }
 
+export async function getAllAjuanSiswa() {
+  try {
+    const students = await prisma.siswa.findMany({
+      where: { ajuanProfil: { some: {} } },
+      include: {
+        kelas: { select: { nama: true } },
+        ajuanProfil: {
+          orderBy: { created_at: "desc" }
+        }
+      }
+    });
+
+    // Urutkan siswa: yang punya ajuan MENUNGGU ditaruh paling atas
+    return students.sort((a, b) => {
+      const aHasPending = a.ajuanProfil.some(aj => aj.status === "MENUNGGU");
+      const bHasPending = b.ajuanProfil.some(aj => aj.status === "MENUNGGU");
+      if (aHasPending && !bHasPending) return -1;
+      if (!aHasPending && bHasPending) return 1;
+      
+      // Jika sama-sama punya atau tidak punya pending, urutkan berdasarkan ajuan terbaru
+      const aLatest = a.ajuanProfil[0]?.created_at || 0;
+      const bLatest = b.ajuanProfil[0]?.created_at || 0;
+      return new Date(bLatest) - new Date(aLatest);
+    });
+  } catch (error) {
+    console.error("Error getAllAjuanSiswa:", error);
+    return [];
+  }
+}
+
 export async function approveAjuan(ajuanId) {
   try {
     const ajuan = await prisma.ajuanProfilSiswa.findUnique({ where: { id: ajuanId } });
