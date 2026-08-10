@@ -194,7 +194,7 @@ export default function BerandaLayout({ children }) {
       </aside>
 
       {/* Konten Utama */}
-      <main className="flex-1 p-4 md:p-8 w-full min-h-screen">
+      <main className="flex-1 px-2 py-4 md:p-8 w-full min-h-screen">
         {children}
       </main>
     </div>

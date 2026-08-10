@@ -38,7 +38,7 @@ export default function DashboardBeranda() {
   if (!stats) return null;
 
   return (
-    <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
+    <div className="max-w-7xl mx-auto space-y-6 md:space-y-8 animate-in fade-in duration-500">
       
       {/* Header */}
       <div>

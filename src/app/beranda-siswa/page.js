@@ -16,9 +16,9 @@ export default async function BerandaSiswa() {
     <div className="animate-in fade-in zoom-in-95 duration-500 relative">
       {parsed.needsPassword && <SetPasswordForm siswaId={parsed.id} nama={parsed.nama} />}
       
-      <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-3xl p-8 text-white shadow-xl mb-8">
-        <h1 className="text-3xl font-extrabold mb-2">Selamat Datang, {parsed.nama}!</h1>
-        <p className="text-green-50 font-medium">Di sinilah tempat kamu melihat jurnal KBM kelasmu dan mengerjakan tugas.</p>
+      <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl md:rounded-3xl p-5 md:p-8 text-white shadow-xl mb-6 md:mb-8 mx-auto w-full">
+        <h1 className="text-2xl md:text-3xl font-extrabold mb-2">Selamat Datang, {parsed.nama}!</h1>
+        <p className="text-green-50 font-medium text-sm md:text-base">Di sinilah tempat kamu melihat jurnal KBM kelasmu dan mengerjakan tugas.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
