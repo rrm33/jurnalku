@@ -174,7 +174,16 @@ export default function InformasiPage() {
                       {isExpanded && (
                         <div className="px-4 md:px-5 pb-4 pt-1 animate-in slide-in-from-top-2 fade-in duration-200">
                           <div className="bg-slate-50 rounded-xl p-3 border border-slate-100 text-slate-700 text-sm whitespace-pre-wrap leading-relaxed">
-                            {item.informasi}
+                            {item.informasi.split(/(https?:\/\/[^\s]+)/g).map((part, index) => {
+                              if (part.match(/(https?:\/\/[^\s]+)/g)) {
+                                return (
+                                  <a key={index} href={part} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-medium">
+                                    {part}
+                                  </a>
+                                );
+                              }
+                              return part;
+                            })}
                           </div>
                           
                           <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
