@@ -22,44 +22,16 @@ export default function AjuanProfilPage() {
   }, []);
 
   const handleApprove = async (id) => {
-    const res = await approveAjuan(id);
-    if (res.success) {
-      Swal.fire("Disetujui!", res.message, "success");
-      
-      // Update local state without closing modal
-      if (selectedStudent) {
-        const updatedStudent = { ...selectedStudent };
-        updatedStudent.ajuanProfil = updatedStudent.ajuanProfil.map(aj => 
-          aj.id === id ? { ...aj, status: "DISETUJUI", updated_at: new Date() } : aj
-        );
-        setSelectedStudent(updatedStudent);
-      }
-      fetchAjuan();
-    } else {
-      Swal.fire("Gagal", res.message, "error");
-    }
-  };
-
-  const handleReject = async (id) => {
-    const confirm = await Swal.fire({
-      title: "Tolak Ajuan?",
-      text: "Apakah Anda yakin ingin menolak ajuan perubahan ini?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Ya, Tolak",
-      cancelButtonText: "Batal"
-    });
-
-    if (confirm.isConfirmed) {
-      const res = await rejectAjuan(id);
+    try {
+      const res = await approveAjuan(id);
       if (res.success) {
-        Swal.fire("Ditolak", res.message, "success");
+        Swal.fire("Disetujui!", res.message, "success");
         
         // Update local state without closing modal
         if (selectedStudent) {
           const updatedStudent = { ...selectedStudent };
           updatedStudent.ajuanProfil = updatedStudent.ajuanProfil.map(aj => 
-            aj.id === id ? { ...aj, status: "DITOLAK", updated_at: new Date() } : aj
+            aj.id === id ? { ...aj, status: "DISETUJUI", updated_at: new Date() } : aj
           );
           setSelectedStudent(updatedStudent);
         }
@@ -67,6 +39,44 @@ export default function AjuanProfilPage() {
       } else {
         Swal.fire("Gagal", res.message, "error");
       }
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Error Server", "Terjadi kesalahan jaringan atau server sedang sibuk (500).", "error");
+    }
+  };
+
+  const handleReject = async (id) => {
+    try {
+      const confirm = await Swal.fire({
+        title: "Tolak Ajuan?",
+        text: "Apakah Anda yakin ingin menolak ajuan perubahan ini?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Ya, Tolak",
+        cancelButtonText: "Batal"
+      });
+
+      if (confirm.isConfirmed) {
+        const res = await rejectAjuan(id);
+        if (res.success) {
+          Swal.fire("Ditolak", res.message, "success");
+          
+          // Update local state without closing modal
+          if (selectedStudent) {
+            const updatedStudent = { ...selectedStudent };
+            updatedStudent.ajuanProfil = updatedStudent.ajuanProfil.map(aj => 
+              aj.id === id ? { ...aj, status: "DITOLAK", updated_at: new Date() } : aj
+            );
+            setSelectedStudent(updatedStudent);
+          }
+          fetchAjuan();
+        } else {
+          Swal.fire("Gagal", res.message, "error");
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Error Server", "Terjadi kesalahan jaringan atau server sedang sibuk (500).", "error");
     }
   };
 
