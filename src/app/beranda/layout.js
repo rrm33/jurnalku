@@ -76,7 +76,7 @@ export default function BerandaLayout({ children }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row relative">
+    <div className="flex flex-col md:flex-row relative w-full">
       
       {/* Topbar Mobile */}
       <div className="md:hidden bg-white border-b border-rose-50 px-4 py-3 flex items-center justify-between sticky top-0 z-40 shadow-sm">
@@ -161,7 +161,7 @@ export default function BerandaLayout({ children }) {
           </button>
           
           <button onClick={() => handleNavigation("/beranda/maps")} className={getMenuClass("/beranda/maps")}>
-            <Map size={18} /> Peta Persebaran
+            <Map size={18} /> Maps Siswa
           </button>
           
           <button onClick={() => handleNavigation("/beranda/master/kelas")} className={getMenuClass("/beranda/master/kelas")}>
@@ -177,27 +177,24 @@ export default function BerandaLayout({ children }) {
           </button>
         </nav>
 
-        <div className="p-4 border-t border-rose-50/50 bg-white">
-          <button 
-            onClick={() => handleNavigation("/beranda/profil")}
-            className="w-full flex items-center text-left gap-3 px-4 py-3 bg-white hover:bg-rose-50 border border-slate-100 hover:border-rose-100 rounded-xl mb-3 transition-all cursor-pointer group shadow-sm"
-          >
-            <div className="w-8 h-8 rounded-full bg-rose-50 flex items-center justify-center text-rose-500 font-bold shrink-0 group-hover:bg-rose-100 transition-colors">
+        <div className="p-4 border-t border-rose-50 bg-white">
+          <button className="w-full flex items-center gap-3 px-4 py-3 bg-slate-50 hover:bg-slate-100 rounded-xl mb-3 transition-colors cursor-default">
+            <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 font-bold">
               G
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-slate-700 truncate group-hover:text-rose-600 transition-colors">Guru Testing</p>
-              <p className="text-xs text-slate-400 truncate group-hover:text-rose-400 transition-colors">Lihat Profil</p>
+            <div className="flex-1 text-left">
+              <p className="text-sm font-semibold text-slate-700">Akun Guru</p>
+              <p className="text-xs text-slate-500">Administrator</p>
             </div>
           </button>
-          <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-rose-400 hover:bg-rose-50 hover:text-rose-500 rounded-xl font-medium transition-colors">
-            <LogOut size={18} /> Keluar
+          <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-rose-600 hover:bg-rose-50 rounded-xl font-medium transition-colors border border-transparent hover:border-rose-100">
+            <LogOut size={18} /> Keluar Sistem
           </button>
         </div>
       </aside>
 
       {/* Konten Utama */}
-      <main className="flex-1 p-4 md:p-8 overflow-y-auto w-full">
+      <main className="flex-1 p-4 md:p-8 w-full min-h-screen">
         {children}
       </main>
     </div>

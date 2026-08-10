@@ -69,7 +69,7 @@ export default function BerandaSiswaLayout({ children }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row relative">
+    <div className="flex flex-col md:flex-row relative w-full">
       
       {/* Topbar Mobile */}
       <div className="md:hidden bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between sticky top-0 z-40 shadow-sm">
@@ -154,7 +154,7 @@ export default function BerandaSiswaLayout({ children }) {
       </aside>
 
       {/* Konten Utama */}
-      <main className="flex-1 p-4 md:p-8 overflow-y-auto w-full">
+      <main className="flex-1 p-4 md:p-8 w-full min-h-screen">
         {children}
       </main>
     </div>
