@@ -38,6 +38,9 @@ export async function updateProfilSiswa(formDataPayload) {
     
     const id = parseInt(parsed.id);
     
+    const nama = formDataPayload.get('nama');
+    const nis = formDataPayload.get('nis');
+    const nisn = formDataPayload.get('nisn');
     const email = formDataPayload.get('email');
     const hp = formDataPayload.get('hp');
     const hp_ortu = formDataPayload.get('hp_ortu');
@@ -64,6 +67,9 @@ export async function updateProfilSiswa(formDataPayload) {
     }
 
     const dataUpdate = {
+      nama: nama || null,
+      nis: nis || null,
+      nisn: nisn || null,
       email: email || null,
       hp: hp || null,
       hp_ortu: hp_ortu || null,

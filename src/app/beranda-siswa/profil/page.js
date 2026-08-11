@@ -89,6 +89,9 @@ export default function ProfilSiswaPage() {
     Swal.fire({ title: "Menyimpan...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
     
     const submission = new FormData();
+    submission.append("nama", formData.nama);
+    submission.append("nis", formData.nis);
+    submission.append("nisn", formData.nisn);
     submission.append("email", formData.email);
     submission.append("hp", formData.hp);
     submission.append("hp_ortu", formData.hp_ortu);
@@ -243,20 +246,24 @@ export default function ProfilSiswaPage() {
 
           <div className="p-6 md:p-8 space-y-8">
             
-            {/* Section: Info Akademik (Read Only) */}
+            {/* Section: Informasi Akademik */}
             <section>
               <h3 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2 mb-4 flex items-center gap-2">
-                <GraduationCap size={16} className="text-emerald-500" />
-                Informasi Akademik <span className="text-xs text-slate-400 font-normal ml-2">(Hanya Guru yang dapat mengubah)</span>
+                <GraduationCap size={16} className="text-pink-500" /> 
+                Informasi Akademik <span className="text-xs text-slate-400 font-normal ml-2">(Perubahan data ini perlu persetujuan)</span>
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Nama Lengkap</label>
-                  <input type="text" value={formData.nama} readOnly className="w-full px-4 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-slate-500 font-medium cursor-not-allowed" />
+                  <input type="text" value={formData.nama} onChange={e => setFormData({...formData, nama: e.target.value})} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:border-pink-500 focus:ring-4 focus:ring-pink-50 transition-all font-medium text-slate-700" />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Nomor Induk Siswa (NIS)</label>
-                  <input type="text" value={formData.nis} readOnly className="w-full px-4 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-slate-500 font-medium cursor-not-allowed" />
+                  <input type="text" value={formData.nis} onChange={e => setFormData({...formData, nis: e.target.value})} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:border-pink-500 focus:ring-4 focus:ring-pink-50 transition-all font-medium text-slate-700" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">NISN</label>
+                  <input type="text" value={formData.nisn || ""} onChange={e => setFormData({...formData, nisn: e.target.value})} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:border-pink-500 focus:ring-4 focus:ring-pink-50 transition-all font-medium text-slate-700" />
                 </div>
               </div>
             </section>
