@@ -102,7 +102,7 @@ export async function setSiswaPassword(id, newPassword) {
     });
 
     // Perbarui sesi agar needsPassword menjadi false
-    cookieStore.set('session', JSON.stringify({ ...parsed, needsPassword: false }), { httpOnly: true, path: '/' });
+    cookieStore.set('session', JSON.stringify({ ...parsed, needsPassword: false }), { httpOnly: true, maxAge: 30 * 24 * 60 * 60, path: '/' });
 
     return { success: true, message: "Password berhasil disimpan" };
   } catch (error) {
