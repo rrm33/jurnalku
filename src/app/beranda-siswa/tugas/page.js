@@ -12,6 +12,7 @@ export default function KbmSiswaPage() {
   // Modal State
   const [selectedKbm, setSelectedKbm] = useState(null);
   const [jawabanText, setJawabanText] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
   const fileInputRef = useRef(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -29,11 +30,18 @@ export default function KbmSiswaPage() {
   const handleOpenKbm = (kbm) => {
     setSelectedKbm(kbm);
     setJawabanText("");
+    setIsEditing(false);
   };
 
   const handleCloseModal = () => {
     setSelectedKbm(null);
     setJawabanText("");
+    setIsEditing(false);
+  };
+
+  const handleEdit = (submission) => {
+    setJawabanText(submission.input_jawaban || "");
+    setIsEditing(true);
   };
 
   const handleSubmit = async (e) => {
@@ -262,7 +270,7 @@ export default function KbmSiswaPage() {
                                </div>
 
                                {/* Form / Status */}
-                               {submission ? (
+                               {submission && !isEditing ? (
                                  <div className="space-y-4">
                                    <div className="flex items-center justify-center gap-2 p-3 bg-emerald-50 text-emerald-700 rounded-xl border border-emerald-200 font-bold text-sm">
                                      <CheckCircle2 size={18} /> Selesai Dikerjakan!
@@ -279,11 +287,19 @@ export default function KbmSiswaPage() {
                                      </a>
                                    )}
 
-                                   {submission.nilai !== null && (
+                                   {submission.nilai !== null ? (
                                       <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-xl flex items-center justify-between shadow-sm">
                                         <span className="font-bold text-amber-800">Nilai dari Guru:</span>
                                         <span className="text-3xl font-black text-amber-600">{submission.nilai}</span>
                                       </div>
+                                   ) : !isDeadlinePast && (
+                                      <button
+                                        type="button"
+                                        onClick={() => handleEdit(submission)}
+                                        className="w-full py-3 mt-4 rounded-xl font-bold text-emerald-700 bg-emerald-100 hover:bg-emerald-200 transition-all shadow-sm flex justify-center items-center gap-2"
+                                      >
+                                        Edit Jawaban
+                                      </button>
                                    )}
                                  </div>
                                ) : (

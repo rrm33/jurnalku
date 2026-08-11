@@ -39,7 +39,7 @@ export async function loginGuru(nip, password) {
     }
     
     const cookieStore = await cookies()
-    cookieStore.set('session', JSON.stringify({ id: guru.id, role: 'guru', nama: guru.nama }), { httpOnly: true });
+    cookieStore.set('session', JSON.stringify({ id: guru.id, role: 'guru', nama: guru.nama }), { httpOnly: true, maxAge: 30 * 24 * 60 * 60, path: '/' });
     
     return { success: true, data: { nama: guru.nama } }
   } catch (error) {
@@ -62,7 +62,7 @@ export async function loginSiswa(nisn, password) {
     }
     
     const cookieStore = await cookies()
-    cookieStore.set('session', JSON.stringify({ id: siswa.id, role: 'siswa', nama: siswa.nama, needsPassword: false }), { httpOnly: true, path: '/' });
+    cookieStore.set('session', JSON.stringify({ id: siswa.id, role: 'siswa', nama: siswa.nama, needsPassword: false }), { httpOnly: true, maxAge: 30 * 24 * 60 * 60, path: '/' });
     
     return { success: true, data: { nama: siswa.nama } }
   } catch (error) {
@@ -78,7 +78,7 @@ export async function loginSiswaTanpaPassword(id) {
     if (siswa.password) return { success: false, message: "Siswa sudah memiliki password" };
 
     const cookieStore = await cookies();
-    cookieStore.set('session', JSON.stringify({ id: siswa.id, role: 'siswa', nama: siswa.nama, needsPassword: true }), { httpOnly: true, path: '/' });
+    cookieStore.set('session', JSON.stringify({ id: siswa.id, role: 'siswa', nama: siswa.nama, needsPassword: true }), { httpOnly: true, maxAge: 30 * 24 * 60 * 60, path: '/' });
     
     return { success: true, data: { nama: siswa.nama } };
   } catch (error) {

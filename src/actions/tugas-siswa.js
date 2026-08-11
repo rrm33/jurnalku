@@ -173,17 +173,26 @@ export async function submitTugas(formDataPayload) {
     });
 
     if (existingPengumpulan) {
-       return { success: false, message: "Anda sudah mengumpulkan tugas ini." };
-    }
-
-    await prisma.pengumpulanTugas.create({
-      data: {
-        input_jawaban,
-        upload_file: filePath,
-        tugas_id,
-        siswa_id: siswaId
+      if (existingPengumpulan.nilai !== null) {
+        return { success: false, message: "Jawaban sudah dinilai oleh guru dan tidak dapat diubah." };
       }
-    });
+      await prisma.pengumpulanTugas.update({
+        where: { id: existingPengumpulan.id },
+        data: {
+          input_jawaban,
+          ...(filePath && { upload_file: filePath })
+        }
+      });
+    } else {
+      await prisma.pengumpulanTugas.create({
+        data: {
+          input_jawaban,
+          upload_file: filePath,
+          tugas_id,
+          siswa_id: siswaId
+        }
+      });
+    }
 
     revalidatePath("/beranda-siswa");
     return { success: true };

@@ -183,7 +183,7 @@ export default function BerandaLayout({ children }) {
         </nav>
 
         <div className="p-4 border-t border-rose-50 bg-white">
-          <button className="w-full flex items-center gap-3 px-4 py-3 bg-slate-50 hover:bg-slate-100 rounded-xl mb-3 transition-colors cursor-default">
+          <button className="w-full flex items-center gap-3 px-4 py-3 bg-slate-50 hover:bg-slate-100 rounded-xl mb-3 transition-colors cursor-pointer">
             <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 font-bold">
               G
             </div>
@@ -199,7 +199,7 @@ export default function BerandaLayout({ children }) {
       </aside>
 
       {/* Konten Utama */}
-      <main className="flex-1 px-2 py-4 md:p-8 w-full min-h-screen">
+      <main className="flex-1 p-2 md:p-4 w-full min-h-screen">
         {children}
       </main>
     </div>
