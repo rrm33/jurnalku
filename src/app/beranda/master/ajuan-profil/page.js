@@ -35,6 +35,7 @@ export default function AjuanProfilPage() {
           );
           setSelectedStudent(updatedStudent);
         }
+        window.dispatchEvent(new Event('refreshNotifs'));
         fetchAjuan();
       } else {
         Swal.fire("Gagal", res.message, "error");
@@ -69,6 +70,7 @@ export default function AjuanProfilPage() {
             );
             setSelectedStudent(updatedStudent);
           }
+          window.dispatchEvent(new Event('refreshNotifs'));
           fetchAjuan();
         } else {
           Swal.fire("Gagal", res.message, "error");

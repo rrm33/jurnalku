@@ -37,6 +37,11 @@ export default function BerandaLayout({ children }) {
       }
     }
     fetchNotifs();
+
+    // Listen for custom event to refresh notifications
+    const handleUpdate = () => fetchNotifs();
+    window.addEventListener('refreshNotifs', handleUpdate);
+    return () => window.removeEventListener('refreshNotifs', handleUpdate);
   }, [pathname]);
 
   const handleLogout = () => {
