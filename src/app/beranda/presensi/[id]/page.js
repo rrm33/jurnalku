@@ -1,15 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, CheckCircle2, UserX, UserMinus, AlertCircle, Save } from "lucide-react";
 import Swal from "sweetalert2";
 import { getPresensiData, savePresensi } from "@/actions/presensi";
 
-export default function PresensiPage({ params }) {
+export default function PresensiPage() {
   const router = useRouter();
+  const params = useParams();
   
-  const rppId = params?.id || "1";
+  const rppId = params?.id;
 
   const [siswaList, setSiswaList] = useState([]);
   const [rppInfo, setRppInfo] = useState(null);
@@ -58,7 +59,7 @@ export default function PresensiPage({ params }) {
     
     if (res.success) {
       Swal.fire("Berhasil", "Data presensi berhasil disimpan!", "success").then(() => {
-        router.push("/beranda");
+        router.push("/beranda/rpp");
       });
     } else {
       Swal.fire("Gagal", res.message, "error");
@@ -78,7 +79,7 @@ export default function PresensiPage({ params }) {
       {/* Header */}
       <div className="flex items-center gap-4 mb-8">
         <button 
-          onClick={() => router.push("/beranda")}
+          onClick={() => router.push("/beranda/rpp")}
           className="w-10 h-10 bg-white border border-slate-200 rounded-xl flex items-center justify-center text-slate-600 hover:bg-slate-100 transition-colors"
         >
           <ArrowLeft size={20} />
