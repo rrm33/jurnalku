@@ -1,24 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, CheckCircle2, UserX, UserMinus, AlertCircle, Save } from "lucide-react";
 import Swal from "sweetalert2";
+import { getPresensiData, savePresensi } from "@/actions/presensi";
 
 export default function PresensiPage({ params }) {
   const router = useRouter();
   
-  // Nanti rppId bisa diambil untuk fetch data
   const rppId = params?.id || "1";
 
-  // Data Siswa Dummy
-  const [siswaList, setSiswaList] = useState([
-    { id: 1, nama: "Ahmad Dahlan", status: null, keterangan: "" },
-    { id: 2, nama: "Budi Santoso", status: null, keterangan: "" },
-    { id: 3, nama: "Siti Aminah", status: null, keterangan: "" },
-    { id: 4, nama: "Dewi Lestari", status: null, keterangan: "" },
-    { id: 5, nama: "Raden Saleh", status: null, keterangan: "" },
-  ]);
+  const [siswaList, setSiswaList] = useState([]);
+  const [rppInfo, setRppInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      const res = await getPresensiData(rppId);
+      if (res.success) {
+        setSiswaList(res.siswaList);
+        setRppInfo(res.rpp);
+      } else {
+        Swal.fire("Error", res.message, "error");
+      }
+      setLoading(false);
+    };
+    fetchData();
+  }, [rppId]);
 
   const updateStatus = (id, status) => {
     setSiswaList(prev => prev.map(s => s.id === id ? { ...s, status } : s));
@@ -32,7 +42,7 @@ export default function PresensiPage({ params }) {
     setSiswaList(prev => prev.map(s => ({ ...s, status })));
   };
 
-  const handleSimpan = () => {
+  const handleSimpan = async () => {
     const belumDiabsen = siswaList.filter(s => s.status === null);
     if (belumDiabsen.length > 0) {
       return Swal.fire("Peringatan", `Ada ${belumDiabsen.length} siswa yang belum diabsen!`, "warning");
@@ -44,11 +54,15 @@ export default function PresensiPage({ params }) {
       didOpen: () => Swal.showLoading()
     });
 
-    setTimeout(() => {
+    const res = await savePresensi(rppId, siswaList);
+    
+    if (res.success) {
       Swal.fire("Berhasil", "Data presensi berhasil disimpan!", "success").then(() => {
         router.push("/beranda");
       });
-    }, 1000);
+    } else {
+      Swal.fire("Gagal", res.message, "error");
+    }
   };
 
   // Konfigurasi style untuk setiap status
@@ -70,8 +84,8 @@ export default function PresensiPage({ params }) {
           <ArrowLeft size={20} />
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Presensi Kelas</h1>
-          <p className="text-slate-500 text-sm">Pertemuan ke-1 • Pengenalan Aljabar Linear</p>
+          <h1 className="text-2xl font-bold text-slate-800">Presensi Kelas {rppInfo?.kelas || ""}</h1>
+          <p className="text-slate-500 text-sm">Pertemuan ke-{rppInfo?.pertemuan_ke || "?"} • {rppInfo?.judul || ""}</p>
         </div>
       </div>
 
@@ -108,7 +122,12 @@ export default function PresensiPage({ params }) {
 
         {/* List Siswa */}
         <div className="divide-y divide-slate-100">
-          {siswaList.map((siswa, index) => (
+          {loading ? (
+            <div className="p-8 text-center text-slate-500 font-medium">Memuat data siswa...</div>
+          ) : siswaList.length === 0 ? (
+            <div className="p-8 text-center text-slate-500 font-medium">Belum ada siswa aktif di kelas ini.</div>
+          ) : (
+            siswaList.map((siswa, index) => (
             <div key={siswa.id} className="p-4 md:grid md:grid-cols-12 gap-4 items-center hover:bg-slate-50/50 transition-colors">
               
               {/* No & Nama */}
@@ -152,7 +171,7 @@ export default function PresensiPage({ params }) {
                 />
               </div>
             </div>
-          ))}
+          )))}
         </div>
       </div>
 
