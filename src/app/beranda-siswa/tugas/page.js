@@ -174,7 +174,12 @@ export default function KbmSiswaPage() {
                     }`}
                   >
                     <BookOpen size={18} />
-                    {hasTugas && !hasSubmitted ? 'Mulai KBM & Kerjakan' : 'Lihat Materi KBM'}
+                    {hasTugas && !hasSubmitted 
+                       ? 'Mulai KBM & Kerjakan' 
+                       : hasTugas && hasSubmitted && !pastDeadline && (!currentTugas.pengumpulan[0]?.nilai) 
+                         ? 'Lihat / Edit Jawaban' 
+                         : 'Lihat Materi KBM'
+                    }
                   </button>
                 </div>
               </div>
