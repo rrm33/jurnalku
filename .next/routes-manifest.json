@@ -1,0 +1,176 @@
+{
+  "version": 3,
+  "pages404": true,
+  "appType": "app",
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "priority": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [],
+  "onMatchHeaders": [],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [
+    {
+      "page": "/beranda/penilaian/[id]",
+      "regex": "^/beranda/penilaian/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/beranda/penilaian/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/beranda/presensi/[id]",
+      "regex": "^/beranda/presensi/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/beranda/presensi/(?<nxtPid>[^/]+?)(?:/)?$"
+    }
+  ],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_global-error",
+      "regex": "^/_global\\-error(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_global\\-error(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/beranda",
+      "regex": "^/beranda(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/beranda(?:/)?$"
+    },
+    {
+      "page": "/beranda/informasi",
+      "regex": "^/beranda/informasi(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/beranda/informasi(?:/)?$"
+    },
+    {
+      "page": "/beranda/maps",
+      "regex": "^/beranda/maps(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/beranda/maps(?:/)?$"
+    },
+    {
+      "page": "/beranda/master/ajuan-profil",
+      "regex": "^/beranda/master/ajuan\\-profil(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/beranda/master/ajuan\\-profil(?:/)?$"
+    },
+    {
+      "page": "/beranda/master/kelas",
+      "regex": "^/beranda/master/kelas(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/beranda/master/kelas(?:/)?$"
+    },
+    {
+      "page": "/beranda/master/mapel",
+      "regex": "^/beranda/master/mapel(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/beranda/master/mapel(?:/)?$"
+    },
+    {
+      "page": "/beranda/master/siswa",
+      "regex": "^/beranda/master/siswa(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/beranda/master/siswa(?:/)?$"
+    },
+    {
+      "page": "/beranda/master/tahun-pelajaran",
+      "regex": "^/beranda/master/tahun\\-pelajaran(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/beranda/master/tahun\\-pelajaran(?:/)?$"
+    },
+    {
+      "page": "/beranda/penilaian",
+      "regex": "^/beranda/penilaian(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/beranda/penilaian(?:/)?$"
+    },
+    {
+      "page": "/beranda/profil",
+      "regex": "^/beranda/profil(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/beranda/profil(?:/)?$"
+    },
+    {
+      "page": "/beranda/rpp",
+      "regex": "^/beranda/rpp(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/beranda/rpp(?:/)?$"
+    },
+    {
+      "page": "/beranda-siswa",
+      "regex": "^/beranda\\-siswa(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/beranda\\-siswa(?:/)?$"
+    },
+    {
+      "page": "/beranda-siswa/profil",
+      "regex": "^/beranda\\-siswa/profil(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/beranda\\-siswa/profil(?:/)?$"
+    },
+    {
+      "page": "/beranda-siswa/tugas",
+      "regex": "^/beranda\\-siswa/tugas(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/beranda\\-siswa/tugas(?:/)?$"
+    },
+    {
+      "page": "/favicon.ico",
+      "regex": "^/favicon\\.ico(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/favicon\\.ico(?:/)?$"
+    },
+    {
+      "page": "/login",
+      "regex": "^/login(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/login(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments",
+    "clientParamParsing": false,
+    "dynamicRSCPrerender": false
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}
