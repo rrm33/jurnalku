@@ -194,7 +194,7 @@ export async function submitTugas(formDataPayload) {
       });
     }
 
-    revalidatePath("/beranda-siswa");
+    revalidatePath("/beranda-siswa", "layout");
     return { success: true };
   } catch (error) {
     console.error("Error submitTugas:", error);
