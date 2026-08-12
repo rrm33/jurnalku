@@ -3,11 +3,13 @@
 import { useState, useEffect, useRef } from "react";
 import { ClipboardList, Clock, CheckCircle2, FileText, Upload, Download, X, AlertCircle, BookOpen, Layers } from "lucide-react";
 import { getKbmSiswa, submitTugas } from "@/actions/tugas-siswa";
+import FileViewerModal from "@/components/FileViewerModal";
 import Swal from "sweetalert2";
 
 export default function KbmSiswaPage() {
   const [kbmList, setKbmList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [fileToView, setFileToView] = useState(null);
   
   // Modal State
   const [selectedKbm, setSelectedKbm] = useState(null);
@@ -130,6 +132,11 @@ export default function KbmSiswaPage() {
                     <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1 rounded-full" title="Tanggal Pelaksanaan">
                       {formatDate(kbm.tanggal_pelaksanaan)}
                     </span>
+                    {kbm.pertemuan_ke && (
+                      <span className="text-xs font-semibold text-amber-600 bg-amber-50 border border-amber-100 px-3 py-1 rounded-full" title="Pertemuan Ke">
+                        Pertemuan ke-{kbm.pertemuan_ke}
+                      </span>
+                    )}
                     
                     {hasTugas && (
                       <>
@@ -261,9 +268,12 @@ export default function KbmSiswaPage() {
                                   <p className="text-xs text-rose-800 whitespace-pre-line">{currentTugas.deskripsi}</p>
                                   
                                   {currentTugas.file && (
-                                    <a href={currentTugas.file} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-2 px-3 py-2 bg-white text-rose-700 rounded-lg shadow-sm border border-rose-200 text-xs font-bold hover:bg-rose-100 transition-colors">
-                                      <Download size={14} /> Unduh Lampiran Soal
-                                    </a>
+                                    <div className="mt-4">
+                                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 block">Lampiran dari Guru:</span>
+                                      <button onClick={() => setFileToView(currentTugas.file)} className="mt-2 inline-flex items-center gap-2 px-3 py-2 bg-white text-rose-700 rounded-lg shadow-sm border border-rose-200 text-xs font-bold hover:bg-rose-100 transition-colors">
+                                        <FileText size={14} /> Lihat File Lampiran
+                                      </button>
+                                    </div>
                                   )}
                                </div>
 
@@ -287,9 +297,12 @@ export default function KbmSiswaPage() {
                                    </div>
 
                                    {submission.upload_file && (
-                                     <a href={submission.upload_file} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 p-3 bg-slate-100 text-slate-700 rounded-xl border border-slate-200 font-bold text-sm hover:bg-slate-200">
-                                       <FileText size={16} /> Lihat Lampiran Jawaban
-                                     </a>
+                                      <div className="mt-4">
+                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 block">File yang dikumpulkan:</span>
+                                        <button onClick={() => setFileToView(submission.upload_file)} className="flex items-center justify-center w-max gap-2 p-3 bg-slate-100 text-slate-700 rounded-xl border border-slate-200 font-bold text-sm hover:bg-slate-200">
+                                          <FileText size={16} /> Buka File Anda
+                                        </button>
+                                     </div>
                                    )}
 
                                    {submission.nilai !== null ? (
@@ -356,6 +369,8 @@ export default function KbmSiswaPage() {
         </div>
       )}
 
+      {/* File Viewer Modal */}
+      <FileViewerModal url={fileToView} onClose={() => setFileToView(null)} />
     </div>
   );
 }

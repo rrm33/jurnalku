@@ -176,15 +176,29 @@ export async function simpanNilaiMasal(tugasId, dataNilai) {
       } else {
         // Jika nilai dikosongkan (hapus nilai) dan recordnya memang sudah ada
         if (existingMap.has(pSiswaId)) {
-          operations.push(prisma.pengumpulanTugas.update({
-            where: {
-              tugas_id_siswa_id: {
-                tugas_id: parsedTugasId,
-                siswa_id: pSiswaId
+          const existingRecord = existing.find(e => e.siswa_id === pSiswaId);
+          // Jika tidak ada teks jawaban dan tidak ada file, berarti ini hanya record nilai kosong (ghost record). Hapus recordnya.
+          if (!existingRecord.input_jawaban && !existingRecord.upload_file) {
+            operations.push(prisma.pengumpulanTugas.delete({
+              where: {
+                tugas_id_siswa_id: {
+                  tugas_id: parsedTugasId,
+                  siswa_id: pSiswaId
+                }
               }
-            },
-            data: { nilai: null }
-          }));
+            }));
+          } else {
+            // Jika ada jawaban/file dari siswa, maka cukup set nilai menjadi null agar siswa bisa mengedit kembali.
+            operations.push(prisma.pengumpulanTugas.update({
+              where: {
+                tugas_id_siswa_id: {
+                  tugas_id: parsedTugasId,
+                  siswa_id: pSiswaId
+                }
+              },
+              data: { nilai: null }
+            }));
+          }
         }
       }
     }
