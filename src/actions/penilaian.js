@@ -55,6 +55,7 @@ export async function getDaftarPenilaian() {
         tugas_judul: tugas.judul,
         mapel_nama: rpp.mapel?.nama,
         kelas_nama: rpp.kelas?.nama,
+        pertemuan_ke: rpp.pertemuan_ke,
         deadline: tugas.deadline,
         totalSiswa,
         totalMengerjakan,

@@ -14,6 +14,7 @@ export default function BerandaPage() {
   const [mapelList, setMapelList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState(null);
+  const [selectedFilterKelas, setSelectedFilterKelas] = useState("");
 
   // Modal Form State
   const [isOpen, setIsOpen] = useState(false);
@@ -22,6 +23,7 @@ export default function BerandaPage() {
   const [formData, setFormData] = useState({
     id: null,
     pertemuan_ke: 1,
+    tanggal: "",
     mapel_id: "",
     kelas_ids: [], // Array of class IDs
     judul: "",
@@ -60,6 +62,7 @@ export default function BerandaPage() {
     setFormData({
       id: null,
       pertemuan_ke: rppList.length > 0 ? (rppList[0].pertemuan_ke + 1) : 1, 
+      tanggal: new Date().toISOString().slice(0, 10),
       mapel_id: "",
       kelas_ids: [],
       judul: "",
@@ -80,6 +83,7 @@ export default function BerandaPage() {
     setFormData({
       id: rpp.id,
       pertemuan_ke: rpp.pertemuan_ke,
+      tanggal: rpp.tanggal ? new Date(rpp.tanggal).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
       mapel_id: rpp.mapel_id,
       kelas_ids: [String(rpp.kelas_id)], // Saat edit, paksa isi 1 array
       judul: rpp.judul,
@@ -116,6 +120,7 @@ export default function BerandaPage() {
     const submission = new FormData();
     submission.append('id', formData.id);
     submission.append('pertemuan_ke', formData.pertemuan_ke);
+    submission.append('tanggal', formData.tanggal);
     submission.append('judul', formData.judul);
     submission.append('tujuan_pembelajaran', formData.tujuan_pembelajaran);
     submission.append('aktivitas_pembelajaran', formData.aktivitas_pembelajaran);
@@ -187,13 +192,35 @@ export default function BerandaPage() {
           <h2 className="text-2xl font-bold text-slate-800">Rencana Pelaksanaan Pembelajaran</h2>
           <p className="text-slate-500 mt-1">Kelola jurnal mengajar, absensi, dan penilaian harian.</p>
         </div>
-        <button 
-          onClick={handleCreateNew}
-          className="hidden md:flex bg-rose-600 hover:bg-rose-700 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md shadow-rose-200 transition-colors items-center gap-2"
-        >
-          <span className="text-lg leading-none">+</span> Buat RPP Baru
-        </button>
+        <div className="flex items-center gap-4">
+          <select 
+            value={selectedFilterKelas}
+            onChange={(e) => setSelectedFilterKelas(e.target.value)}
+            className="hidden md:block bg-white border border-slate-200 text-slate-700 px-4 py-2.5 rounded-xl font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-100"
+          >
+            <option value="">Semua Kelas</option>
+            {kelasList.map(k => <option key={k.id} value={k.id}>{k.nama}</option>)}
+          </select>
+          <button 
+            onClick={handleCreateNew}
+            className="hidden md:flex bg-rose-600 hover:bg-rose-700 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md shadow-rose-200 transition-colors items-center gap-2"
+          >
+            <span className="text-lg leading-none">+</span> Buat RPP Baru
+          </button>
+        </div>
       </header>
+      
+      {/* Filter Mobile */}
+      <div className="mb-6 md:hidden">
+        <select 
+          value={selectedFilterKelas}
+          onChange={(e) => setSelectedFilterKelas(e.target.value)}
+          className="w-full bg-white border border-slate-200 text-slate-700 px-4 py-2.5 rounded-xl font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-100"
+        >
+          <option value="">Semua Kelas</option>
+          {kelasList.map(k => <option key={k.id} value={k.id}>{k.nama}</option>)}
+        </select>
+      </div>
 
       {/* Daftar RPP / Accordion */}
       <div className="space-y-4 max-w-5xl pb-24">
@@ -213,7 +240,7 @@ export default function BerandaPage() {
               Mulai Buat RPP Pertama
             </button>
           </div>
-        ) : rppList.map((rpp) => (
+        ) : rppList.filter(r => selectedFilterKelas === "" || r.kelas_id === parseInt(selectedFilterKelas)).map((rpp) => (
           <div key={rpp.id} className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md">
             
             {/* Header ListTile */}
@@ -230,6 +257,7 @@ export default function BerandaPage() {
                 <div className="flex items-center gap-2 mb-1 flex-wrap">
                   <span className="px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-600 text-[11px] font-bold">{rpp.kelas?.nama}</span>
                   <span className="px-2.5 py-0.5 rounded-md bg-rose-50 text-rose-600 text-[11px] font-bold">{rpp.mapel?.nama}</span>
+                  {rpp.tanggal && <span className="px-2.5 py-0.5 rounded-md bg-amber-50 text-amber-600 text-[11px] font-bold">{new Date(rpp.tanggal).toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'})}</span>}
                   {rpp.status_terlaksana ? (
                     <button onClick={(e) => { e.stopPropagation(); handleToggleStatus(rpp.id, rpp.status_terlaksana); }} className="px-2.5 py-0.5 rounded-md bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:text-emerald-700 text-[11px] font-bold border border-emerald-100 flex items-center gap-1 transition-colors">
                       <CheckCircle2 size={12} /> Terlaksana
@@ -274,14 +302,14 @@ export default function BerandaPage() {
                 {/* Tombol Aksi */}
                 <div className="flex flex-wrap gap-3 pt-4 border-t border-slate-200 border-dashed">
                   <button 
-                    onClick={() => router.push(`/beranda/presensi/${rpp.id}`)}
+                    onClick={() => router.push(`/beranda/presensi/${rpp.id}?source=rpp`)}
                     className="flex items-center gap-2 px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-bold rounded-xl shadow-sm shadow-emerald-200 transition-colors"
                   >
                     <Users size={16} />
                     Presensi
                   </button>
                   <button 
-                    onClick={() => router.push(`/beranda/penilaian/${rpp.id}`)}
+                    onClick={() => router.push(`/beranda/penilaian/${rpp.id}?source=rpp`)}
                     className="flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white text-sm font-bold rounded-xl shadow-sm shadow-amber-200 transition-colors"
                   >
                     <CheckSquare size={16} />
@@ -315,10 +343,14 @@ export default function BerandaPage() {
             <h3 className="text-xl font-bold text-slate-800 mb-6 pb-4 border-b border-slate-100">{formData.id ? 'Edit' : 'Buat'} Jurnal / RPP Baru</h3>
             <form onSubmit={handleSubmit} className="space-y-5">
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 <div>
                   <label className="block text-xs font-bold text-slate-600 mb-2">Pertemuan Ke- *</label>
                   <input type="number" min="1" required value={formData.pertemuan_ke} onChange={e => setFormData({...formData, pertemuan_ke: e.target.value})} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-bold bg-slate-50" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-600 mb-2">Tanggal *</label>
+                  <input type="date" required value={formData.tanggal} onChange={e => setFormData({...formData, tanggal: e.target.value})} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-bold bg-slate-50" />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-slate-600 mb-2">Pilih Mapel *</label>
@@ -335,30 +367,36 @@ export default function BerandaPage() {
                   {formData.id && <span className="text-[10px] bg-amber-50 text-amber-600 px-2 py-0.5 rounded border border-amber-200">Mode Edit (1 Kelas)</span>}
                 </label>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                  {kelasList.map(kelas => (
-                    <label 
-                      key={kelas.id} 
-                      className={`flex items-center gap-2 p-2.5 border rounded-xl cursor-pointer transition-all ${formData.kelas_ids.includes(String(kelas.id)) ? 'bg-rose-50 border-rose-400 text-rose-700' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'}`}
-                    >
-                      <input 
-                        type="checkbox" 
-                        className="hidden" 
-                        checked={formData.kelas_ids.includes(String(kelas.id))} 
-                        onChange={() => {
-                          if (formData.id) {
-                            // Jika mode Edit, paksa radio button (cuma bisa 1 kelas)
-                            setFormData(prev => ({...prev, kelas_ids: [String(kelas.id)]}));
-                          } else {
-                            toggleKelasSelection(kelas.id);
-                          }
-                        }} 
-                      />
-                      <div className={`w-4 h-4 rounded shadow-inner flex items-center justify-center shrink-0 border ${formData.kelas_ids.includes(String(kelas.id)) ? 'bg-rose-600 border-rose-600' : 'bg-slate-100 border-slate-300'}`}>
-                        {formData.kelas_ids.includes(String(kelas.id)) && <CheckSquare size={12} className="text-white" />}
-                      </div>
-                      <span className="text-xs font-bold select-none truncate">{kelas.nama}</span>
-                    </label>
-                  ))}
+                  {kelasList.map(kelas => {
+                    const isSelected = formData.kelas_ids.includes(String(kelas.id));
+                    const isEditing = !!formData.id;
+                    const isDisabled = isEditing && !isSelected; // Disable non-selected in edit mode
+
+                    if (isDisabled) return null; // Hide other classes in edit mode completely
+
+                    return (
+                      <label 
+                        key={kelas.id} 
+                        className={`flex items-center gap-2 p-2.5 border rounded-xl transition-all 
+                          ${isEditing ? 'cursor-not-allowed opacity-80' : 'cursor-pointer hover:bg-slate-50'} 
+                          ${isSelected ? 'bg-rose-50 border-rose-400 text-rose-700' : 'bg-white border-slate-200 text-slate-600'}`}
+                      >
+                        <input 
+                          type="checkbox" 
+                          className="hidden" 
+                          checked={isSelected} 
+                          disabled={isEditing}
+                          onChange={() => {
+                            if (!isEditing) toggleKelasSelection(kelas.id);
+                          }} 
+                        />
+                        <div className={`w-4 h-4 rounded shadow-inner flex items-center justify-center shrink-0 border ${isSelected ? 'bg-rose-600 border-rose-600' : 'bg-slate-100 border-slate-300'}`}>
+                          {isSelected && <CheckSquare size={12} className="text-white" />}
+                        </div>
+                        <span className="text-xs font-bold select-none truncate">{kelas.nama}</span>
+                      </label>
+                    );
+                  })}
                 </div>
               </div>
 

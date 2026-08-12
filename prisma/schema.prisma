@@ -89,6 +89,7 @@ model TahunPelajaran {
 model Rpp {
   id                     Int       @id @default(autoincrement())
   pertemuan_ke           Int
+  tanggal                DateTime  @default(now())
   judul                  String
   tujuan_pembelajaran    String    @db.Text
   aktivitas_pembelajaran String    @db.Text

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { getTugasDenganPenilaian, simpanNilaiMasal } from "@/actions/penilaian";
 import { ArrowLeft, CheckCircle2, Clock, Download, FileText, CheckSquare, FileWarning, Search, Save, AlertCircle, X } from "lucide-react";
 import Link from "next/link";
@@ -10,6 +10,16 @@ import Swal from "sweetalert2";
 export default function PenilaianPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const source = searchParams.get('source');
+  
+  const handleBack = () => {
+    if (source === 'penilaian') {
+      router.push('/beranda/penilaian');
+    } else {
+      router.push('/beranda/rpp');
+    }
+  };
   
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -137,8 +147,8 @@ export default function PenilaianPage() {
   if (!data.tugas) {
     return (
       <div className="p-6 md:p-8 max-w-7xl mx-auto animate-in fade-in duration-500">
-        <button onClick={() => router.push("/beranda/rpp")} className="flex items-center gap-2 text-slate-500 hover:text-pink-600 font-semibold mb-6 transition-colors">
-          <ArrowLeft size={18} /> Kembali ke Daftar RPP
+        <button onClick={handleBack} className="flex items-center gap-2 text-slate-500 hover:text-pink-600 font-semibold mb-6 transition-colors">
+          <ArrowLeft size={18} /> Kembali
         </button>
         <div className="bg-white border border-slate-200 rounded-2xl p-12 flex flex-col items-center justify-center text-center shadow-sm">
           <div className="w-20 h-20 bg-slate-50 text-slate-400 rounded-full flex items-center justify-center mb-4">
@@ -165,8 +175,8 @@ export default function PenilaianPage() {
     <div className="max-w-7xl mx-auto pb-16 animate-in fade-in zoom-in-95 duration-500">
       
       {/* Tombol Back */}
-      <button onClick={() => router.push("/beranda/rpp")} className="flex items-center gap-2 text-slate-500 hover:text-pink-600 font-semibold mb-6 transition-colors">
-        <ArrowLeft size={18} /> Kembali ke Daftar RPP
+      <button onClick={handleBack} className="flex items-center gap-2 text-slate-500 hover:text-pink-600 font-semibold mb-6 transition-colors">
+        <ArrowLeft size={18} /> Kembali
       </button>
 
       {/* Header Info KBM */}

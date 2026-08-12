@@ -37,6 +37,8 @@ export async function saveRpp(formDataPayload, guruId = 1) {
 
     const id = formDataPayload.get('id');
     const pertemuan_ke = parseInt(formDataPayload.get('pertemuan_ke'));
+    const tanggal_str = formDataPayload.get('tanggal');
+    const tanggal = tanggal_str ? new Date(tanggal_str) : new Date();
     const judul = formDataPayload.get('judul');
     const tujuan_pembelajaran = formDataPayload.get('tujuan_pembelajaran');
     const aktivitas_pembelajaran = formDataPayload.get('aktivitas_pembelajaran');
@@ -88,12 +90,13 @@ export async function saveRpp(formDataPayload, guruId = 1) {
         where: { id: parseInt(id) },
         data: {
           pertemuan_ke,
+          tanggal,
           judul,
           tujuan_pembelajaran,
           aktivitas_pembelajaran,
           upload_file: filePath,
           mapel_id,
-          kelas_id: parseInt(kelas_ids[0])
+          // kelas_id sengaja TIDAK di-update agar data presensi & tugas tidak hilang
         }
       });
 
@@ -129,6 +132,7 @@ export async function saveRpp(formDataPayload, guruId = 1) {
         const newRpp = await prisma.rpp.create({
           data: {
             pertemuan_ke,
+            tanggal,
             judul,
             tujuan_pembelajaran,
             aktivitas_pembelajaran,

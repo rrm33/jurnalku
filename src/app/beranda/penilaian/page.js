@@ -71,7 +71,7 @@ export default function DaftarPenilaianPage() {
              return (
               <div 
                 key={item.id} 
-                onClick={() => router.push(`/beranda/penilaian/${item.id}`)}
+                onClick={() => router.push(`/beranda/penilaian/${item.id}?source=penilaian`)}
                 className="bg-white border border-slate-200 rounded-2xl p-5 hover:border-pink-300 hover:shadow-md cursor-pointer transition-all group flex flex-col md:flex-row gap-6 md:items-center relative overflow-hidden"
               >
                 {/* Decoration */}
@@ -81,6 +81,7 @@ export default function DaftarPenilaianPage() {
                   <div className="flex items-center gap-2 mb-2 flex-wrap">
                     <span className="px-2.5 py-0.5 bg-rose-50 text-rose-700 text-[10px] font-bold rounded-md uppercase tracking-wider">{item.mapel_nama}</span>
                     <span className="px-2.5 py-0.5 bg-pink-50 text-pink-700 text-[10px] font-bold rounded-md uppercase tracking-wider border border-pink-100">{item.kelas_nama}</span>
+                    <span className="px-2.5 py-0.5 bg-amber-50 text-amber-700 text-[10px] font-bold rounded-md uppercase tracking-wider border border-amber-100">Pertemuan ke-{item.pertemuan_ke}</span>
                     {isComplete && (
                       <span className="flex items-center gap-1 px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded-md uppercase tracking-wider border border-emerald-100">
                         <CheckCircle2 size={12} /> Selesai Dinilai
