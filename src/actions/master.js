@@ -96,6 +96,18 @@ export async function getKelas() {
 
 export async function saveKelas(data) {
   try {
+    // Cek apakah nama kelas sudah ada
+    const existing = await prisma.kelas.findFirst({
+      where: { 
+        nama: data.nama,
+        ...(data.id ? { id: { not: data.id } } : {})
+      }
+    });
+
+    if (existing) {
+      return { success: false, message: `Kelas dengan nama "${data.nama}" sudah ada.` };
+    }
+
     if (data.id) {
       await prisma.kelas.update({
         where: { id: data.id },

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { getTugasDenganPenilaian, simpanNilaiMasal } from "@/actions/penilaian";
 import { ArrowLeft, CheckCircle2, Clock, Download, FileText, CheckSquare, FileWarning, Search, Save, AlertCircle, X } from "lucide-react";
+import FileViewerModal from "@/components/FileViewerModal";
 import Link from "next/link";
 import Swal from "sweetalert2";
 
@@ -24,10 +25,11 @@ export default function PenilaianPage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [search, setSearch] = useState("");
+  const [fileToView, setFileToView] = useState(null);
   
   // State untuk melacak form input nilai (key = siswa_id, value = nilai string)
   const [nilaiState, setNilaiState] = useState({});
-  const [search, setSearch] = useState("");
 
   const fetchData = async () => {
     setLoading(true);
@@ -299,9 +301,9 @@ export default function PenilaianPage() {
                            )}
                            
                            {submission.upload_file && (
-                             <a href={submission.upload_file} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-xs font-bold text-pink-600 bg-pink-50 hover:bg-pink-100 px-3 py-1.5 rounded-lg transition-colors border border-pink-100">
+                             <button onClick={() => setFileToView(submission.upload_file)} className="inline-flex items-center gap-2 text-xs font-bold text-pink-600 bg-pink-50 hover:bg-pink-100 px-3 py-1.5 rounded-lg transition-colors border border-pink-100">
                                <FileText size={14} /> Buka Lampiran Jawaban
-                             </a>
+                             </button>
                            )}
                            
                            {!submission.input_jawaban && !submission.upload_file && (
@@ -348,6 +350,8 @@ export default function PenilaianPage() {
         </div>
       </div>
       
+      {/* Modal File Viewer */}
+      <FileViewerModal url={fileToView} onClose={() => setFileToView(null)} />
     </div>
   );
 }
