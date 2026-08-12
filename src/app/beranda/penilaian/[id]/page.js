@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { getTugasDenganPenilaian, simpanNilaiMasal } from "@/actions/penilaian";
-import { ArrowLeft, CheckCircle2, Clock, Download, FileText, CheckSquare, FileWarning, Search, Save, AlertCircle } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Clock, Download, FileText, CheckSquare, FileWarning, Search, Save, AlertCircle, X } from "lucide-react";
 import Link from "next/link";
 import Swal from "sweetalert2";
 
@@ -307,16 +307,27 @@ export default function PenilaianPage() {
                     </td>
                     
                     <td className="p-4 bg-pink-50/20 group-hover:bg-pink-50/50 transition-colors">
-                      <div className="relative w-20 mx-auto">
-                        <input 
-                          type="number"
-                          min="0"
-                          max="100"
-                          value={nilaiState[siswa.id] ?? ""}
-                          onChange={(e) => handleNilaiChange(siswa.id, e.target.value)}
-                          placeholder="-"
-                          className="w-full text-center px-2 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-500 font-bold text-slate-800 transition-all"
-                        />
+                      <div className="flex items-center gap-2 justify-center">
+                        <div className="relative w-20">
+                          <input 
+                            type="number"
+                            min="0"
+                            max="100"
+                            value={nilaiState[siswa.id] ?? ""}
+                            onChange={(e) => handleNilaiChange(siswa.id, e.target.value)}
+                            placeholder="-"
+                            className="w-full text-center px-2 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-500 font-bold text-slate-800 transition-all"
+                          />
+                        </div>
+                        {nilaiState[siswa.id] !== "" && (
+                          <button 
+                            onClick={() => handleNilaiChange(siswa.id, "")}
+                            className="text-slate-400 hover:text-rose-500 p-1 bg-white border border-slate-200 rounded hover:bg-rose-50 hover:border-rose-200 transition-colors"
+                            title="Hapus Nilai"
+                          >
+                            <X size={14} strokeWidth={3} />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

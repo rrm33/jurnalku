@@ -139,41 +139,54 @@ export async function simpanNilaiMasal(tugasId, dataNilai) {
 
     const parsedTugasId = parseInt(tugasId);
 
-    // Proses data secara masif (bulk/upsert)
-    // dataNilai formatnya: [ { siswa_id: 1, nilai: 85 }, { siswa_id: 2, nilai: null } ]
-    
-    // Karena Prisma di Sqlite/MySQL tidak punya fungsi bulk upsert yang simpel dan aman untuk relasi ganda, 
-    // kita akan loop satu-satu dalam transaction.
-    
-    const operations = dataNilai.map(item => {
+    // Cek record yang sudah ada
+    const existing = await prisma.pengumpulanTugas.findMany({
+      where: { tugas_id: parsedTugasId }
+    });
+    const existingMap = new Set(existing.map(e => e.siswa_id));
+
+    const operations = [];
+
+    for (const item of dataNilai) {
       const pSiswaId = parseInt(item.siswa_id);
       let pNilai = null;
       
-      // Jika kosong (string kosong) atau null, simpan sebagai null (belum dinilai)
       if (item.nilai !== null && item.nilai !== "" && item.nilai !== undefined) {
          pNilai = parseInt(item.nilai);
-         // validasi max/min 
          if (pNilai < 0) pNilai = 0;
          if (pNilai > 100) pNilai = 100;
       }
 
-      return prisma.pengumpulanTugas.upsert({
-        where: {
-          tugas_id_siswa_id: {
+      if (pNilai !== null) {
+        operations.push(prisma.pengumpulanTugas.upsert({
+          where: {
+            tugas_id_siswa_id: {
+              tugas_id: parsedTugasId,
+              siswa_id: pSiswaId
+            }
+          },
+          update: { nilai: pNilai },
+          create: {
             tugas_id: parsedTugasId,
-            siswa_id: pSiswaId
+            siswa_id: pSiswaId,
+            nilai: pNilai
           }
-        },
-        update: {
-          nilai: pNilai
-        },
-        create: {
-          tugas_id: parsedTugasId,
-          siswa_id: pSiswaId,
-          nilai: pNilai
+        }));
+      } else {
+        // Jika nilai dikosongkan (hapus nilai) dan recordnya memang sudah ada
+        if (existingMap.has(pSiswaId)) {
+          operations.push(prisma.pengumpulanTugas.update({
+            where: {
+              tugas_id_siswa_id: {
+                tugas_id: parsedTugasId,
+                siswa_id: pSiswaId
+              }
+            },
+            data: { nilai: null }
+          }));
         }
-      });
-    });
+      }
+    }
 
     await prisma.$transaction(operations);
 
