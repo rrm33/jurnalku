@@ -96,11 +96,17 @@ export default function DaftarPenilaianPage() {
                 {/* Decoration */}
                 <div className={`absolute top-0 left-0 w-1.5 h-full ${isComplete ? 'bg-emerald-500' : 'bg-pink-500'}`}></div>
 
-                <div className="flex-1 min-w-0 pl-2">
-                  <div className="flex items-center gap-2 mb-2 flex-wrap">
-                    <span className="px-2.5 py-0.5 bg-rose-50 text-rose-700 text-[10px] font-bold rounded-md uppercase tracking-wider">{item.mapel_nama}</span>
-                    <span className="px-2.5 py-0.5 bg-pink-50 text-pink-700 text-[10px] font-bold rounded-md uppercase tracking-wider border border-pink-100">{item.kelas_nama}</span>
-                    <span className="px-2.5 py-0.5 bg-amber-50 text-amber-700 text-[10px] font-bold rounded-md uppercase tracking-wider border border-amber-100">Pertemuan ke-{item.pertemuan_ke}</span>
+                <div className="flex-1 min-w-0 pl-2 flex items-start gap-4">
+                  
+                  <div className="w-12 h-12 bg-pink-50 text-pink-600 rounded-2xl flex flex-col items-center justify-center shrink-0 shadow-inner mt-1">
+                    <span className="text-xs font-semibold uppercase tracking-wider">Pert</span>
+                    <span className="text-lg font-bold leading-none">{item.pertemuan_ke}</span>
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-2 flex-wrap">
+                      <span className="px-2.5 py-0.5 bg-rose-50 text-rose-700 text-[10px] font-bold rounded-md uppercase tracking-wider">{item.mapel_nama}</span>
+                      <span className="px-2.5 py-0.5 bg-pink-50 text-pink-700 text-[10px] font-bold rounded-md uppercase tracking-wider border border-pink-100">{item.kelas_nama}</span>
                     {isComplete && (
                       <span className="flex items-center gap-1 px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded-md uppercase tracking-wider border border-emerald-100">
                         <CheckCircle2 size={12} /> Selesai Dinilai
@@ -112,6 +118,7 @@ export default function DaftarPenilaianPage() {
                     <Clock size={14} className="text-slate-400" /> 
                     Tenggat: {formatDate(item.deadline)}
                   </div>
+                </div>
                 </div>
 
                 <div className="shrink-0 flex gap-6 items-center border-t md:border-t-0 md:border-l border-slate-100 pt-4 md:pt-0 pl-0 md:pl-6 w-full md:w-auto">
