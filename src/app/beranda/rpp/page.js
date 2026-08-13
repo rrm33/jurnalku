@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Users, CheckSquare, ChevronDown, ChevronUp, Trash2, Edit2, Link as LinkIcon, CheckCircle2, Upload, FileText } from "lucide-react";
 import { getRpps, saveRpp, deleteRpp, toggleStatusRpp } from "@/actions/rpp";
 import { getKelas, getMapel } from "@/actions/master";
+import FileViewerModal from "@/components/FileViewerModal";
 import Swal from "sweetalert2";
 
 export default function BerandaPage() {
@@ -15,6 +16,7 @@ export default function BerandaPage() {
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState(null);
   const [selectedFilterKelas, setSelectedFilterKelas] = useState("");
+  const [fileToView, setFileToView] = useState(null);
 
   // Modal Form State
   const [isOpen, setIsOpen] = useState(false);
@@ -36,6 +38,27 @@ export default function BerandaPage() {
     deadline_tugas: "",
     existing_file_tugas: "",
   });
+
+  const getKelasColor = (nama) => {
+    if (!nama) return "bg-slate-100 text-slate-600 border-slate-200";
+    const colors = [
+      "bg-blue-50 text-blue-700 border-blue-200",
+      "bg-indigo-50 text-indigo-700 border-indigo-200",
+      "bg-violet-50 text-violet-700 border-violet-200",
+      "bg-fuchsia-50 text-fuchsia-700 border-fuchsia-200",
+      "bg-rose-50 text-rose-700 border-rose-200",
+      "bg-orange-50 text-orange-700 border-orange-200",
+      "bg-amber-50 text-amber-700 border-amber-200",
+      "bg-emerald-50 text-emerald-700 border-emerald-200",
+      "bg-teal-50 text-teal-700 border-teal-200",
+      "bg-cyan-50 text-cyan-700 border-cyan-200"
+    ];
+    let hash = 0;
+    for (let i = 0; i < nama.length; i++) {
+      hash = nama.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return colors[Math.abs(hash) % colors.length];
+  };
 
   const fetchData = async () => {
     setLoading(true);
@@ -255,8 +278,8 @@ export default function BerandaPage() {
               
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1 flex-wrap">
-                  <span className="px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-600 text-[11px] font-bold">{rpp.kelas?.nama}</span>
-                  <span className="px-2.5 py-0.5 rounded-md bg-rose-50 text-rose-600 text-[11px] font-bold">{rpp.mapel?.nama}</span>
+                  <span className={`px-2.5 py-0.5 rounded-md text-[11px] font-bold border ${getKelasColor(rpp.kelas?.nama)}`}>{rpp.kelas?.nama}</span>
+                  <span className="px-2.5 py-0.5 rounded-md bg-rose-50 text-rose-600 text-[11px] font-bold border border-rose-100">{rpp.mapel?.nama}</span>
                   {rpp.tanggal && <span className="px-2.5 py-0.5 rounded-md bg-amber-50 text-amber-600 text-[11px] font-bold">{new Date(rpp.tanggal).toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'})}</span>}
                   {rpp.status_terlaksana ? (
                     <button onClick={(e) => { e.stopPropagation(); handleToggleStatus(rpp.id, rpp.status_terlaksana); }} className="px-2.5 py-0.5 rounded-md bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:text-emerald-700 text-[11px] font-bold border border-emerald-100 flex items-center gap-1 transition-colors">
@@ -291,9 +314,9 @@ export default function BerandaPage() {
                     {rpp.upload_file && (
                       <div className="mt-4">
                          <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Lampiran File</h4>
-                         <a href={rpp.upload_file} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-3 py-1.5 bg-rose-50 text-rose-600 text-xs font-bold rounded-lg hover:bg-rose-100 transition-colors">
+                         <button onClick={(e) => { e.stopPropagation(); setFileToView(rpp.upload_file); }} className="inline-flex items-center gap-2 px-3 py-1.5 bg-rose-50 text-rose-600 text-xs font-bold rounded-lg hover:bg-rose-100 transition-colors">
                            <FileText size={14} /> Buka Lampiran
-                         </a>
+                         </button>
                       </div>
                     )}
                   </div>
@@ -471,6 +494,9 @@ export default function BerandaPage() {
           </div>
         </div>
       )}
+
+      {/* File Viewer Modal */}
+      <FileViewerModal url={fileToView} onClose={() => setFileToView(null)} />
     </>
   );
 }
