@@ -10,6 +10,7 @@ export default function DaftarPenilaianPage() {
   const router = useRouter();
   const [dataList, setDataList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedFilterKelas, setSelectedFilterKelas] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -45,6 +46,22 @@ export default function DaftarPenilaianPage() {
           <h2 className="text-2xl font-bold text-slate-800">Daftar Penilaian Tugas</h2>
           <p className="text-slate-500 mt-1">Pilih tugas KBM yang ingin Anda nilai.</p>
         </div>
+        
+        {/* Filter Kelas */}
+        {!loading && dataList.length > 0 && (
+          <div className="w-full md:w-auto">
+            <select 
+              value={selectedFilterKelas}
+              onChange={(e) => setSelectedFilterKelas(e.target.value)}
+              className="w-full md:w-64 bg-white border border-slate-200 text-slate-700 px-4 py-2.5 rounded-xl font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-100"
+            >
+              <option value="">Semua Kelas</option>
+              {Array.from(new Set(dataList.map(item => item.kelas_nama))).sort().map(kelasNama => (
+                <option key={kelasNama} value={kelasNama}>{kelasNama}</option>
+              ))}
+            </select>
+          </div>
+        )}
       </header>
 
       {loading ? (
@@ -63,12 +80,14 @@ export default function DaftarPenilaianPage() {
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4">
-          {dataList.map((item) => {
-             const progressPercent = item.totalSiswa === 0 ? 0 : (item.totalDinilai / item.totalSiswa) * 100;
-             const isComplete = item.totalSiswa > 0 && item.totalDinilai === item.totalSiswa;
-
-             return (
+        <div className="space-y-4">
+          {dataList
+            .filter(item => selectedFilterKelas === "" || item.kelas_nama === selectedFilterKelas)
+            .map((item) => {
+              const isComplete = item.totalDinilai >= item.totalMengerjakan && item.totalMengerjakan > 0;
+              const progressPercent = item.totalMengerjakan > 0 ? Math.round((item.totalDinilai / item.totalMengerjakan) * 100) : 0;
+              
+              return (
               <div 
                 key={item.id} 
                 onClick={() => router.push(`/beranda/penilaian/${item.id}?source=penilaian`)}
