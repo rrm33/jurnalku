@@ -142,9 +142,16 @@ export default function KbmSiswaPage() {
                     
                     {hasTugas && (
                       <>
-                        <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded-full border border-indigo-200 shadow-sm flex items-center gap-1">
-                          ⏱️ Deadline: {formatDate(currentTugas.deadline)}
-                        </span>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded-full border border-indigo-200 shadow-sm flex items-center gap-1">
+                            ⏱️ Deadline: {formatDate(currentTugas.deadline)}
+                          </span>
+                          {!hasSubmitted && !pastDeadline && currentTugas.deadline && (
+                            <div className="scale-75 origin-left -my-2">
+                              <Countdown deadline={currentTugas.deadline} size="normal" />
+                            </div>
+                          )}
+                        </div>
                         {hasSubmitted ? (
                           <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full border border-emerald-200">
                             <CheckCircle2 size={12} /> TUGAS SELESAI
@@ -166,13 +173,6 @@ export default function KbmSiswaPage() {
                       </>
                     )}
                   </div>
-                  
-                  {/* Countdown Timer in List Tile */}
-                  {!hasSubmitted && !pastDeadline && hasTugas && currentTugas.deadline && (
-                    <div className="mb-4 w-full md:w-2/3">
-                      <Countdown deadline={currentTugas.deadline} size="normal" />
-                    </div>
-                  )}
                   
                   <h3 className="font-extrabold text-slate-800 text-xl mb-2 group-hover:text-pink-600 transition-colors">{kbm.tujuan_pembelajaran}</h3>
                   <p className="text-sm text-slate-600 mb-4 line-clamp-2 leading-relaxed">{kbm.aktivitas_pembelajaran}</p>
