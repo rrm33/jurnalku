@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { getDaftarPenilaian } from "@/actions/penilaian";
 import { CheckSquare, Clock, BookOpen, ChevronRight, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
+import Countdown from "@/components/Countdown";
 
 export default function DaftarPenilaianPage() {
   const router = useRouter();
@@ -139,6 +140,11 @@ export default function DaftarPenilaianPage() {
                     <Clock size={14} className="text-slate-400" /> 
                     Tenggat: {formatDate(item.deadline)}
                   </div>
+                  {item.deadline && (
+                    <div className="mt-3">
+                      <Countdown deadline={item.deadline} size="normal" />
+                    </div>
+                  )}
                 </div>
                 </div>
 

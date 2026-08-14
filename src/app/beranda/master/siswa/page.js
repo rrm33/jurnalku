@@ -318,11 +318,21 @@ function SiswaContent() {
                     <div className="text-[11px] text-slate-500">NIS: {item.nis || "-"}</div>
                   </td>
                   <td className="p-4">
-                    <div className="font-bold text-slate-800 flex items-center gap-2">
+                    <div className="font-bold text-slate-800 flex items-center gap-2 mb-1.5">
                       {item.nama}
                       <span className={`inline-flex px-1.5 py-0.5 rounded text-[10px] font-bold ${item.gender === 'P' ? 'bg-pink-50 text-pink-600' : 'bg-rose-50 text-rose-600'}`}>
                         {item.gender}
                       </span>
+                    </div>
+                    {/* Progress Bar Profil */}
+                    <div className="w-48">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Profil</span>
+                        <span className="text-[10px] font-bold text-slate-600">{calculateProfileCompletion(item)}%</span>
+                      </div>
+                      <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                        <div className={`h-full ${getProfileProgressColor(calculateProfileCompletion(item))} transition-all duration-1000`} style={{ width: `${calculateProfileCompletion(item)}%` }}></div>
+                      </div>
                     </div>
                   </td>
                   <td className="p-4 text-center font-bold text-slate-600">

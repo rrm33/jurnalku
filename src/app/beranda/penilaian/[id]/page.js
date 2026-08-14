@@ -286,8 +286,15 @@ export default function PenilaianPage() {
                     
                     <td className="p-4">
                       {isSubmitted ? (
-                        <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg w-fit border border-emerald-100">
-                          <CheckCircle2 size={14} /> Selesai
+                        <div className="flex flex-col gap-1.5">
+                          <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg w-fit border border-emerald-100">
+                            <CheckCircle2 size={14} /> Selesai
+                          </div>
+                          {submission.updated_at && (
+                            <div className="text-[9px] font-bold text-slate-400 flex items-center gap-1">
+                              <Clock size={10} /> {new Date(submission.updated_at).toLocaleString('id-ID', {day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'})}
+                            </div>
+                          )}
                         </div>
                       ) : (
                         <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded-lg w-fit">
@@ -302,12 +309,6 @@ export default function PenilaianPage() {
                            {submission.input_jawaban && (
                              <div className="text-xs text-slate-600 bg-slate-50 p-2.5 rounded-lg border border-slate-200 max-h-24 overflow-y-auto custom-scrollbar whitespace-pre-line">
                                <Linkify>{submission.input_jawaban}</Linkify>
-                             </div>
-                           )}
-                           
-                           {submission.updated_at && (
-                             <div className="text-[10px] text-slate-400 font-medium flex items-center gap-1">
-                               <Clock size={10} /> Dikumpulkan: {new Date(submission.updated_at).toLocaleString('id-ID', {day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'})}
                              </div>
                            )}
                            

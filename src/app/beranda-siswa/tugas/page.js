@@ -162,6 +162,13 @@ export default function KbmSiswaPage() {
                     )}
                   </div>
                   
+                  {/* Countdown Timer in List Tile */}
+                  {!hasSubmitted && !pastDeadline && hasTugas && currentTugas.deadline && (
+                    <div className="mb-4 w-full md:w-2/3">
+                      <Countdown deadline={currentTugas.deadline} size="normal" />
+                    </div>
+                  )}
+                  
                   <h3 className="font-extrabold text-slate-800 text-xl mb-2 group-hover:text-pink-600 transition-colors">{kbm.tujuan_pembelajaran}</h3>
                   <p className="text-sm text-slate-600 mb-4 line-clamp-2 leading-relaxed">{kbm.aktivitas_pembelajaran}</p>
                   
@@ -280,10 +287,7 @@ export default function KbmSiswaPage() {
                                </div>
 
                                <div className="flex flex-col gap-4 mb-4">
-                                 {/* Countdown Timer */}
-                                 {!submission && !isDeadlinePast && currentTugas.deadline && (
-                                   <Countdown deadline={currentTugas.deadline} size="large" />
-                                 )}
+                                 {/* Removed countdown from here, moved to list tile */}
                                  
                                  <div className="flex items-center gap-2 text-xs font-bold text-slate-600 bg-slate-100 p-2 rounded-lg justify-center border border-slate-200">
                                    <Clock size={14} className={isDeadlinePast && !submission ? "text-rose-500" : "text-slate-400"} />

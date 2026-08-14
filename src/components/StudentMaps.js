@@ -87,8 +87,13 @@ export default function StudentMaps({ students }) {
         
         {validMarkers.map((marker) => (
           <Marker key={marker.id} position={[marker.lat, marker.lng]}>
-            <Tooltip permanent direction="top" offset={[0, -35]} className="font-bold text-xs bg-white text-slate-800 shadow-sm border border-slate-200 rounded-lg px-2 py-1">
-              {marker.nama}
+            <Tooltip permanent direction="top" offset={[0, -35]} className="bg-white shadow-sm border border-slate-200 rounded-lg p-2 min-w-[120px]">
+              <div className="flex flex-col items-center">
+                <span className="font-bold text-xs text-slate-800 text-center truncate w-full mb-1">{marker.nama}</span>
+                <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                  <div className={`h-full ${marker.progressColor}`} style={{ width: `${marker.completion}%` }}></div>
+                </div>
+              </div>
             </Tooltip>
             <Popup>
               <div className="p-1 space-y-2 min-w-[200px]">
@@ -99,11 +104,6 @@ export default function StudentMaps({ students }) {
                   <div className="flex-1 min-w-0">
                     <a href={`/beranda/master/siswa?search=${encodeURIComponent(marker.nama)}`} className="font-bold text-slate-800 text-sm leading-tight hover:text-rose-600 hover:underline cursor-pointer inline-block truncate w-full" title="Buka Detail Siswa">{marker.nama}</a>
                     <p className="text-xs text-slate-500 mb-1">Kelas: {marker.kelas}</p>
-                    {/* Progress Bar Profil */}
-                    <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden flex items-center mb-0.5">
-                      <div className={`h-full ${marker.progressColor}`} style={{ width: `${marker.completion}%` }}></div>
-                    </div>
-                    <p className="text-[9px] text-slate-400 font-medium">Profil: {marker.completion}%</p>
                   </div>
                 </div>
                 
