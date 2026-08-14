@@ -5,6 +5,8 @@ import { getSiswa, saveSiswa, deleteSiswa, getKelas, importSiswaBulk } from "@/a
 import { Trash2, Edit, Plus, Upload, Download, Search, User, MapPin, ExternalLink } from "lucide-react";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
+import { calculateProfileCompletion, getProfileProgressColor } from "@/utils/profile";
+import { useSearchParams } from "next/navigation";
 
 const extractCoordinates = (alamatStr) => {
   if (!alamatStr) return null;
@@ -17,8 +19,8 @@ export default function SiswaPage() {
   const [kelasList, setKelasList] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  // Filter & Search
-  const [search, setSearch] = useState("");
+  const searchParams = useSearchParams();
+  const [search, setSearch] = useState(searchParams.get("search") || "");
   const [filterKelas, setFilterKelas] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 50;
@@ -459,6 +461,17 @@ export default function SiswaPage() {
                       Chat Orang Tua
                     </a>
                   )}
+                </div>
+                
+                {/* Progress Bar Profil */}
+                <div className="mt-4 max-w-sm">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-[11px] font-bold text-rose-100 uppercase tracking-wider">Kelengkapan Profil</span>
+                    <span className="text-xs font-bold text-white">{calculateProfileCompletion(selectedDetail)}%</span>
+                  </div>
+                  <div className="w-full bg-black/20 rounded-full h-2.5 overflow-hidden">
+                    <div className={`h-full ${getProfileProgressColor(calculateProfileCompletion(selectedDetail))} transition-all duration-1000`} style={{ width: `${calculateProfileCompletion(selectedDetail)}%` }}></div>
+                  </div>
                 </div>
               </div>
             </div>

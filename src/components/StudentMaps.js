@@ -4,6 +4,7 @@ import { MapContainer, TileLayer, Marker, Popup, Tooltip, useMap } from "react-l
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { ExternalLink, User } from "lucide-react";
+import { calculateProfileCompletion, getProfileProgressColor } from "@/utils/profile";
 
 // Fix Leaflet marker icons in Next.js
 delete L.Icon.Default.prototype._getIconUrl;
@@ -33,6 +34,7 @@ export default function StudentMaps({ students }) {
       if (!s.alamat) return null;
       const match = s.alamat.match(/\[Koordinat:\s*(-?\d+(?:\.\d+)?),\s*(-?\d+(?:\.\d+)?)\]/);
       if (match) {
+        const completion = calculateProfileCompletion(s);
         return {
           id: s.id,
           nama: s.nama,
@@ -40,6 +42,8 @@ export default function StudentMaps({ students }) {
           alamatTeks: s.alamat.replace(/\[Koordinat:.*\]/, "").trim(),
           lat: parseFloat(match[1]),
           lng: parseFloat(match[2]),
+          completion: completion,
+          progressColor: getProfileProgressColor(completion)
         };
       }
       return null;
@@ -88,13 +92,18 @@ export default function StudentMaps({ students }) {
             </Tooltip>
             <Popup>
               <div className="p-1 space-y-2 min-w-[200px]">
-                <div className="flex items-center gap-2 border-b border-slate-100 pb-2">
-                  <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
+                <div className="flex items-start gap-2 border-b border-slate-100 pb-2">
+                  <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
                     <User size={16} />
                   </div>
-                  <div>
-                    <h3 className="font-bold text-slate-800 text-sm leading-tight">{marker.nama}</h3>
-                    <p className="text-xs text-slate-500">Kelas: {marker.kelas}</p>
+                  <div className="flex-1 min-w-0">
+                    <a href={`/beranda/master/siswa?search=${encodeURIComponent(marker.nama)}`} className="font-bold text-slate-800 text-sm leading-tight hover:text-rose-600 hover:underline cursor-pointer inline-block truncate w-full" title="Buka Detail Siswa">{marker.nama}</a>
+                    <p className="text-xs text-slate-500 mb-1">Kelas: {marker.kelas}</p>
+                    {/* Progress Bar Profil */}
+                    <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden flex items-center mb-0.5">
+                      <div className={`h-full ${marker.progressColor}`} style={{ width: `${marker.completion}%` }}></div>
+                    </div>
+                    <p className="text-[9px] text-slate-400 font-medium">Profil: {marker.completion}%</p>
                   </div>
                 </div>
                 

@@ -143,6 +143,8 @@ model PengumpulanTugas {
   input_jawaban  String?   @db.Text
   upload_file    String?
   nilai          Int?
+  created_at     DateTime  @default(now())
+  updated_at     DateTime  @updatedAt
   
   tugas_id       Int
   siswa_id       Int

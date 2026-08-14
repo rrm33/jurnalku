@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { ClipboardList, Clock, CheckCircle2, FileText, Upload, Download, X, AlertCircle, BookOpen, Layers } from "lucide-react";
 import { getKbmSiswa, submitTugas } from "@/actions/tugas-siswa";
-import FileViewerModal from "@/components/FileViewerModal";
+import { BookOpen, Layers, ClipboardList, CheckCircle2, Clock, X, Upload, FileText, Download, AlertCircle } from "lucide-react";
 import Swal from "sweetalert2";
+import FileViewerModal from "@/components/FileViewerModal";
+import Linkify from "@/components/Linkify";
+import Countdown from "@/components/Countdown";
 
 export default function KbmSiswaPage() {
   const [kbmList, setKbmList] = useState([]);
@@ -277,11 +279,18 @@ export default function KbmSiswaPage() {
                                   )}
                                </div>
 
-                               <div className="flex items-center gap-2 text-xs font-bold text-slate-600 bg-slate-100 p-2 rounded-lg justify-center border border-slate-200">
-                                 <Clock size={14} className={isDeadlinePast && !submission ? "text-rose-500" : "text-slate-400"} />
-                                 <span className={isDeadlinePast && !submission ? "text-rose-600" : ""}>
-                                   Deadline: {formatDate(currentTugas.deadline)}
-                                 </span>
+                               <div className="flex flex-col gap-4 mb-4">
+                                 {/* Countdown Timer */}
+                                 {!submission && !isDeadlinePast && currentTugas.deadline && (
+                                   <Countdown deadline={currentTugas.deadline} size="large" />
+                                 )}
+                                 
+                                 <div className="flex items-center gap-2 text-xs font-bold text-slate-600 bg-slate-100 p-2 rounded-lg justify-center border border-slate-200">
+                                   <Clock size={14} className={isDeadlinePast && !submission ? "text-rose-500" : "text-slate-400"} />
+                                   <span className={isDeadlinePast && !submission ? "text-rose-600" : ""}>
+                                     Deadline: {formatDate(currentTugas.deadline)}
+                                   </span>
+                                 </div>
                                </div>
 
                                {/* Form / Status */}
@@ -292,8 +301,13 @@ export default function KbmSiswaPage() {
                                    </div>
                                    
                                    <div className="text-sm p-4 bg-slate-50 border border-slate-200 rounded-xl">
-                                     <p className="font-bold text-slate-500 mb-2 text-xs uppercase tracking-wider">Jawaban Kamu:</p>
-                                     <p className="text-slate-700 whitespace-pre-line">{submission.input_jawaban || "-"}</p>
+                                     <div className="flex justify-between items-center mb-2">
+                                       <p className="font-bold text-slate-500 text-xs uppercase tracking-wider">Jawaban Kamu:</p>
+                                       {submission.updated_at && (
+                                         <p className="text-[10px] font-medium text-slate-400 flex items-center gap-1"><Clock size={10} /> Dikumpulkan: {new Date(submission.updated_at).toLocaleString('id-ID', {day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'})}</p>
+                                       )}
+                                     </div>
+                                     <p className="text-slate-700 whitespace-pre-line"><Linkify>{submission.input_jawaban || "-"}</Linkify></p>
                                    </div>
 
                                    {submission.upload_file && (

@@ -5,6 +5,8 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { getTugasDenganPenilaian, simpanNilaiMasal } from "@/actions/penilaian";
 import { ArrowLeft, CheckCircle2, Clock, Download, FileText, CheckSquare, FileWarning, Search, Save, AlertCircle, X } from "lucide-react";
 import FileViewerModal from "@/components/FileViewerModal";
+import Linkify from "@/components/Linkify";
+import Countdown from "@/components/Countdown";
 import Link from "next/link";
 import Swal from "sweetalert2";
 
@@ -194,9 +196,12 @@ export default function PenilaianPage() {
           <h1 className="text-2xl md:text-3xl font-extrabold text-slate-800 tracking-tight mb-2">{tugas.judul}</h1>
           <p className="text-slate-600 font-medium mb-6">{tugas.deskripsi}</p>
           
-          <div className="flex items-center gap-2 text-xs font-bold text-slate-500 bg-slate-50 w-fit px-4 py-2 rounded-xl border border-slate-100">
-            <Clock size={16} className="text-rose-500" />
-            Batas Pengumpulan: <span className="text-rose-600">{formatDate(tugas.deadline)}</span>
+          <div className="flex flex-wrap items-center gap-2 mt-4">
+            <div className="flex items-center gap-2 text-xs font-bold text-slate-500 bg-slate-50 w-fit px-4 py-2 rounded-xl border border-slate-100">
+              <Clock size={16} className="text-rose-500" />
+              Batas Pengumpulan: <span className="text-rose-600">{formatDate(tugas.deadline)}</span>
+            </div>
+            {tugas.deadline && <Countdown deadline={tugas.deadline} size="normal" />}
           </div>
         </div>
 
@@ -296,7 +301,13 @@ export default function PenilaianPage() {
                         <div className="space-y-2">
                            {submission.input_jawaban && (
                              <div className="text-xs text-slate-600 bg-slate-50 p-2.5 rounded-lg border border-slate-200 max-h-24 overflow-y-auto custom-scrollbar whitespace-pre-line">
-                               {submission.input_jawaban}
+                               <Linkify>{submission.input_jawaban}</Linkify>
+                             </div>
+                           )}
+                           
+                           {submission.updated_at && (
+                             <div className="text-[10px] text-slate-400 font-medium flex items-center gap-1">
+                               <Clock size={10} /> Dikumpulkan: {new Date(submission.updated_at).toLocaleString('id-ID', {day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'})}
                              </div>
                            )}
                            

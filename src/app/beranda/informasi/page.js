@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { getInformasiList, saveInformasi, deleteInformasi } from "@/actions/informasi";
 import { Trash2, Edit, Plus, FileText, Download, Play, Megaphone, Image as ImageIcon, Search, ChevronDown, ChevronUp } from "lucide-react";
+import FileViewerModal from "@/components/FileViewerModal";
 import Swal from "sweetalert2";
 
 export default function InformasiPage() {
@@ -13,7 +14,10 @@ export default function InformasiPage() {
   const [formData, setFormData] = useState({ id: "", judul: "", informasi: "", existing_file: "" });
   const [search, setSearch] = useState("");
   const [expandedId, setExpandedId] = useState(null);
+  const [fileToView, setFileToView] = useState(null);
   const fileInputRef = useRef(null);
+
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
 
   const fetchData = async () => {
     setLoading(true);
@@ -174,12 +178,12 @@ export default function InformasiPage() {
                       {isExpanded && (
                         <div className="px-4 md:px-5 pb-4 pt-1 animate-in slide-in-from-top-2 fade-in duration-200">
                           <div className="bg-slate-50 rounded-xl p-3 border border-slate-100 text-slate-700 text-sm whitespace-pre-wrap leading-relaxed">
-                            {item.informasi.split(/(https?:\/\/[^\s]+)/g).map((part, index) => {
-                              if (part.match(/(https?:\/\/[^\s]+)/g)) {
+                            {item.informasi.split(urlRegex).map((part, index) => {
+                              if (urlRegex.test(part)) {
                                 return (
-                                  <a key={index} href={part} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-medium">
+                                  <button key={index} onClick={() => setFileToView(part)} className="text-blue-600 hover:underline font-medium">
                                     {part}
-                                  </a>
+                                  </button>
                                 );
                               }
                               return part;
@@ -189,7 +193,7 @@ export default function InformasiPage() {
                           <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
                             <div>
                               {item.file && (
-                                <button onClick={() => setPreviewFile(item.file)} className="inline-flex items-center gap-2 px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg text-sm font-bold transition-colors">
+                                <button onClick={() => setFileToView(item.file)} className="inline-flex items-center gap-2 px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg text-sm font-bold transition-colors">
                                   {renderFileIcon(item.file)} Buka Lampiran
                                 </button>
                               )}
@@ -253,7 +257,7 @@ export default function InformasiPage() {
                   {formData.existing_file && (
                     <div className="mb-3 p-3 bg-rose-50 border border-rose-100 rounded-xl flex justify-between items-center text-sm font-medium text-rose-800">
                       <span>File tersimpan saat ini</span>
-                      <button type="button" onClick={() => setPreviewFile(formData.existing_file)} className="text-rose-600 hover:underline flex items-center gap-1">
+                      <button type="button" onClick={() => setFileToView(formData.existing_file)} className="text-rose-600 hover:underline flex items-center gap-1">
                         <FileText size={14} /> Preview
                       </button>
                     </div>
@@ -278,33 +282,8 @@ export default function InformasiPage() {
         </div>
       )}
 
-      {/* Preview Modal */}
-      {previewFile && (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/90 backdrop-blur-md animate-in fade-in">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl h-[85vh] flex flex-col overflow-hidden relative">
-            <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-              <h2 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-                <FileText size={16} className="text-rose-600" /> Preview File
-              </h2>
-              <div className="flex items-center gap-3">
-                <a href={previewFile} download target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-1.5 text-xs font-bold text-slate-600 bg-slate-200 hover:bg-slate-300 rounded-lg transition-colors">
-                  <Download size={14} /> Unduh
-                </a>
-                <button onClick={() => setPreviewFile(null)} className="w-8 h-8 flex items-center justify-center text-slate-500 hover:bg-rose-100 hover:text-rose-600 rounded-full transition-colors" title="Tutup">✕</button>
-              </div>
-            </div>
-            <div className="flex-1 bg-slate-200/50 relative overflow-hidden flex items-center justify-center">
-              {['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(previewFile.split('.').pop().toLowerCase()) ? (
-                <img src={previewFile} alt="Preview" className="max-w-full max-h-full object-contain p-4 drop-shadow-xl" />
-              ) : ['mp4', 'webm'].includes(previewFile.split('.').pop().toLowerCase()) ? (
-                <video src={previewFile} controls className="w-full h-full bg-black shadow-inner" />
-              ) : (
-                <iframe src={previewFile} className="w-full h-full border-none bg-white" title="Preview File"></iframe>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      {/* File Viewer Modal */}
+      <FileViewerModal url={fileToView} onClose={() => setFileToView(null)} />
     </div>
   );
 }
