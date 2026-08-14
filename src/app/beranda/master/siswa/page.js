@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { getSiswa, saveSiswa, deleteSiswa, getKelas, importSiswaBulk } from "@/actions/master";
 import { Trash2, Edit, Plus, Upload, Download, Search, User, MapPin, ExternalLink } from "lucide-react";
 import Swal from "sweetalert2";
@@ -14,7 +14,7 @@ const extractCoordinates = (alamatStr) => {
   return match ? { lat: match[1], lng: match[2] } : null;
 };
 
-export default function SiswaPage() {
+function SiswaContent() {
   const [dataList, setDataList] = useState([]);
   const [kelasList, setKelasList] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -720,5 +720,13 @@ export default function SiswaPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function SiswaPage() {
+  return (
+    <Suspense fallback={<div className="flex justify-center items-center min-h-[60vh]"><div className="w-10 h-10 border-4 border-rose-500 border-t-transparent rounded-full animate-spin"></div></div>}>
+      <SiswaContent />
+    </Suspense>
   );
 }
