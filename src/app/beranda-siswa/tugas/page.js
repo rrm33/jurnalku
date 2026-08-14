@@ -148,6 +148,11 @@ export default function KbmSiswaPage() {
                         {hasSubmitted ? (
                           <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full border border-emerald-200">
                             <CheckCircle2 size={12} /> TUGAS SELESAI
+                            {currentTugas.pengumpulan[0].updated_at && (
+                              <span className="ml-1 border-l border-emerald-200 pl-2">
+                                {new Date(currentTugas.pengumpulan[0].updated_at).toLocaleString('id-ID', {day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'})}
+                              </span>
+                            )}
                           </span>
                         ) : pastDeadline ? (
                           <span className="flex items-center gap-1 text-[10px] font-bold text-red-600 bg-red-50 px-2 py-1 rounded-full border border-red-200">
