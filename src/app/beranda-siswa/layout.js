@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { BookOpen, LogOut, Home, ClipboardList, User, Menu, X } from "lucide-react";
 import DbIndicator from "@/components/DbIndicator";
+import StudentMobileNav from "@/components/StudentMobileNav";
 import { logout } from "@/actions/auth";
 import { getNewTugasCount } from "@/actions/tugas-siswa";
 import { getAjuanStatusSiswa } from "@/actions/profil-siswa";
@@ -71,29 +72,14 @@ export default function BerandaSiswaLayout({ children }) {
   return (
     <div className="flex flex-col md:flex-row relative w-full">
       
-      {/* Topbar Mobile */}
-      <div className="md:hidden bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between sticky top-0 z-40 shadow-sm">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center text-white">
-            <BookOpen size={16} />
-          </div>
-          <span className="font-bold text-slate-800">Siswa Area</span>
-        </div>
-        <button onClick={() => setIsSidebarOpen(true)} className="p-2 text-slate-600 bg-slate-100 rounded-lg">
-          <Menu size={20} />
-        </button>
-      </div>
+      {/* Topbar Mobile (Removed/Hidden in favor of bottom nav) */}
+      <div className="hidden"></div>
 
-      {/* Overlay Mobile */}
-      {isSidebarOpen && (
-        <div 
-          className="fixed inset-0 bg-slate-900/50 z-40 md:hidden animate-in fade-in"
-          onClick={() => setIsSidebarOpen(false)}
-        />
-      )}
+      {/* Overlay Mobile (Removed) */}
+      <div className="hidden"></div>
 
-      {/* Sidebar Navigasi Siswa */}
-      <aside className={`fixed md:sticky top-0 left-0 z-50 w-72 md:w-64 bg-white border-r border-slate-200 shadow-xl md:shadow-sm flex flex-col h-screen transition-transform duration-300 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}>
+      {/* Sidebar Navigasi Siswa - Hidden on mobile */}
+      <aside className={`hidden md:flex sticky top-0 left-0 z-50 w-64 bg-white border-r border-slate-200 shadow-sm flex-col h-screen`}>
         <div className="p-6 border-b border-slate-100 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-green-600 rounded-xl flex items-center justify-center text-white shadow-md shadow-green-200">
@@ -157,6 +143,9 @@ export default function BerandaSiswaLayout({ children }) {
       <main className="flex-1 p-2 md:p-4 w-full min-h-screen">
         {children}
       </main>
+
+      {/* Bottom Nav for Mobile */}
+      <StudentMobileNav newTugasCount={newTugasCount} ajuanStatus={ajuanStatus} onLogout={handleLogout} />
     </div>
   );
 }
