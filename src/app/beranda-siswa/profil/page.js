@@ -381,9 +381,10 @@ export default function ProfilSiswaPage() {
                   </div>
                   <textarea 
                     rows={3}
+                    readOnly
                     value={formData.alamat} onChange={e => setFormData({...formData, alamat: e.target.value})}
-                    placeholder="Alamat lengkap atau koordinat lokasi..."
-                    className="w-full px-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 transition-all font-medium text-slate-800 resize-none"
+                    placeholder="Gunakan tombol peta di atas untuk mengisi lokasi..."
+                    className="w-full px-4 py-2.5 bg-slate-50/80 border border-slate-200 rounded-xl outline-none font-medium text-slate-600 resize-none cursor-not-allowed"
                   ></textarea>
                   
                   {extractCoordinates(formData.alamat) && (
