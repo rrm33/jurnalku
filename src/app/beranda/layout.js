@@ -39,10 +39,13 @@ export default function BerandaLayout({ children }) {
     }
     fetchNotifs();
 
-    // Listen for custom event to refresh notifications
     const handleUpdate = () => fetchNotifs();
     window.addEventListener('refreshNotifs', handleUpdate);
-    return () => window.removeEventListener('refreshNotifs', handleUpdate);
+    const interval = setInterval(fetchNotifs, 30000); // Poll every 30s
+    return () => {
+      window.removeEventListener('refreshNotifs', handleUpdate);
+      clearInterval(interval);
+    };
   }, [pathname]);
 
   const handleLogout = () => {
