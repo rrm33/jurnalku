@@ -23,6 +23,9 @@ model Guru {
   
   rpps     Rpp[]
   informasi Informasi[]
+  
+  sentMessages     Message[] @relation("GuruSentMessages")
+  receivedMessages Message[] @relation("GuruReceivedMessages")
 }
 
 model Siswa {
@@ -53,6 +56,9 @@ model Siswa {
   presensi         Presensi[]
   pengumpulanTugas PengumpulanTugas[]
   ajuanProfil      AjuanProfilSiswa[]
+  
+  sentMessages     Message[] @relation("SiswaSentMessages")
+  receivedMessages Message[] @relation("SiswaReceivedMessages")
 }
 
 model AjuanProfilSiswa {
@@ -164,4 +170,22 @@ model Informasi {
   guru      Guru     @relation(fields: [guru_id], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Message {
+  id         Int      @id @default(autoincrement())
+  content    String   @db.Text
+  status     String   @default("SENT") // SENT, DELIVERED, READ
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  senderGuruId   Int?
+  senderGuru     Guru?   @relation("GuruSentMessages", fields: [senderGuruId], references: [id], onDelete: Cascade)
+  senderSiswaId  Int?
+  senderSiswa    Siswa?  @relation("SiswaSentMessages", fields: [senderSiswaId], references: [id], onDelete: Cascade)
+
+  receiverGuruId Int?
+  receiverGuru   Guru?   @relation("GuruReceivedMessages", fields: [receiverGuruId], references: [id], onDelete: Cascade)
+  receiverSiswaId Int?
+  receiverSiswa  Siswa?  @relation("SiswaReceivedMessages", fields: [receiverSiswaId], references: [id], onDelete: Cascade)
 }

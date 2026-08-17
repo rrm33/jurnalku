@@ -1,0 +1,17 @@
+{
+  "name": "Jurnal Mengajar",
+  "short_name": "Jurnal",
+  "description": "Aplikasi Jurnal Mengajar",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0ea5e9",
+  "icons": [
+    {
+      "src": "/globe.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
