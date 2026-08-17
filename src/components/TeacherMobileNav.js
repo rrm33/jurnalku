@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Home, FileText, CheckSquare, Users, Menu, X, Map, BookOpen, ClipboardList, LogOut, Megaphone } from "lucide-react";
+import PwaInstallButton from "./PwaInstallButton";
 
 export default function TeacherMobileNav({ notifications, onLogout }) {
   const router = useRouter();
@@ -171,7 +172,19 @@ export default function TeacherMobileNav({ notifications, onLogout }) {
                 </div>
               </button>
 
+              <button onClick={() => handleNav("/beranda/chat")} className="w-full flex items-center gap-4 px-4 py-3 bg-slate-50 hover:bg-rose-50 rounded-2xl transition-colors text-left">
+                <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-rose-500">
+                  <Megaphone size={18} />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-slate-700 text-sm">Pesan (Chat)</h3>
+                  <p className="text-xs text-slate-500">Kirim pesan real-time</p>
+                </div>
+              </button>
+
               <div className="h-4 border-b border-slate-100 mb-4"></div>
+
+              <PwaInstallButton />
 
               <button onClick={onLogout} className="w-full flex items-center gap-4 px-4 py-3 bg-red-50 hover:bg-red-100 text-red-600 rounded-2xl transition-colors text-left mb-6">
                 <div className="w-10 h-10 bg-white/50 rounded-xl flex items-center justify-center text-red-500">
