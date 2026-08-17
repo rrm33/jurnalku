@@ -97,9 +97,7 @@ export default function BerandaLayout({ children }) {
       <aside className={`hidden md:flex sticky top-0 left-0 z-50 w-64 bg-white border-r border-rose-50 shadow-sm flex-col h-screen`}>
         <div className="p-6 border-b border-rose-50/50 flex items-center justify-between bg-white relative overflow-hidden">
           <div className="flex items-center gap-3 relative z-10">
-            <div className="w-10 h-10 bg-rose-50 rounded-xl flex items-center justify-center text-rose-400 border border-rose-100">
-              <BookOpen size={20} />
-            </div>
+            <img src="/icon.png" alt="Logo Jurnalku" className="w-10 h-10 object-contain drop-shadow-sm" />
             <div>
               <h1 className="font-bold text-slate-700 text-lg leading-tight tracking-wide">Jurnal</h1>
               <p className="text-[11px] font-semibold text-rose-400 uppercase tracking-widest">Mengajar Pro</p>
