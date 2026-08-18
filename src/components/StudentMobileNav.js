@@ -102,6 +102,16 @@ export default function StudentMobileNav({ newTugasCount, ajuanStatus, onLogout 
             </div>
             
             <div className="flex-1 overflow-y-auto px-4 py-4 space-y-2 pb-safe">
+              <button onClick={() => handleNav("/beranda-siswa/leger")} className="w-full flex items-center gap-4 px-4 py-3 bg-slate-50 hover:bg-emerald-50 rounded-2xl transition-colors text-left">
+                <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-emerald-500">
+                  <ClipboardList size={18} />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-slate-700 text-sm">Leger Nilai</h3>
+                  <p className="text-xs text-slate-500">Lihat rekap nilai & peringkat kelas</p>
+                </div>
+              </button>
+
               <PwaInstallButton />
 
               <button onClick={onLogout} className="w-full flex items-center gap-4 px-4 py-3 bg-red-50 hover:bg-red-100 text-red-600 rounded-2xl transition-colors text-left mb-6">
