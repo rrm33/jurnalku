@@ -167,6 +167,14 @@ export default function BerandaLayout({ children }) {
           <button onClick={() => handleNavigation("/beranda/master/tahun-pelajaran")} className={getMenuClass("/beranda/master/tahun-pelajaran")}>
             <BookOpen size={18} /> Tahun Pelajaran
           </button>
+          
+          <button onClick={() => handleNavigation("/beranda/leger")} className={getMenuClass("/beranda/leger")}>
+            <ClipboardList size={18} /> Leger Nilai
+          </button>
+
+          <button onClick={() => handleNavigation("/beranda/chat")} className={getMenuClass("/beranda/chat")}>
+            <Megaphone size={18} /> Pesan (Chat)
+          </button>
         </nav>
 
         <div className="p-4 border-t border-rose-50 bg-white">

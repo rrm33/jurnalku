@@ -111,6 +111,14 @@ export default function BerandaSiswaLayout({ children }) {
               </span>
             )}
           </button>
+          
+          <button onClick={() => handleNavigation("/beranda-siswa/leger")} className={getMenuClass("/beranda-siswa/leger")}>
+            <ClipboardList size={18} /> Leger Nilai
+          </button>
+
+          <button onClick={() => handleNavigation("/beranda-siswa/chat")} className={getMenuClass("/beranda-siswa/chat")}>
+            <User size={18} /> Pesan (Chat)
+          </button>
         </nav>
 
         <div className="p-4 border-t border-slate-100 bg-white">
