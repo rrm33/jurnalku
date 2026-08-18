@@ -82,7 +82,8 @@ export async function getLegerData(mapelId, kelasId) {
       where: {
         rpp: {
           mapel_id: pMapelId,
-          kelas_id: pKelasId
+          kelas_id: pKelasId,
+          is_active: true
         }
       },
       orderBy: { rpp: { pertemuan_ke: 'asc' } }
@@ -97,7 +98,8 @@ export async function getLegerData(mapelId, kelasId) {
             tugas: {
               rpp: {
                 mapel_id: pMapelId,
-                kelas_id: pKelasId
+                kelas_id: pKelasId,
+                is_active: true
               }
             }
           }
@@ -171,14 +173,14 @@ export async function getLegerData(mapelId, kelasId) {
         include: {
           pengumpulanTugas: {
             where: {
-              tugas: { rpp: { mapel_id: pMapelId } }
+              tugas: { rpp: { mapel_id: pMapelId, is_active: true } }
             }
           }
         }
       });
 
       const totalTugasMapelIni = await prisma.tugas.count({
-         where: { rpp: { mapel_id: pMapelId } }
+         where: { rpp: { mapel_id: pMapelId, is_active: true } }
       });
 
       const calcParalel = paralelSiswa.map(ps => {

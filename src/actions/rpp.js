@@ -191,3 +191,16 @@ export async function toggleStatusRpp(id, currentStatus) {
     return { success: false, message: error.message };
   }
 }
+
+export async function toggleActiveRpp(id, currentActiveStatus) {
+  try {
+    await prisma.rpp.update({
+      where: { id },
+      data: { is_active: !currentActiveStatus }
+    });
+    revalidatePath("/beranda");
+    return { success: true };
+  } catch (error) {
+    return { success: false, message: error.message };
+  }
+}

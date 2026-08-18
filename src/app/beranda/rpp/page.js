@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Users, CheckSquare, ChevronDown, ChevronUp, Trash2, Edit2, Link as LinkIcon, CheckCircle2, Upload, FileText } from "lucide-react";
-import { getRpps, saveRpp, deleteRpp, toggleStatusRpp } from "@/actions/rpp";
+import { getRpps, saveRpp, deleteRpp, toggleStatusRpp, toggleActiveRpp } from "@/actions/rpp";
 import { getKelas, getMapel } from "@/actions/master";
 import FileViewerModal from "@/components/FileViewerModal";
 import Swal from "sweetalert2";
@@ -208,6 +208,11 @@ export default function BerandaPage() {
     if (res.success) fetchData();
   };
 
+  const handleToggleActive = async (id, currentActiveStatus) => {
+    const res = await toggleActiveRpp(id, currentActiveStatus);
+    if (res.success) fetchData();
+  };
+
   return (
     <>
       <header className="mb-8 flex justify-between items-end">
@@ -264,7 +269,7 @@ export default function BerandaPage() {
             </button>
           </div>
         ) : rppList.filter(r => selectedFilterKelas === "" || r.kelas_id === parseInt(selectedFilterKelas)).map((rpp) => (
-          <div key={rpp.id} className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md">
+          <div key={rpp.id} className={`bg-white border ${rpp.is_active ? 'border-slate-200' : 'border-red-200 opacity-60 bg-slate-50/50'} rounded-2xl shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md hover:opacity-100`}>
             
             {/* Header ListTile */}
             <div 
@@ -281,6 +286,7 @@ export default function BerandaPage() {
                   <span className={`px-2.5 py-0.5 rounded-md text-[11px] font-bold border ${getKelasColor(rpp.kelas?.nama)}`}>{rpp.kelas?.nama}</span>
                   <span className="px-2.5 py-0.5 rounded-md bg-rose-50 text-rose-600 text-[11px] font-bold border border-rose-100">{rpp.mapel?.nama}</span>
                   {rpp.tanggal && <span className="px-2.5 py-0.5 rounded-md bg-amber-50 text-amber-600 text-[11px] font-bold">{new Date(rpp.tanggal).toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'})}</span>}
+                  
                   {rpp.status_terlaksana ? (
                     <button onClick={(e) => { e.stopPropagation(); handleToggleStatus(rpp.id, rpp.status_terlaksana); }} className="px-2.5 py-0.5 rounded-md bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:text-emerald-700 text-[11px] font-bold border border-emerald-100 flex items-center gap-1 transition-colors">
                       <CheckCircle2 size={12} /> Terlaksana
@@ -288,6 +294,16 @@ export default function BerandaPage() {
                   ) : (
                     <button onClick={(e) => { e.stopPropagation(); handleToggleStatus(rpp.id, rpp.status_terlaksana); }} className="px-2.5 py-0.5 rounded-md bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-600 text-[11px] font-bold border border-slate-200 transition-colors">
                       Tandai Selesai
+                    </button>
+                  )}
+
+                  {rpp.is_active ? (
+                    <button onClick={(e) => { e.stopPropagation(); handleToggleActive(rpp.id, rpp.is_active); }} className="px-2.5 py-0.5 rounded-md bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700 text-[11px] font-bold border border-blue-100 transition-colors">
+                      Aktif (Terlihat)
+                    </button>
+                  ) : (
+                    <button onClick={(e) => { e.stopPropagation(); handleToggleActive(rpp.id, rpp.is_active); }} className="px-2.5 py-0.5 rounded-md bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 text-[11px] font-bold border border-red-100 flex items-center gap-1 transition-colors">
+                      Nonaktif (Sembunyi)
                     </button>
                   )}
                 </div>

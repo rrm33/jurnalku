@@ -27,6 +27,7 @@ export async function getNewTugasCount() {
       where: {
         rpp: {
           kelas_id: siswa.kelas_id,
+          is_active: true
         },
         pengumpulan: {
           none: {
@@ -69,6 +70,7 @@ export async function getKbmSiswa() {
     const kbmList = await prisma.rpp.findMany({
       where: {
         kelas_id: siswa.kelas_id,
+        is_active: true
       },
       include: {
         mapel: true,
@@ -112,11 +114,11 @@ export async function getKbmStatsSiswa() {
     if (!siswa) return null;
 
     const totalKbm = await prisma.rpp.count({
-      where: { kelas_id: siswa.kelas_id }
+      where: { kelas_id: siswa.kelas_id, is_active: true }
     });
 
     const totalTugasTersedia = await prisma.tugas.count({
-      where: { rpp: { kelas_id: siswa.kelas_id } }
+      where: { rpp: { kelas_id: siswa.kelas_id, is_active: true } }
     });
 
     const totalTugasSelesai = await prisma.pengumpulanTugas.count({

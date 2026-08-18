@@ -101,6 +101,7 @@ model Rpp {
   aktivitas_pembelajaran String    @db.Text
   upload_file            String?
   status_terlaksana      Boolean   @default(false)
+  is_active              Boolean   @default(true)
   
   guru_id                Int
   kelas_id               Int
