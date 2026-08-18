@@ -144,6 +144,10 @@ export default function KbmSiswaPage() {
                     <Layers size={10}/> {kbm.mapel?.nama || "Mata Pelajaran"}
                   </span>
                   
+                  <span className="text-[10px] font-bold px-2.5 py-1 bg-blue-100 text-blue-700 rounded-full flex items-center gap-1 border border-blue-200">
+                    Pertemuan Ke-{kbm.pertemuan_ke}
+                  </span>
+                  
                   {hasTugas && (
                     <>
                       {hasSubmitted ? (
@@ -169,7 +173,7 @@ export default function KbmSiswaPage() {
                 <div className="mt-auto pt-4 border-t border-slate-100/50 flex flex-wrap items-center justify-between gap-2 z-10">
                   <div className="flex flex-col gap-1">
                     <span className="text-[10px] font-bold text-slate-400 flex items-center gap-1">
-                      <Calendar size={10} /> {formatDate(kbm.tanggal_pelaksanaan)} • P{kbm.pertemuan_ke}
+                      <Calendar size={10} /> {formatDate(kbm.tanggal_pelaksanaan)}
                     </span>
                     {hasTugas && !hasSubmitted && !pastDeadline && currentTugas.deadline && (
                        <div className="scale-75 origin-left -ml-1">
