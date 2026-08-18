@@ -176,7 +176,6 @@ export default function KbmSiswaPage() {
                     <h3 className="font-extrabold text-slate-800 text-lg mb-1 line-clamp-2">{kbm.tujuan_pembelajaran}</h3>
                   </div>
                 </div>
-                <p className="text-xs text-slate-500 mb-4 line-clamp-2 leading-relaxed z-10">{kbm.aktivitas_pembelajaran}</p>
                 
                 <div className="mt-auto pt-4 border-t border-slate-100/50 flex flex-wrap items-center justify-between gap-2 z-10">
                   <div className="flex flex-col gap-1">
