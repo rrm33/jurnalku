@@ -138,36 +138,44 @@ export default function KbmSiswaPage() {
                   hasSubmitted ? 'bg-emerald-500' : (pastDeadline ? 'bg-red-500' : 'bg-rose-500')
                 }`}></div>
 
-                {/* Header Tags */}
-                <div className="flex flex-wrap items-center gap-2 mb-3 z-10">
-                  <span className="text-[10px] font-bold px-2.5 py-1 bg-slate-800 text-white rounded-full flex items-center gap-1 shadow-sm">
-                    <Layers size={10}/> {kbm.mapel?.nama || "Mata Pelajaran"}
-                  </span>
+                {/* Content Wrapper */}
+                <div className="flex items-start gap-4 z-10 relative">
                   
-                  <span className="text-[10px] font-bold px-2.5 py-1 bg-blue-100 text-blue-700 rounded-full flex items-center gap-1 border border-blue-200">
-                    Pertemuan Ke-{kbm.pertemuan_ke}
-                  </span>
-                  
-                  {hasTugas && (
-                    <>
-                      {hasSubmitted ? (
-                        <span className="text-[10px] font-bold px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-full flex items-center gap-1 border border-emerald-200">
-                          <CheckCircle2 size={10}/> Selesai
-                        </span>
-                      ) : pastDeadline ? (
-                        <span className="text-[10px] font-bold px-2.5 py-1 bg-red-100 text-red-700 rounded-full flex items-center gap-1 border border-red-200">
-                          <AlertCircle size={10}/> Terlambat
-                        </span>
-                      ) : (
-                        <span className="text-[10px] font-bold px-2.5 py-1 bg-rose-100 text-rose-700 rounded-full flex items-center gap-1 border border-rose-200 animate-pulse">
-                          <AlertCircle size={10}/> Belum Dikerjakan
-                        </span>
+                  {/* Big PERT Box */}
+                  <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex flex-col items-center justify-center shrink-0 shadow-inner mt-1 border border-blue-100/50">
+                    <span className="text-[10px] font-bold uppercase tracking-wider">Pert</span>
+                    <span className="text-lg font-black leading-none">{kbm.pertemuan_ke}</span>
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    {/* Header Tags */}
+                    <div className="flex flex-wrap items-center gap-2 mb-2">
+                      <span className="text-[10px] font-bold px-2.5 py-1 bg-slate-800 text-white rounded-full flex items-center gap-1 shadow-sm">
+                        <Layers size={10}/> {kbm.mapel?.nama || "Mata Pelajaran"}
+                      </span>
+                      
+                      {hasTugas && (
+                        <>
+                          {hasSubmitted ? (
+                            <span className="text-[10px] font-bold px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-full flex items-center gap-1 border border-emerald-200">
+                              <CheckCircle2 size={10}/> Selesai
+                            </span>
+                          ) : pastDeadline ? (
+                            <span className="text-[10px] font-bold px-2.5 py-1 bg-red-100 text-red-700 rounded-full flex items-center gap-1 border border-red-200">
+                              <AlertCircle size={10}/> Terlambat
+                            </span>
+                          ) : (
+                            <span className="text-[10px] font-bold px-2.5 py-1 bg-rose-100 text-rose-700 rounded-full flex items-center gap-1 border border-rose-200 animate-pulse">
+                              <AlertCircle size={10}/> Belum Dikerjakan
+                            </span>
+                          )}
+                        </>
                       )}
-                    </>
-                  )}
+                    </div>
+                    
+                    <h3 className="font-extrabold text-slate-800 text-lg mb-1 line-clamp-2">{kbm.tujuan_pembelajaran}</h3>
+                  </div>
                 </div>
-                
-                <h3 className="font-extrabold text-slate-800 text-lg mb-1 z-10 line-clamp-2">{kbm.tujuan_pembelajaran}</h3>
                 <p className="text-xs text-slate-500 mb-4 line-clamp-2 leading-relaxed z-10">{kbm.aktivitas_pembelajaran}</p>
                 
                 <div className="mt-auto pt-4 border-t border-slate-100/50 flex flex-wrap items-center justify-between gap-2 z-10">
