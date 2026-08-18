@@ -1,0 +1,35 @@
+name: Deploy to cPanel
+
+on:
+  push:
+    branches:
+      - main # Memicu deploy setiap kali ada push ke branch main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.CPANEL_HOST }}
+          username: ${{ secrets.CPANEL_USERNAME }}
+          key: ${{ secrets.CPANEL_SSH_KEY }}
+          port: ${{ secrets.CPANEL_PORT }}
+          script: |
+            # Pindah ke folder aplikasi (sesuaikan path ini jika salah)
+            cd reposit/jurnalku
+            
+            # Tarik kode terbaru
+            git pull origin main
+            
+            # Install package jika ada yang baru
+            npm install --legacy-peer-deps
+            
+            # Build Next.js
+            npm run build
+            
+            # Restart server (Passenger Node.js App)
+            mkdir -p tmp
+            touch tmp/restart.txt
