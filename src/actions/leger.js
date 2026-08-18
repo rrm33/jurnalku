@@ -134,14 +134,29 @@ export async function getLegerData(mapelId, kelasId) {
 
     // Peringkat Kelas (descending rata-rata)
     const sortedKelas = [...siswaList].sort((a, b) => b.rataRata - a.rataRata);
+    
+    let currentRank = 1;
+    let currentRataRata = -1;
+    let actualRank = 1;
+
+    sortedKelas.forEach((sk) => {
+      if (sk.rataRata !== currentRataRata) {
+        actualRank = currentRank;
+        currentRataRata = sk.rataRata;
+      }
+      // Jika sama sekali belum ada nilai atau jumlah 0, beri tanda "-"
+      sk.assignedRank = sk.jumlah === 0 ? "-" : actualRank;
+      currentRank++;
+    });
+
     siswaList.forEach(s => {
-      s.peringkatKelas = sortedKelas.findIndex(sk => sk.id === s.id) + 1;
+      const found = sortedKelas.find(sk => sk.id === s.id);
+      s.peringkatKelas = found ? found.assignedRank : "-";
     });
 
     // Hitung Peringkat Paralel
     const namaKelas = siswaDiKelas.length > 0 ? siswaDiKelas[0].kelas.nama : "";
     const tingkatKelasMatch = namaKelas.match(/^([A-Za-z0-9]+)/);
-    let peringkatParalelData = [];
     
     if (tingkatKelasMatch) {
       const awalan = tingkatKelasMatch[1];
@@ -162,29 +177,37 @@ export async function getLegerData(mapelId, kelasId) {
         }
       });
 
-      // Kalkulasi rata2 paralel
       const totalTugasMapelIni = await prisma.tugas.count({
          where: { rpp: { mapel_id: pMapelId } }
       });
 
-      // Karena tugas tiap kelas bisa berbeda jumlahnya, kita harus kalkulasi berdasarkan tugas masing2 kelas.
-      // Untuk adilnya paralel, gunakan rata-rata semua tugas yang dimiliki kelas siswa tsb.
       const calcParalel = paralelSiswa.map(ps => {
          let pJumlah = 0;
          ps.pengumpulanTugas.forEach(pt => {
            if(pt.nilai !== null) pJumlah += pt.nilai;
          });
-         // Asumsikan rata-rata berdasar jumlah tugas di kelasnya
-         // Untuk penyederhanaan, jika kita tahu jumlah tugas di mapel itu rata-rata sama:
-         const pAvg = totalTugasMapelIni > 0 ? (pJumlah / totalTugasMapelIni) : 0;
-         return { id: ps.id, rata: pAvg };
+         const pAvg = totalTugasMapelIni > 0 ? parseFloat((pJumlah / totalTugasMapelIni).toFixed(2)) : 0;
+         return { id: ps.id, rata: pAvg, jumlah: pJumlah };
       });
       
       calcParalel.sort((a, b) => b.rata - a.rata);
       
+      let pCurrentRank = 1;
+      let pCurrentRata = -1;
+      let pActualRank = 1;
+
+      calcParalel.forEach(cp => {
+        if (cp.rata !== pCurrentRata) {
+          pActualRank = pCurrentRank;
+          pCurrentRata = cp.rata;
+        }
+        cp.assignedRank = cp.jumlah === 0 ? "-" : pActualRank;
+        pCurrentRank++;
+      });
+      
       siswaList.forEach(s => {
-        // Cari rata2 aslinya di calcParalel
-        s.peringkatParalel = calcParalel.findIndex(cp => cp.id === s.id) + 1;
+        const cp = calcParalel.find(c => c.id === s.id);
+        s.peringkatParalel = cp ? cp.assignedRank : "-";
       });
     }
 
