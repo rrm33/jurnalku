@@ -91,7 +91,7 @@ export async function getKbmSiswa() {
     return kbmList.filter(kbm => kbm.is_active !== false);
   } catch (error) {
     console.error("Error getKbmSiswa:", error);
-    return [];
+    return [{ isError: true, message: error.message }];
   }
 }
 

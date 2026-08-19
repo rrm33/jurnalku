@@ -112,6 +112,12 @@ export default function KbmSiswaPage() {
         <div className="flex justify-center items-center py-20">
           <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
         </div>
+      ) : kbmList.length > 0 && kbmList[0].isError ? (
+        <div className="bg-red-50 border border-red-200 rounded-3xl p-8 text-center text-red-600 max-w-2xl mx-auto">
+          <AlertCircle size={48} className="mx-auto mb-4" />
+          <h2 className="text-xl font-bold mb-2">Terjadi Kesalahan Server</h2>
+          <p className="text-sm font-medium whitespace-pre-wrap">{kbmList[0].message}</p>
+        </div>
       ) : kbmList.length === 0 ? (
         <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden text-center p-10 hover:shadow-md transition-all duration-300 mx-2">
           <div className="w-20 h-20 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner">
