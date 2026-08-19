@@ -151,7 +151,7 @@ model PengumpulanTugas {
   upload_file    String?
   nilai          Int?
   created_at     DateTime  @default(now())
-  updated_at     DateTime  @updatedAt
+  updated_at     DateTime  @default(now()) @updatedAt
   
   tugas_id       Int
   siswa_id       Int
