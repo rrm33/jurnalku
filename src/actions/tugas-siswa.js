@@ -27,7 +27,7 @@ export async function getNewTugasCount() {
       where: {
         rpp: {
           kelas_id: siswa.kelas_id,
-          is_active: true
+          // filter is_active true diganti di JS atau diabaikan khusus count ini
         },
         pengumpulan: {
           none: {
@@ -70,7 +70,6 @@ export async function getKbmSiswa() {
     const kbmList = await prisma.rpp.findMany({
       where: {
         kelas_id: siswa.kelas_id,
-        is_active: true
       },
       include: {
         mapel: true,
@@ -88,7 +87,8 @@ export async function getKbmSiswa() {
       orderBy: { id: "desc" }
     });
 
-    return kbmList;
+    // Filter di JavaScript (Hanya RPP yang is_active !== false)
+    return kbmList.filter(kbm => kbm.is_active !== false);
   } catch (error) {
     console.error("Error getKbmSiswa:", error);
     return [];

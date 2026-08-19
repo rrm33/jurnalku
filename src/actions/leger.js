@@ -78,16 +78,17 @@ export async function getLegerData(mapelId, kelasId) {
     const pKelasId = parseInt(kelasId);
 
     // Ambil daftar Tugas (melalui RPP mapel & kelas terkait)
-    const tugasList = await prisma.tugas.findMany({
+    const tugasListDb = await prisma.tugas.findMany({
       where: {
         rpp: {
           mapel_id: pMapelId,
-          kelas_id: pKelasId,
-          is_active: true
+          kelas_id: pKelasId
         }
       },
+      include: { rpp: true },
       orderBy: { rpp: { pertemuan_ke: 'asc' } }
     });
+    const tugasList = tugasListDb.filter(t => t.rpp?.is_active !== false);
 
     // Ambil siswa di kelas
     const siswaDiKelas = await prisma.siswa.findMany({
@@ -98,8 +99,7 @@ export async function getLegerData(mapelId, kelasId) {
             tugas: {
               rpp: {
                 mapel_id: pMapelId,
-                kelas_id: pKelasId,
-                is_active: true
+                kelas_id: pKelasId
               }
             }
           }
@@ -173,15 +173,17 @@ export async function getLegerData(mapelId, kelasId) {
         include: {
           pengumpulanTugas: {
             where: {
-              tugas: { rpp: { mapel_id: pMapelId, is_active: true } }
+              tugas: { rpp: { mapel_id: pMapelId } }
             }
           }
         }
       });
 
-      const totalTugasMapelIni = await prisma.tugas.count({
-         where: { rpp: { mapel_id: pMapelId, is_active: true } }
+      const allTugasMapelIni = await prisma.tugas.findMany({
+         where: { rpp: { mapel_id: pMapelId } },
+         include: { rpp: true }
       });
+      const totalTugasMapelIni = allTugasMapelIni.filter(t => t.rpp?.is_active !== false).length;
 
       const calcParalel = paralelSiswa.map(ps => {
          let pJumlah = 0;
