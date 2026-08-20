@@ -7,6 +7,8 @@ import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { calculateProfileCompletion, getProfileProgressColor } from "@/utils/profile";
 import { useSearchParams } from "next/navigation";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 const extractCoordinates = (alamatStr) => {
   if (!alamatStr) return null;
@@ -221,6 +223,50 @@ function SiswaContent() {
     XLSX.writeFile(wb, "Template_Import_Siswa.xlsx");
   };
 
+  const exportToPDF = () => {
+    const doc = new jsPDF();
+    
+    // Title
+    let title = "Data Siswa";
+    let kelasNama = "Semua";
+    if (filterKelas) {
+      const kelas = kelasList.find(k => k.id.toString() === filterKelas.toString());
+      if (kelas) {
+        kelasNama = kelas.nama;
+        title += ` - Kelas ${kelas.nama}`;
+      }
+    }
+    
+    doc.setFontSize(16);
+    doc.text(title, 14, 22);
+    
+    const tableColumn = ["No", "NISN / NIS", "Nama Lengkap", "L/P", "Kelas", "No HP Siswa"];
+    const tableRows = [];
+
+    // Gunakan filteredData agar data yang diekspor sesuai dengan pencarian/filter kelas saat ini
+    filteredData.forEach((siswa, index) => {
+      const rowData = [
+        index + 1,
+        `${siswa.nisn}${siswa.nis ? ' / ' + siswa.nis : ''}`,
+        siswa.nama,
+        siswa.gender,
+        siswa.kelas?.nama || "-",
+        siswa.hp || "-"
+      ];
+      tableRows.push(rowData);
+    });
+
+    doc.autoTable({
+      head: [tableColumn],
+      body: tableRows,
+      startY: 30,
+      styles: { fontSize: 10 },
+      headStyles: { fillColor: [225, 29, 72] } // Sesuai warna rose-600
+    });
+
+    doc.save(`Data_Siswa_${kelasNama}.pdf`);
+  };
+
   const filteredData = dataList.filter(s => s.nama.toLowerCase().includes(search.toLowerCase()) || s.nisn.includes(search));
   
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
@@ -237,9 +283,15 @@ function SiswaContent() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-800">Data Siswa</h1>
-          <p className="text-slate-500 text-sm mt-1">Kelola biodata lengkap siswa, atau impor massal dari Excel.</p>
+          <p className="text-slate-500 text-sm mt-1">Kelola biodata lengkap siswa, ekspor ke PDF, atau impor massal dari Excel.</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
+          <button 
+            onClick={exportToPDF}
+            className="flex items-center gap-2 bg-slate-800 hover:bg-slate-900 text-white px-5 py-2.5 rounded-xl font-bold shadow-sm transition-colors"
+          >
+            <Download size={18} /> Export PDF
+          </button>
           <button 
             onClick={() => { setImportKelasId(""); setIsImportOpen(true); }}
             className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-bold shadow-sm transition-colors"
