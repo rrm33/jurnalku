@@ -8,7 +8,7 @@ import * as XLSX from "xlsx";
 import { calculateProfileCompletion, getProfileProgressColor } from "@/utils/profile";
 import { useSearchParams } from "next/navigation";
 import jsPDF from "jspdf";
-import "jspdf-autotable";
+import autoTable from "jspdf-autotable";
 
 const extractCoordinates = (alamatStr) => {
   if (!alamatStr) return null;
@@ -256,7 +256,7 @@ function SiswaContent() {
       tableRows.push(rowData);
     });
 
-    doc.autoTable({
+    autoTable(doc, {
       head: [tableColumn],
       body: tableRows,
       startY: 30,
@@ -288,15 +288,15 @@ function SiswaContent() {
         <div className="flex flex-wrap gap-2">
           <button 
             onClick={exportToPDF}
-            className="flex items-center gap-2 bg-slate-800 hover:bg-slate-900 text-white px-5 py-2.5 rounded-xl font-bold shadow-sm transition-colors"
+            className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-colors"
           >
-            <Download size={18} /> Export PDF
+            <Download size={16} /> Export PDF
           </button>
           <button 
             onClick={() => { setImportKelasId(""); setIsImportOpen(true); }}
-            className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-bold shadow-sm transition-colors"
+            className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-colors"
           >
-            <Upload size={18} /> Impor Excel
+            <Upload size={16} /> Impor Excel
           </button>
           <button 
             onClick={() => { 
@@ -304,9 +304,9 @@ function SiswaContent() {
               setPreviewImage(null);
               setIsOpen(true); 
             }}
-            className="flex items-center gap-2 bg-rose-600 hover:bg-rose-700 text-white px-5 py-2.5 rounded-xl font-bold shadow-sm transition-colors"
+            className="flex items-center gap-1.5 bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-colors"
           >
-            <Plus size={18} /> Tambah Siswa
+            <Plus size={16} /> Tambah Siswa
           </button>
         </div>
       </div>
