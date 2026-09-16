@@ -385,7 +385,7 @@ export default function BerandaPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 <div>
                   <label className="block text-xs font-bold text-slate-600 mb-2">Pertemuan Ke- *</label>
-                  <input type="number" min="1" required value={formData.pertemuan_ke} onChange={e => setFormData({...formData, pertemuan_ke: e.target.value})} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-bold bg-slate-50" />
+                  <input type="number" min="1" required value={formData.pertemuan_ke} onChange={e => setFormData({...formData, pertemuan_ke: e.target.value})} onWheel={(e) => e.target.blur()} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-bold bg-slate-50" />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-slate-600 mb-2">Tanggal *</label>

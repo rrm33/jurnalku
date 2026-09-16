@@ -339,6 +339,7 @@ export default function PenilaianPage() {
                             max="100"
                             value={nilaiState[siswa.id] ?? ""}
                             onChange={(e) => handleNilaiChange(siswa.id, e.target.value)}
+                            onWheel={(e) => e.target.blur()}
                             placeholder="-"
                             className="w-full text-center px-2 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-500 font-bold text-slate-800 transition-all"
                           />
