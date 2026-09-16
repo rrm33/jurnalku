@@ -1,16 +1,11 @@
 #!/bin/bash
 
-echo "🚀 Memulai proses build untuk Hostinger..."
-NODE_OPTIONS="--max-old-space-size=2048" npm run build
+echo "📦 Mengompres (zip) Source Code untuk Hostinger..."
 
-echo "📁 Menyiapkan folder Standalone..."
-# Salin folder statis dan publik ke dalam folder standalone
-cp -r public .next/standalone/
-cp -r .next/static .next/standalone/.next/
+# Membuat file zip source code, mengecualikan folder-folder berat
+zip -r jurnalku-hostinger-source.zip . -x "node_modules/*" -x ".next/*" -x ".git/*" -x "tmp/*" -x ".DS_Store"
 
-echo "📦 Mengompres (zip) folder menjadi jurnalku-hostinger.zip..."
-cd .next/standalone
-zip -q -r ../../jurnalku-hostinger.zip .
-
-echo "✅ Selesai! File jurnalku-hostinger.zip siap di-upload ke Hostinger."
-echo "Di Hostinger, Anda hanya perlu mengarahkan startup file ke 'server.js'."
+echo "✅ Selesai! File jurnalku-hostinger-source.zip siap di-upload ke Hostinger."
+echo "Di Hostinger, masukkan pengaturan sesuai panduan resmi:"
+echo "- Build command: npm install && npm run build"
+echo "- Start command: npm run start"
