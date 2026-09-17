@@ -194,7 +194,7 @@ export default function PenilaianPage() {
              <span className="px-3 py-1 bg-pink-50 text-pink-700 text-xs font-bold rounded-lg border border-pink-100">{rpp.kelas?.nama}</span>
           </div>
           <h1 className="text-2xl md:text-3xl font-extrabold text-slate-800 tracking-tight mb-2">{tugas.judul}</h1>
-          <p className="text-slate-600 font-medium mb-6">{tugas.deskripsi}</p>
+          <p className="text-slate-600 font-medium mb-6 whitespace-pre-wrap">{tugas.deskripsi}</p>
           
           <div className="flex flex-wrap items-center gap-2 mt-4">
             <div className="flex items-center gap-2 text-xs font-bold text-slate-500 bg-slate-50 w-fit px-4 py-2 rounded-xl border border-slate-100">
@@ -307,7 +307,7 @@ export default function PenilaianPage() {
                       {isSubmitted ? (
                         <div className="space-y-2">
                            {submission.input_jawaban && (
-                             <div className="text-xs text-slate-600 bg-slate-50 p-2.5 rounded-lg border border-slate-200 max-h-24 overflow-y-auto custom-scrollbar whitespace-pre-line">
+                             <div className="text-xs text-slate-600 bg-slate-50 p-2.5 rounded-lg border border-slate-200 max-h-24 overflow-y-auto custom-scrollbar whitespace-pre-wrap">
                                <Linkify>{submission.input_jawaban}</Linkify>
                              </div>
                            )}

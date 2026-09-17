@@ -321,7 +321,7 @@ export default function BerandaPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 mt-4">
                   <div>
                     <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Tujuan Pembelajaran</h4>
-                    <p className="text-sm text-slate-700 leading-relaxed font-medium">{rpp.tujuan_pembelajaran}</p>
+                    <p className="text-sm text-slate-700 leading-relaxed font-medium whitespace-pre-wrap">{rpp.tujuan_pembelajaran}</p>
                   </div>
                   <div>
                     <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Aktivitas Pembelajaran</h4>
