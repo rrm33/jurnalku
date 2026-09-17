@@ -234,10 +234,10 @@ export default function KbmSiswaPage() {
             {/* Body */}
             <div className="p-5 md:p-8 overflow-y-auto flex-1 custom-scrollbar bg-slate-50 pb-safe">
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-8">
+              <div className="flex flex-col gap-5 md:gap-8">
                 
-                {/* Kolom Kiri: RPP & Materi */}
-                <div className="md:col-span-2 space-y-5">
+                {/* RPP & Materi */}
+                <div className="space-y-5">
                   <div className="bg-white p-5 rounded-2xl md:rounded-3xl shadow-sm border border-slate-100/80">
                     <h3 className="text-sm md:text-base font-bold text-slate-800 mb-3 flex items-center gap-2">
                       <div className="w-7 h-7 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center"><BookOpen size={14}/></div> 
@@ -264,8 +264,8 @@ export default function KbmSiswaPage() {
                   </div>
                 </div>
 
-                {/* Kolom Kanan: Evaluasi / Tugas */}
-                <div className="md:col-span-1">
+                {/* Evaluasi / Tugas */}
+                <div>
                   
                   <div className="bg-white p-5 rounded-2xl md:rounded-3xl shadow-sm border border-slate-100/80 sticky top-0">
                     <h3 className="text-sm md:text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
