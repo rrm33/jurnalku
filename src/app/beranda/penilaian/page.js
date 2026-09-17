@@ -109,6 +109,9 @@ export default function DaftarPenilaianPage() {
               const isComplete = item.totalDinilai >= item.totalMengerjakan && item.totalMengerjakan > 0;
               const progressPercent = item.totalMengerjakan > 0 ? Math.round((item.totalDinilai / item.totalMengerjakan) * 100) : 0;
               
+              // Tiga status warna: Belum ada = merah, Sedang proses = kuning/amber, Selesai semua = hijau
+              const statusColor = item.totalDinilai === 0 ? 'bg-rose-500' : isComplete ? 'bg-emerald-500' : 'bg-amber-500';
+              
               return (
               <div 
                 key={item.id} 
@@ -116,7 +119,7 @@ export default function DaftarPenilaianPage() {
                 className="bg-white border border-slate-200 rounded-2xl p-5 hover:border-pink-300 hover:shadow-md cursor-pointer transition-all group flex flex-col md:flex-row gap-6 md:items-center relative overflow-hidden"
               >
                 {/* Decoration */}
-                <div className={`absolute top-0 left-0 w-1.5 h-full ${isComplete ? 'bg-emerald-500' : 'bg-pink-500'}`}></div>
+                <div className={`absolute top-0 left-0 w-1.5 h-full ${statusColor}`}></div>
 
                 <div className="flex-1 min-w-0 pl-2 flex items-start gap-4">
                   
@@ -160,7 +163,7 @@ export default function DaftarPenilaianPage() {
                      <div className="flex items-center gap-2">
                        <span className="text-sm font-black text-slate-700">{item.totalDinilai}</span>
                        <div className="w-full bg-slate-100 rounded-full h-1.5 flex-1">
-                         <div className={`h-1.5 rounded-full ${isComplete ? 'bg-emerald-500' : 'bg-pink-500'}`} style={{ width: `${progressPercent}%` }}></div>
+                         <div className={`h-1.5 rounded-full ${statusColor}`} style={{ width: `${progressPercent}%` }}></div>
                        </div>
                      </div>
                   </div>

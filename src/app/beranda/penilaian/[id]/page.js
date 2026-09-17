@@ -221,8 +221,8 @@ export default function PenilaianPage() {
                <span className="text-xs font-bold text-slate-500 uppercase">Dinilai</span>
                <span className="text-sm font-black text-slate-800">{totalDinilai} / {totalSiswa}</span>
              </div>
-             <div className="w-full bg-slate-200 rounded-full h-2 mt-2">
-               <div className="bg-rose-500 h-2 rounded-full" style={{ width: `${totalSiswa === 0 ? 0 : (totalDinilai/totalSiswa)*100}%` }}></div>
+              <div className="w-full bg-slate-200 rounded-full h-2 mt-2">
+               <div className={`${totalDinilai === 0 ? 'bg-rose-500' : (totalDinilai >= totalMengerjakan && totalMengerjakan > 0) ? 'bg-emerald-500' : 'bg-amber-500'} h-2 rounded-full`} style={{ width: `${totalSiswa === 0 ? 0 : (totalDinilai/totalSiswa)*100}%` }}></div>
              </div>
           </div>
         </div>
