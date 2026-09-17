@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Users, CheckSquare, ChevronDown, ChevronUp, Trash2, Edit2, Link as LinkIcon, CheckCircle2, Upload, FileText } from "lucide-react";
+import { Users, CheckSquare, ChevronDown, ChevronUp, Trash2, Edit2, Link as LinkIcon, CheckCircle2, Upload, FileText, Copy } from "lucide-react";
 import { getRpps, saveRpp, deleteRpp, toggleStatusRpp, toggleActiveRpp } from "@/actions/rpp";
 import { getKelas, getMapel } from "@/actions/master";
 import FileViewerModal from "@/components/FileViewerModal";
@@ -110,6 +110,27 @@ export default function BerandaPage() {
       mapel_id: rpp.mapel_id,
       kelas_ids: [String(rpp.kelas_id)], // Saat edit, paksa isi 1 array
       judul: rpp.judul,
+      tujuan_pembelajaran: rpp.tujuan_pembelajaran,
+      aktivitas_pembelajaran: rpp.aktivitas_pembelajaran,
+      existing_file: rpp.upload_file || "",
+      ada_tugas: !!tugas,
+      judul_tugas: tugas ? tugas.judul : "",
+      deskripsi_tugas: tugas ? tugas.deskripsi : "",
+      deadline_tugas: tugas && tugas.deadline ? new Date(new Date(tugas.deadline).getTime() + (7 * 60 * 60 * 1000)).toISOString().slice(0, 16) : "",
+      existing_file_tugas: tugas ? (tugas.file || "") : "",
+    });
+    setIsOpen(true);
+  };
+
+  const handleDuplicate = (rpp) => {
+    const tugas = rpp.tugas && rpp.tugas.length > 0 ? rpp.tugas[0] : null;
+    setFormData({
+      id: null,
+      pertemuan_ke: rpp.pertemuan_ke,
+      tanggal: rpp.tanggal ? new Date(rpp.tanggal).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
+      mapel_id: rpp.mapel_id,
+      kelas_ids: [], // Kosongkan agar guru memilih kelas tujuan
+      judul: rpp.judul + " (Salinan)",
       tujuan_pembelajaran: rpp.tujuan_pembelajaran,
       aktivitas_pembelajaran: rpp.aktivitas_pembelajaran,
       existing_file: rpp.upload_file || "",
@@ -356,6 +377,9 @@ export default function BerandaPage() {
                   </button>
                   
                   <div className="flex ml-auto gap-2">
+                    <button onClick={() => handleDuplicate(rpp)} title="Salin RPP (Duplikat)" className="p-2.5 text-blue-600 hover:bg-blue-50 bg-white border border-slate-200 rounded-xl transition-colors">
+                      <Copy size={16} />
+                    </button>
                     <button onClick={() => handleEdit(rpp)} className="p-2.5 text-rose-600 hover:bg-rose-50 bg-white border border-slate-200 rounded-xl transition-colors">
                       <Edit2 size={16} />
                     </button>
@@ -457,8 +481,14 @@ export default function BerandaPage() {
               <div>
                 <label className="block text-xs font-bold text-slate-600 mb-2">Lampiran Dokumen / Modul (Opsional)</label>
                 {formData.existing_file && (
-                  <div className="mb-2 text-xs font-medium text-emerald-600 flex items-center gap-1">
-                    <CheckCircle2 size={14} /> File saat ini sudah terunggah. (Pilih file baru untuk mengganti)
+                  <div className="mb-3 p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-sm font-medium text-slate-700 truncate mr-2">
+                      <FileText size={16} className="text-rose-500 shrink-0" />
+                      <span className="truncate">{formData.existing_file.split('/').pop()}</span>
+                    </div>
+                    <a href={formData.existing_file} target="_blank" rel="noopener noreferrer" className="text-[11px] font-bold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg whitespace-nowrap transition-colors shrink-0">
+                      Lihat File
+                    </a>
                   </div>
                 )}
                 <div className="flex gap-2">
@@ -492,8 +522,14 @@ export default function BerandaPage() {
                     <div>
                       <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Lampiran File Tugas (Opsional)</label>
                       {formData.existing_file_tugas && (
-                        <div className="mb-2 text-xs font-medium text-emerald-600 flex items-center gap-1">
-                          <CheckCircle2 size={14} /> File tugas saat ini sudah terunggah.
+                        <div className="mb-3 p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between">
+                          <div className="flex items-center gap-2 text-sm font-medium text-slate-700 truncate mr-2">
+                            <FileText size={16} className="text-pink-500 shrink-0" />
+                            <span className="truncate">{formData.existing_file_tugas.split('/').pop()}</span>
+                          </div>
+                          <a href={formData.existing_file_tugas} target="_blank" rel="noopener noreferrer" className="text-[11px] font-bold text-pink-600 hover:text-pink-700 bg-pink-50 hover:bg-pink-100 px-3 py-1.5 rounded-lg whitespace-nowrap transition-colors shrink-0">
+                            Lihat File
+                          </a>
                         </div>
                       )}
                       <input type="file" id="file_tugas_input" className="w-full px-3 py-2 border border-slate-200 rounded-xl outline-none bg-white focus:border-pink-400 focus:ring-2 focus:ring-pink-100 transition-all font-medium text-sm file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100" />

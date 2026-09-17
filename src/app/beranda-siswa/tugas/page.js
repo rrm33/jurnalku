@@ -179,7 +179,7 @@ export default function KbmSiswaPage() {
                       )}
                     </div>
                     
-                    <h3 className="font-extrabold text-slate-800 text-lg mb-1 line-clamp-2">{kbm.tujuan_pembelajaran}</h3>
+                    <h3 className="font-extrabold text-slate-800 text-lg mb-1 line-clamp-2">{kbm.judul || kbm.tujuan_pembelajaran}</h3>
                   </div>
                 </div>
                 
@@ -243,7 +243,7 @@ export default function KbmSiswaPage() {
                       <div className="w-7 h-7 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center"><BookOpen size={14}/></div> 
                       Tujuan Pembelajaran
                     </h3>
-                    <p className="text-slate-700 text-sm leading-relaxed font-medium">{selectedKbm.tujuan_pembelajaran}</p>
+                    <p className="text-slate-700 text-sm leading-relaxed font-medium whitespace-pre-wrap">{selectedKbm.tujuan_pembelajaran}</p>
                   </div>
 
                   <div className="bg-white p-5 rounded-2xl md:rounded-3xl shadow-sm border border-slate-100/80">
@@ -254,6 +254,13 @@ export default function KbmSiswaPage() {
                     <div className="prose prose-slate prose-sm max-w-none">
                       <p className="text-slate-700 whitespace-pre-line leading-relaxed">{selectedKbm.aktivitas_pembelajaran}</p>
                     </div>
+                    {selectedKbm.upload_file && (
+                      <div className="mt-5 pt-4 border-t border-slate-100">
+                        <button onClick={() => setFileToView(selectedKbm.upload_file)} className="w-full flex items-center justify-center gap-2 px-3 py-3 bg-blue-50 text-blue-700 rounded-xl shadow-sm border border-blue-100 text-xs font-bold hover:bg-blue-100 transition-colors">
+                          <FileText size={16} /> Lihat Materi Lampiran (Modul/Dokumen)
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
 
