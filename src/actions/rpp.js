@@ -106,7 +106,7 @@ export async function saveRpp(formDataPayload, guruId = 1) {
         const tugasPayload = {
           judul: judul_tugas,
           deskripsi: deskripsi_tugas,
-          deadline: deadline_tugas ? new Date(deadline_tugas) : null,
+          deadline: deadline_tugas ? new Date(deadline_tugas + "+07:00") : null,
           file: fileTugasPath,
           poin_maks: 100
         };
@@ -151,7 +151,7 @@ export async function saveRpp(formDataPayload, guruId = 1) {
             data: {
               judul: judul_tugas,
               deskripsi: deskripsi_tugas,
-              deadline: deadline_tugas ? new Date(deadline_tugas) : null,
+              deadline: deadline_tugas ? new Date(deadline_tugas + "+07:00") : null,
               file: fileTugasPath,
               poin_maks: 100,
               rpp_id: newRpp.id
