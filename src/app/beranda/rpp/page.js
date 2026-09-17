@@ -116,7 +116,7 @@ export default function BerandaPage() {
       ada_tugas: !!tugas,
       judul_tugas: tugas ? tugas.judul : "",
       deskripsi_tugas: tugas ? tugas.deskripsi : "",
-      deadline_tugas: tugas && tugas.deadline ? new Date(tugas.deadline).toISOString().slice(0, 16) : "",
+      deadline_tugas: tugas && tugas.deadline ? new Date(new Date(tugas.deadline).getTime() + (7 * 60 * 60 * 1000)).toISOString().slice(0, 16) : "",
       existing_file_tugas: tugas ? (tugas.file || "") : "",
     });
     setIsOpen(true);
