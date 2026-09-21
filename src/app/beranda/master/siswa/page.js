@@ -355,7 +355,8 @@ function SiswaContent() {
                   <td className="p-4">
                     <div 
                       onClick={() => item.foto && setModalImage(item.foto)}
-                      className={`w-10 h-10 rounded-full bg-slate-200 overflow-hidden flex items-center justify-center ${item.foto ? 'cursor-pointer hover:ring-2 ring-rose-400' : ''}`}
+                      className={`w-10 h-10 rounded-full bg-slate-200 overflow-hidden flex items-center justify-center relative z-10 ${item.foto ? 'cursor-pointer hover:ring-2 ring-rose-400' : ''}`}
+                      style={{ transform: "translateZ(0)" }}
                     >
                       {item.foto ? (
                         // eslint-disable-next-line @next/next/no-img-element
@@ -493,7 +494,7 @@ function SiswaContent() {
             <div className="bg-gradient-to-r from-rose-600 to-pink-600 p-8 flex flex-col md:flex-row items-center gap-6">
               <div 
                 onClick={() => selectedDetail.foto && setModalImage(selectedDetail.foto)}
-                className={`w-32 h-32 rounded-full overflow-hidden flex items-center justify-center shadow-xl border-4 border-white/20 bg-white relative z-10 ${selectedDetail.foto ? 'cursor-pointer' : ''}`}
+                className={`w-32 h-32 rounded-full overflow-hidden bg-slate-100 flex items-center justify-center border-4 border-white shadow-lg relative z-10 ${selectedDetail.foto ? 'cursor-pointer' : ''}`}
                 style={{ transform: "translateZ(0)" }}
               >
                 {selectedDetail.foto ? (
@@ -608,7 +609,8 @@ function SiswaContent() {
                   <div className="flex flex-col items-center">
                     <div 
                       onClick={() => previewImage && setModalImage(previewImage)}
-                      className={`w-32 h-32 rounded-2xl bg-slate-100 border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden mb-4 relative group ${previewImage ? 'cursor-pointer' : ''}`}
+                      className={`w-32 h-32 rounded-2xl bg-slate-100 border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden mb-4 relative group z-10 ${previewImage ? 'cursor-pointer' : ''}`}
+                      style={{ transform: "translateZ(0)" }}
                     >
                       {previewImage ? (
                         // eslint-disable-next-line @next/next/no-img-element
