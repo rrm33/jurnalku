@@ -9,6 +9,7 @@ zip -r jurnalku-hostinger-source.zip . \
   -x ".git/*" \
   -x "tmp/*" \
   -x ".DS_Store" \
+  -x ".env" \
   -x "public/uploads/siswa/*" \
   -x "public/uploads/guru/*" \
   -x "public/uploads/rpp/*" \
