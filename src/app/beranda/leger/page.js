@@ -15,6 +15,7 @@ export default function LegerGuruPage() {
   const [loading, setLoading] = useState(true);
   const [loadingData, setLoadingData] = useState(false);
   const [isSortedByRank, setIsSortedByRank] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
 
   useEffect(() => {
     fetchOptions();
@@ -37,8 +38,14 @@ export default function LegerGuruPage() {
     if (res.success) {
       setTugasList(res.data.tugasList);
       setSiswaList(res.data.siswaList);
+      setHasSearched(true);
     }
     setLoadingData(false);
+  };
+
+  const handleFilterChange = (setter, value) => {
+    setter(value);
+    setHasSearched(false);
   };
 
   const displayedSiswa = isSortedByRank 
@@ -63,7 +70,7 @@ export default function LegerGuruPage() {
           <label className="block text-sm font-semibold text-slate-700 mb-2">Mata Pelajaran</label>
           <select 
             value={selectedMapel}
-            onChange={(e) => setSelectedMapel(e.target.value)}
+            onChange={(e) => handleFilterChange(setSelectedMapel, e.target.value)}
             className="w-full bg-slate-50 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-xl focus:ring-2 focus:ring-rose-200 focus:outline-none"
           >
             <option value="">-- Pilih Mapel --</option>
@@ -75,7 +82,7 @@ export default function LegerGuruPage() {
           <label className="block text-sm font-semibold text-slate-700 mb-2">Kelas</label>
           <select 
             value={selectedKelas}
-            onChange={(e) => setSelectedKelas(e.target.value)}
+            onChange={(e) => handleFilterChange(setSelectedKelas, e.target.value)}
             className="w-full bg-slate-50 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-xl focus:ring-2 focus:ring-rose-200 focus:outline-none"
           >
             <option value="">-- Pilih Kelas --</option>
@@ -96,7 +103,7 @@ export default function LegerGuruPage() {
         <div className="flex justify-center items-center py-20">
           <div className="w-10 h-10 border-4 border-rose-500 border-t-transparent rounded-full animate-spin"></div>
         </div>
-      ) : siswaList.length > 0 ? (
+      ) : hasSearched && siswaList.length > 0 ? (
         <div className="flex flex-col gap-4">
           <div className="flex justify-between items-center px-2">
             <h3 className="font-bold text-slate-700">Data Leger Nilai</h3>
@@ -120,6 +127,7 @@ export default function LegerGuruPage() {
                   ))}
                   <th className="px-4 py-3 font-bold text-center whitespace-nowrap">Jumlah</th>
                   <th className="px-4 py-3 font-bold text-center whitespace-nowrap">Rata-rata</th>
+                  <th className="px-4 py-3 font-bold text-center whitespace-nowrap">Profil</th>
                   <th className="px-4 py-3 font-bold text-center whitespace-nowrap text-rose-600">Peringkat<br/>Kelas</th>
                 </tr>
               </thead>
@@ -135,6 +143,9 @@ export default function LegerGuruPage() {
                     ))}
                     <td className="px-4 py-3 text-center font-bold text-slate-700">{siswa.jumlah}</td>
                     <td className="px-4 py-3 text-center font-bold text-slate-700">{siswa.rataRata}</td>
+                    <td className="px-4 py-3 text-center text-slate-500 font-medium">
+                      {Math.round(siswa.profile_completeness || 0)}%
+                    </td>
                     <td className="px-4 py-3 text-center">
                       <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-rose-100 text-rose-700 font-black">
                         {siswa.peringkatKelas}
@@ -147,7 +158,7 @@ export default function LegerGuruPage() {
           </div>
         </div>
       ) : (
-        !loading && selectedMapel && selectedKelas && (
+        !loading && hasSearched && siswaList.length === 0 && (
           <div className="bg-white border border-slate-200 border-dashed rounded-3xl p-16 flex flex-col items-center justify-center text-center">
             <ClipboardList size={40} className="text-slate-300 mb-4" />
             <h1 className="text-xl font-bold text-slate-700 mb-2">Tidak Ada Data</h1>
