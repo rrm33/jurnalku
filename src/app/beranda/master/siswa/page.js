@@ -493,7 +493,8 @@ function SiswaContent() {
             <div className="bg-gradient-to-r from-rose-600 to-pink-600 p-8 flex flex-col md:flex-row items-center gap-6">
               <div 
                 onClick={() => selectedDetail.foto && setModalImage(selectedDetail.foto)}
-                className={`w-32 h-32 rounded-full overflow-hidden flex items-center justify-center shadow-xl border-4 border-white/20 bg-white ${selectedDetail.foto ? 'cursor-pointer' : ''}`}
+                className={`w-32 h-32 rounded-full overflow-hidden flex items-center justify-center shadow-xl border-4 border-white/20 bg-white relative z-10 ${selectedDetail.foto ? 'cursor-pointer' : ''}`}
+                style={{ transform: "translateZ(0)" }}
               >
                 {selectedDetail.foto ? (
                   // eslint-disable-next-line @next/next/no-img-element

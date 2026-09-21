@@ -220,7 +220,8 @@ export default function ProfilSiswaPage() {
             <div className="relative group shrink-0 z-10">
               <div 
                 onClick={() => previewImage && setModalImage(previewImage)}
-                className={`w-28 h-28 rounded-full overflow-hidden flex items-center justify-center shadow-xl border-4 border-white/20 bg-white ${previewImage ? 'cursor-pointer' : ''}`}
+                className={`w-28 h-28 rounded-full overflow-hidden flex items-center justify-center shadow-xl border-4 border-white/20 bg-white relative z-10 ${previewImage ? 'cursor-pointer' : ''}`}
+                style={{ transform: "translateZ(0)" }}
               >
                 {previewImage ? (
                   // eslint-disable-next-line @next/next/no-img-element
