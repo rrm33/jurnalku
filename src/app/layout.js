@@ -11,6 +11,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className="antialiased">
       <head>
+        <meta name="color-scheme" content="light only" />
         <link rel="apple-touch-icon" href="/globe.svg" />
       </head>
       <body className="min-h-screen flex flex-col bg-slate-50 text-slate-800">
