@@ -36,15 +36,15 @@ export default function LegerSiswaPage() {
     const res = await getLegerData(selectedMapel, kelasId);
     if (res.success) {
       setTugasList(res.data.tugasList);
-      setSiswaList(res.data.siswaList);
       
-      // Assume we can find myData based on session (but since session is in cookies, we don't have ID on client directly).
-      // Wait, getLegerData doesn't tell us which one is "Me" unless we pass it.
-      // We can fetch our own name or ID from another endpoint, or we can just fetch it from the action.
-      // Let's assume the action can be updated or we can just pass the name if we know it.
-      // For now, let's update getLegerData to return `myId` if role === siswa.
+      const sortedByRank = [...res.data.siswaList].sort((a, b) => {
+        if (a.peringkatKelas === "-") return 1;
+        if (b.peringkatKelas === "-") return -1;
+        return a.peringkatKelas - b.peringkatKelas;
+      });
+      setSiswaList(sortedByRank);
       
-      setMyData(res.data.siswaList.find(s => s.isMe)); // Needs update in getLegerData
+      setMyData(res.data.siswaList.find(s => s.isMe));
     }
     setLoadingData(false);
   };

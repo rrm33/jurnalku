@@ -234,7 +234,7 @@ export default function KbmSiswaPage() {
             {/* Body */}
             <div className="p-5 md:p-8 overflow-y-auto flex-1 custom-scrollbar bg-slate-50 pb-safe">
               
-              <div className="flex flex-col gap-5 md:gap-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-8">
                 
                 {/* RPP & Materi */}
                 <div className="space-y-5">

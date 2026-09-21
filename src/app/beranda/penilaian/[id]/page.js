@@ -290,9 +290,9 @@ export default function PenilaianPage() {
                           <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg w-fit border border-emerald-100">
                             <CheckCircle2 size={14} /> Selesai
                           </div>
-                          {submission.updated_at && (
+                          {submission.created_at && (
                             <div className="text-[9px] font-bold text-slate-400 flex items-center gap-1">
-                              <Clock size={10} /> {new Date(submission.updated_at).toLocaleString('id-ID', {day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'})}
+                              <Clock size={10} /> {new Date(submission.created_at).toLocaleString('id-ID', {day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'})}
                             </div>
                           )}
                         </div>

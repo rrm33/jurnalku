@@ -50,75 +50,75 @@ export default function DashboardBeranda() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-5 hover:shadow-md transition-shadow">
-          <div className="w-14 h-14 rounded-full bg-rose-100 flex items-center justify-center text-rose-600 shrink-0">
-            <Users size={28} />
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
+        <div className="bg-white p-4 md:p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3 md:gap-5 hover:shadow-md transition-shadow">
+          <div className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-rose-100 flex items-center justify-center text-rose-600 shrink-0">
+            <Users size={20} className="md:w-7 md:h-7" />
           </div>
           <div>
-            <p className="text-sm font-bold text-slate-400 uppercase tracking-wider">Total Siswa</p>
-            <h3 className="text-3xl font-black text-slate-800">{stats.totalSiswa}</h3>
+            <p className="text-[10px] md:text-sm font-bold text-slate-400 uppercase tracking-wider">Total Siswa</p>
+            <h3 className="text-xl md:text-3xl font-black text-slate-800">{stats.totalSiswa}</h3>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-5 hover:shadow-md transition-shadow">
-          <div className="w-14 h-14 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
-            <Layers size={28} />
+        <div className="bg-white p-4 md:p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3 md:gap-5 hover:shadow-md transition-shadow">
+          <div className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
+            <Layers size={20} className="md:w-7 md:h-7" />
           </div>
           <div>
-            <p className="text-sm font-bold text-slate-400 uppercase tracking-wider">Total Kelas</p>
-            <h3 className="text-3xl font-black text-slate-800">{stats.totalKelas}</h3>
+            <p className="text-[10px] md:text-sm font-bold text-slate-400 uppercase tracking-wider">Total Kelas</p>
+            <h3 className="text-xl md:text-3xl font-black text-slate-800">{stats.totalKelas}</h3>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-5 hover:shadow-md transition-shadow">
-          <div className="w-14 h-14 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 shrink-0">
-            <BookOpen size={28} />
+        <div className="bg-white p-4 md:p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3 md:gap-5 hover:shadow-md transition-shadow">
+          <div className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 shrink-0">
+            <BookOpen size={20} className="md:w-7 md:h-7" />
           </div>
           <div>
-            <p className="text-sm font-bold text-slate-400 uppercase tracking-wider">Mata Pelajaran</p>
-            <h3 className="text-3xl font-black text-slate-800">{stats.totalMapel}</h3>
+            <p className="text-[10px] md:text-sm font-bold text-slate-400 uppercase tracking-wider">Mapel</p>
+            <h3 className="text-xl md:text-3xl font-black text-slate-800">{stats.totalMapel}</h3>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-5 hover:shadow-md transition-shadow">
-          <div className="w-14 h-14 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 shrink-0">
-            <FileText size={28} />
+        <div className="bg-white p-4 md:p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3 md:gap-5 hover:shadow-md transition-shadow">
+          <div className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 shrink-0">
+            <FileText size={20} className="md:w-7 md:h-7" />
           </div>
           <div>
-            <p className="text-sm font-bold text-slate-400 uppercase tracking-wider">Dokumen RPP</p>
-            <h3 className="text-3xl font-black text-slate-800">{stats.totalRpp}</h3>
+            <p className="text-[10px] md:text-sm font-bold text-slate-400 uppercase tracking-wider">RPP</p>
+            <h3 className="text-xl md:text-3xl font-black text-slate-800">{stats.totalRpp}</h3>
           </div>
         </div>
       </div>
 
-      <div className="pt-2 pb-2">
-        <h3 className="text-xl font-bold text-slate-800 border-l-4 border-pink-500 pl-3">Statistik Pengerjaan Tugas</h3>
+      <div className="pt-2 pb-2 mt-4">
+        <h3 className="text-lg md:text-xl font-bold text-slate-800 border-l-4 border-pink-500 pl-3">Statistik Tugas</h3>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="bg-gradient-to-br from-pink-50 to-pink-100/50 p-5 rounded-2xl border border-pink-100 shadow-sm flex flex-col items-center justify-center text-center hover:shadow-md transition-shadow">
-          <p className="text-xs font-bold text-pink-500 uppercase tracking-wider mb-2">Total Tugas Dibuat</p>
-          <h3 className="text-4xl font-black text-pink-700">{stats.totalTugas}</h3>
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
+        <div className="bg-gradient-to-br from-pink-50 to-pink-100/50 p-4 md:p-5 rounded-2xl border border-pink-100 shadow-sm flex flex-col items-center justify-center text-center hover:shadow-md transition-shadow">
+          <p className="text-[10px] md:text-xs font-bold text-pink-500 uppercase tracking-wider mb-1 md:mb-2">Total Tugas</p>
+          <h3 className="text-2xl md:text-4xl font-black text-pink-700">{stats.totalTugas}</h3>
         </div>
-        <div className="bg-gradient-to-br from-emerald-50 to-emerald-100/50 p-5 rounded-2xl border border-emerald-100 shadow-sm flex flex-col items-center justify-center text-center hover:shadow-md transition-shadow">
-          <p className="text-xs font-bold text-emerald-500 uppercase tracking-wider mb-2">Siswa Aktif Mengerjakan</p>
-          <h3 className="text-4xl font-black text-emerald-700">{stats.totalSiswaMengerjakan}</h3>
+        <div className="bg-gradient-to-br from-emerald-50 to-emerald-100/50 p-4 md:p-5 rounded-2xl border border-emerald-100 shadow-sm flex flex-col items-center justify-center text-center hover:shadow-md transition-shadow">
+          <p className="text-[10px] md:text-xs font-bold text-emerald-500 uppercase tracking-wider mb-1 md:mb-2">Siswa Aktif</p>
+          <h3 className="text-2xl md:text-4xl font-black text-emerald-700">{stats.totalSiswaMengerjakan}</h3>
         </div>
-        <div className="bg-gradient-to-br from-rose-50 to-rose-100/50 p-5 rounded-2xl border border-rose-100 shadow-sm flex flex-col items-center justify-center text-center hover:shadow-md transition-shadow">
-          <p className="text-xs font-bold text-rose-500 uppercase tracking-wider mb-2">Siswa Belum Mengerjakan</p>
-          <h3 className="text-4xl font-black text-rose-700">{stats.totalSiswaBelumMengerjakan}</h3>
+        <div className="bg-gradient-to-br from-rose-50 to-rose-100/50 p-4 md:p-5 rounded-2xl border border-rose-100 shadow-sm flex flex-col items-center justify-center text-center hover:shadow-md transition-shadow col-span-2 md:col-span-1">
+          <p className="text-[10px] md:text-xs font-bold text-rose-500 uppercase tracking-wider mb-1 md:mb-2">Siswa Belum Mengerjakan</p>
+          <h3 className="text-2xl md:text-4xl font-black text-rose-700">{stats.totalSiswaBelumMengerjakan}</h3>
         </div>
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col items-center justify-center text-center">
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Total Pengumpulan</p>
-          <h3 className="text-2xl font-black text-slate-700">{stats.totalPengumpulan}</h3>
+        <div className="bg-white p-4 md:p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col items-center justify-center text-center">
+          <p className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-1 md:mb-2">Total Pengumpulan</p>
+          <h3 className="text-xl md:text-2xl font-black text-slate-700">{stats.totalPengumpulan}</h3>
         </div>
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col items-center justify-center text-center">
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tugas Telah Dinilai</p>
-          <h3 className="text-2xl font-black text-emerald-600">{stats.totalDinilai}</h3>
+        <div className="bg-white p-4 md:p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col items-center justify-center text-center">
+          <p className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-1 md:mb-2">Telah Dinilai</p>
+          <h3 className="text-xl md:text-2xl font-black text-emerald-600">{stats.totalDinilai}</h3>
         </div>
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col items-center justify-center text-center">
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Menunggu Penilaian</p>
-          <h3 className="text-2xl font-black text-amber-500">{stats.totalBelumDinilai}</h3>
+        <div className="bg-white p-4 md:p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col items-center justify-center text-center col-span-2 md:col-span-1">
+          <p className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-1 md:mb-2">Menunggu Penilaian</p>
+          <h3 className="text-xl md:text-2xl font-black text-amber-500">{stats.totalBelumDinilai}</h3>
         </div>
       </div>
 

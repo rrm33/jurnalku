@@ -37,9 +37,16 @@ export async function getLegerOptions() {
         kelasList: Array.from(kelasMap.values())
       };
     } else if (parsed.role === "siswa") {
+       // Dapatkan kelas_id dari data siswa
+       const siswa = await prisma.siswa.findUnique({
+         where: { id: parseInt(parsed.id) },
+         select: { kelas_id: true }
+       });
+       if (!siswa) return { success: false, message: "Data siswa tidak ditemukan" };
+       
        // Untuk siswa, dapatkan RPP berdasarkan kelasnya
        const rpps = await prisma.rpp.findMany({
-        where: { kelas_id: parsed.kelas_id },
+        where: { kelas_id: siswa.kelas_id },
         select: { mapel: true }
       });
       const mapelMap = new Map();
@@ -50,7 +57,7 @@ export async function getLegerOptions() {
       return {
         success: true,
         mapels: Array.from(mapelMap.values()),
-        kelas_id: parsed.kelas_id
+        kelas_id: siswa.kelas_id
       }
     }
 
