@@ -125,29 +125,40 @@ export async function getLegerData(mapelId, kelasId) {
 
       const rataRata = tugasList.length > 0 ? (jumlah / tugasList.length).toFixed(2) : 0;
 
+      // Hitung kelengkapan profil sebagai tiebreaker
+      const profileFields = ['nisn', 'nis', 'nama', 'gender', 'email', 'hp', 'hp_ortu', 'nik', 'kk', 'tmp_lahir', 'tgl_lahir', 'akta_lahir', 'alamat', 'foto'];
+      const filledFields = profileFields.filter(f => siswa[f] && siswa[f].toString().trim() !== "").length;
+      const profile_completeness = (filledFields / profileFields.length) * 100;
+
       return {
         ...siswa,
         isMe: userRole === 'siswa' && siswa.id === userId,
         nilaiTugas,
         jumlah,
-        rataRata: parseFloat(rataRata)
+        rataRata: parseFloat(rataRata),
+        profile_completeness
       };
     });
 
-    // Peringkat Kelas (descending rata-rata)
-    const sortedKelas = [...siswaList].sort((a, b) => b.rataRata - a.rataRata);
+    // Peringkat Kelas (descending rata-rata, lalu kelengkapan profil)
+    const sortedKelas = [...siswaList].sort((a, b) => {
+      if (b.rataRata !== a.rataRata) return b.rataRata - a.rataRata;
+      return b.profile_completeness - a.profile_completeness;
+    });
     
     let currentRank = 1;
     let currentRataRata = -1;
+    let currentCompleteness = -1;
     let actualRank = 1;
 
     sortedKelas.forEach((sk) => {
-      if (sk.rataRata !== currentRataRata) {
+      if (sk.rataRata !== currentRataRata || sk.profile_completeness !== currentCompleteness) {
         actualRank = currentRank;
         currentRataRata = sk.rataRata;
+        currentCompleteness = sk.profile_completeness;
       }
-      // Jika sama sekali belum ada nilai atau jumlah 0, beri tanda "-"
-      sk.assignedRank = sk.jumlah === 0 ? "-" : actualRank;
+      // Selalu beri peringkat walaupun nilainya 0
+      sk.assignedRank = actualRank;
       currentRank++;
     });
 
@@ -155,65 +166,6 @@ export async function getLegerData(mapelId, kelasId) {
       const found = sortedKelas.find(sk => sk.id === s.id);
       s.peringkatKelas = found ? found.assignedRank : "-";
     });
-
-    // Hitung Peringkat Paralel
-    const namaKelas = siswaDiKelas.length > 0 ? siswaDiKelas[0].kelas.nama : "";
-    const tingkatKelasMatch = namaKelas.match(/^([A-Za-z0-9]+)/);
-    
-    if (tingkatKelasMatch) {
-      const awalan = tingkatKelasMatch[1];
-      
-      // Ambil seluruh siswa di tingkat ini (berdasarkan nama kelas yg mirip)
-      const paralelSiswa = await prisma.siswa.findMany({
-        where: {
-          kelas: {
-            nama: { startsWith: awalan }
-          }
-        },
-        include: {
-          pengumpulanTugas: {
-            where: {
-              tugas: { rpp: { mapel_id: pMapelId } }
-            }
-          }
-        }
-      });
-
-      const allTugasMapelIni = await prisma.tugas.findMany({
-         where: { rpp: { mapel_id: pMapelId } },
-         include: { rpp: true }
-      });
-      const totalTugasMapelIni = allTugasMapelIni.filter(t => t.rpp?.is_active !== false).length;
-
-      const calcParalel = paralelSiswa.map(ps => {
-         let pJumlah = 0;
-         ps.pengumpulanTugas.forEach(pt => {
-           if(pt.nilai !== null) pJumlah += pt.nilai;
-         });
-         const pAvg = totalTugasMapelIni > 0 ? parseFloat((pJumlah / totalTugasMapelIni).toFixed(2)) : 0;
-         return { id: ps.id, rata: pAvg, jumlah: pJumlah };
-      });
-      
-      calcParalel.sort((a, b) => b.rata - a.rata);
-      
-      let pCurrentRank = 1;
-      let pCurrentRata = -1;
-      let pActualRank = 1;
-
-      calcParalel.forEach(cp => {
-        if (cp.rata !== pCurrentRata) {
-          pActualRank = pCurrentRank;
-          pCurrentRata = cp.rata;
-        }
-        cp.assignedRank = cp.jumlah === 0 ? "-" : pActualRank;
-        pCurrentRank++;
-      });
-      
-      siswaList.forEach(s => {
-        const cp = calcParalel.find(c => c.id === s.id);
-        s.peringkatParalel = cp ? cp.assignedRank : "-";
-      });
-    }
 
     return { 
       success: true, 

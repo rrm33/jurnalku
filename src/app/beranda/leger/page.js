@@ -14,6 +14,7 @@ export default function LegerGuruPage() {
   const [siswaList, setSiswaList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingData, setLoadingData] = useState(false);
+  const [isSortedByRank, setIsSortedByRank] = useState(false);
 
   useEffect(() => {
     fetchOptions();
@@ -39,6 +40,14 @@ export default function LegerGuruPage() {
     }
     setLoadingData(false);
   };
+
+  const displayedSiswa = isSortedByRank 
+    ? [...siswaList].sort((a, b) => {
+        if (a.peringkatKelas === "-") return 1;
+        if (b.peringkatKelas === "-") return -1;
+        return a.peringkatKelas - b.peringkatKelas;
+      })
+    : siswaList;
 
   return (
     <div className="max-w-7xl mx-auto pb-16 animate-in fade-in zoom-in-95 duration-500">
@@ -88,49 +97,54 @@ export default function LegerGuruPage() {
           <div className="w-10 h-10 border-4 border-rose-500 border-t-transparent rounded-full animate-spin"></div>
         </div>
       ) : siswaList.length > 0 ? (
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden overflow-x-auto">
-          <table className="w-full text-sm text-left">
-            <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
-              <tr>
-                <th className="px-4 py-3 font-bold whitespace-nowrap">No</th>
-                <th className="px-4 py-3 font-bold whitespace-nowrap min-w-[200px]">Nama Siswa</th>
-                {tugasList.map((tugas, idx) => (
-                  <th key={tugas.id} className="px-4 py-3 font-bold text-center whitespace-nowrap">
-                    T{idx + 1}
-                  </th>
-                ))}
-                <th className="px-4 py-3 font-bold text-center whitespace-nowrap">Jumlah</th>
-                <th className="px-4 py-3 font-bold text-center whitespace-nowrap">Rata-rata</th>
-                <th className="px-4 py-3 font-bold text-center whitespace-nowrap text-rose-600">Peringkat<br/>Kelas</th>
-                <th className="px-4 py-3 font-bold text-center whitespace-nowrap text-indigo-600">Peringkat<br/>Paralel</th>
-              </tr>
-            </thead>
-            <tbody>
-              {siswaList.map((siswa, idx) => (
-                <tr key={siswa.id} className="border-b border-slate-100 hover:bg-slate-50">
-                  <td className="px-4 py-3 text-slate-500">{idx + 1}</td>
-                  <td className="px-4 py-3 font-semibold text-slate-700">{siswa.nama}</td>
-                  {tugasList.map(tugas => (
-                    <td key={tugas.id} className="px-4 py-3 text-center">
-                      {siswa.nilaiTugas[tugas.id]}
-                    </td>
+        <div className="flex flex-col gap-4">
+          <div className="flex justify-between items-center px-2">
+            <h3 className="font-bold text-slate-700">Data Leger Nilai</h3>
+            <button 
+              onClick={() => setIsSortedByRank(!isSortedByRank)}
+              className={`px-4 py-2 rounded-xl text-xs md:text-sm font-bold transition-colors ${isSortedByRank ? 'bg-rose-100 text-rose-700 border border-rose-200' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'}`}
+            >
+              {isSortedByRank ? 'Kembalikan Urutan Abjad' : 'Urutkan Berdasar Peringkat'}
+            </button>
+          </div>
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden overflow-x-auto">
+            <table className="w-full text-sm text-left">
+              <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
+                <tr>
+                  <th className="px-4 py-3 font-bold whitespace-nowrap">No</th>
+                  <th className="px-4 py-3 font-bold whitespace-nowrap min-w-[200px]">Nama Siswa</th>
+                  {tugasList.map((tugas, idx) => (
+                    <th key={tugas.id} className="px-4 py-3 font-bold text-center whitespace-nowrap">
+                      T{idx + 1}
+                    </th>
                   ))}
-                  <td className="px-4 py-3 text-center font-bold text-slate-700">{siswa.jumlah}</td>
-                  <td className="px-4 py-3 text-center font-bold text-slate-700">{siswa.rataRata}</td>
-                  <td className="px-4 py-3 text-center">
-                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-rose-100 text-rose-700 font-black">
-                      {siswa.peringkatKelas}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-center">
-                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 font-black">
-                      {siswa.peringkatParalel}
-                    </span>
-                  </td>
+                  <th className="px-4 py-3 font-bold text-center whitespace-nowrap">Jumlah</th>
+                  <th className="px-4 py-3 font-bold text-center whitespace-nowrap">Rata-rata</th>
+                  <th className="px-4 py-3 font-bold text-center whitespace-nowrap text-rose-600">Peringkat<br/>Kelas</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {displayedSiswa.map((siswa, idx) => (
+                  <tr key={siswa.id} className="border-b border-slate-100 hover:bg-slate-50">
+                    <td className="px-4 py-3 text-slate-500">{idx + 1}</td>
+                    <td className="px-4 py-3 font-semibold text-slate-700">{siswa.nama}</td>
+                    {tugasList.map(tugas => (
+                      <td key={tugas.id} className="px-4 py-3 text-center">
+                        {siswa.nilaiTugas[tugas.id]}
+                      </td>
+                    ))}
+                    <td className="px-4 py-3 text-center font-bold text-slate-700">{siswa.jumlah}</td>
+                    <td className="px-4 py-3 text-center font-bold text-slate-700">{siswa.rataRata}</td>
+                    <td className="px-4 py-3 text-center">
+                      <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-rose-100 text-rose-700 font-black">
+                        {siswa.peringkatKelas}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       ) : (
         !loading && selectedMapel && selectedKelas && (

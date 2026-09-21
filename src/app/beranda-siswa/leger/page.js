@@ -91,9 +91,9 @@ export default function LegerSiswaPage() {
           </div>
           <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-3xl p-5 text-white shadow-lg shadow-indigo-200 relative overflow-hidden">
             <Medal className="absolute -right-4 -bottom-4 text-indigo-400 opacity-30" size={100} />
-            <p className="text-indigo-100 font-semibold text-sm mb-1">Peringkat Paralel</p>
+            <p className="text-indigo-100 font-semibold text-sm mb-1">Rata-rata Nilai</p>
             <div className="flex items-end gap-2">
-              <span className="text-4xl font-black">{myData.peringkatParalel}</span>
+              <span className="text-4xl font-black">{myData.rataRata}</span>
             </div>
           </div>
         </div>
