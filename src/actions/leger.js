@@ -153,20 +153,18 @@ export async function getLegerData(mapelId, kelasId) {
       return b.profile_completeness - a.profile_completeness;
     });
     
-    let currentRank = 1;
     let currentRataRata = -1;
     let currentCompleteness = -1;
-    let actualRank = 1;
+    let actualRank = 0;
 
     sortedKelas.forEach((sk) => {
       if (sk.rataRata !== currentRataRata || sk.profile_completeness !== currentCompleteness) {
-        actualRank = currentRank;
+        actualRank++;
         currentRataRata = sk.rataRata;
         currentCompleteness = sk.profile_completeness;
       }
       // Selalu beri peringkat walaupun nilainya 0
       sk.assignedRank = actualRank;
-      currentRank++;
     });
 
     siswaList.forEach(s => {
