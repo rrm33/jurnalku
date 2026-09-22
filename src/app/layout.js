@@ -12,7 +12,7 @@ export default function RootLayout({ children }) {
     <html lang="en" className="antialiased">
       <head>
         <meta name="color-scheme" content="light only" />
-        <link rel="apple-touch-icon" href="/icon-512x512.jpg" />
+        <link rel="apple-touch-icon" href="/icon-512x512.png" />
       </head>
       <body className="min-h-screen flex flex-col bg-slate-50 text-slate-800">
         {children}
