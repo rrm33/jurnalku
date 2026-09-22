@@ -1,0 +1,37 @@
+{
+  "../node_modules/jspdf/dist/jspdf.es.min.js -> canvg": {
+    "id": 3167,
+    "files": [
+      "static/chunks/bc98253f.5697b3bd7c61957c.js",
+      "static/chunks/5902.b0e33ede5de3b13c.js"
+    ]
+  },
+  "../node_modules/jspdf/dist/jspdf.es.min.js -> dompurify": {
+    "id": 91992,
+    "files": [
+      "static/chunks/1992.6b081bd90b619188.js"
+    ]
+  },
+  "../node_modules/jspdf/dist/jspdf.es.min.js -> html2canvas": {
+    "id": 82201,
+    "files": [
+      "static/chunks/ad2866b8.6c51983a1eb56136.js"
+    ]
+  },
+  "app/beranda-siswa/profil/page.js -> @/components/MapPicker": {
+    "id": 7186,
+    "files": [
+      "static/css/1de76be520b4de19.css",
+      "static/chunks/d0deef33.1e75a8cc68c34508.js",
+      "static/chunks/7186.93eccdccae04d1ea.js"
+    ]
+  },
+  "app/beranda/maps/page.js -> @/components/StudentMaps": {
+    "id": 7376,
+    "files": [
+      "static/css/1de76be520b4de19.css",
+      "static/chunks/d0deef33.1e75a8cc68c34508.js",
+      "static/chunks/7376.528bf4f0cf9c8318.js"
+    ]
+  }
+}

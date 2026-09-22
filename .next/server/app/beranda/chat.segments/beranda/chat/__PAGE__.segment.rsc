@@ -1,0 +1,27 @@
+1:"$Sreact.fragment"
+2:I[43721,["69","static/chunks/69-ceb77e826b99bbe9.js","8119","static/chunks/app/beranda/chat/page-83a75f927c8e21e4.js"],"default"]
+3:I[90484,[],"OutletBoundary"]
+4:"$Sreact.suspense"
+8:I[90484,[],"ViewportBoundary"]
+9:I[90484,[],"MetadataBoundary"]
+a:I[86869,[],"IconMark"]
+c:I[57121,[],""]
+d:I[74581,[],""]
+10:I[78616,[],"ClientSegmentRoot"]
+11:I[59727,["8320","static/chunks/41ade5dc-86273894741c0fc0.js","3179","static/chunks/app/beranda/layout-83fab082ab854787.js"],"default"]
+:HL["/_next/static/css/d3581608d04947bd.css","style"]
+7:X
+f:X
+f:C
+0:{"buildId":"qy5gOGa35CKckc8eQTLhA","data":[{"rsc":["$","$1","c",{"children":[["$","div",null,{"className":"p-4 max-w-lg mx-auto pb-24","children":[["$","h1",null,{"className":"text-2xl font-bold text-slate-800 mb-4","children":"Pesan Anda"}],["$","p",null,{"className":"text-sm text-slate-500 mb-6","children":"Ini adalah halaman demo ChatBox. Untuk implementasi penuh, Anda perlu mengarahkan obrolan ini ke ID siswa tertentu (misalnya dari halaman detail siswa)."}],["$","$L2",null,{"currentRole":"guru","currentId":"1","targetRole":"siswa","targetId":"5","targetName":"Siswa Demo"}]]}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":"$@6","staleTime":"$7","varyParams":null},{"rsc":["$","$1","h",{"children":[null,["$","$L8",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","div",null,{"hidden":true,"children":["$","$L9",null,{"children":["$","$4",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Jurnal Mengajar"}],["$","meta","1",{"name":"description","content":"Aplikasi Jurnal Mengajar dan Pembelajaran PWA"}],["$","link","2",{"rel":"manifest","href":"/manifest.json"}],["$","link","3",{"rel":"icon","href":"/icon.png?d1c7434e002a4005","type":"image/png","sizes":"1024x1024"}],["$","link","4",{"rel":"apple-touch-icon","href":"/apple-icon.png?1dae2fcd95fb9a97","type":"image/png","sizes":"512x512"}],["$","$La","5",{}]]}]}]}],null]}],"isPartial":"$@b","staleTime":"$7","varyParams":null},{"rsc":["$","$1","c",{"children":[null,["$","$Lc",null,{"parallelRouterKey":"children","template":["$","$Ld",null,{}]}]]}],"isPartial":"$@e","staleTime":"$7","varyParams":"$f"},{"rsc":["$","$1","c",{"children":[null,["$","$L10",null,{"Component":"$11","slots":{"children":["$","$Lc",null,{"parallelRouterKey":"children","template":["$","$Ld",null,{}]}]},"serverProvidedParams":{"params":{},"promises":["$@12"]}}]]}],"isPartial":"$@13","staleTime":"$7","varyParams":null},{"rsc":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/d3581608d04947bd.css","precedence":"next"}]],["$","html",null,{"lang":"en","className":"antialiased","children":[["$","head",null,{"children":[["$","meta",null,{"name":"color-scheme","content":"light only"}],["$","link",null,{"rel":"apple-touch-icon","href":"/icon-512x512.png"}]]}],["$","body",null,{"className":"min-h-screen flex flex-col bg-slate-50 text-slate-800","children":[["$","$Lc",null,{"parallelRouterKey":"children","template":["$","$Ld",null,{}],"notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]]}],["$","script",null,{"dangerouslySetInnerHTML":{"__html":"\n              if ('serviceWorker' in navigator) {\n                window.addEventListener('load', function() {\n                  navigator.serviceWorker.register('/sw.js').then(\n                    function(registration) {\n                      console.log('Service Worker registration successful with scope: ', registration.scope);\n                    },\n                    function(err) {\n                      console.log('Service Worker registration failed: ', err);\n                    }\n                  );\n                });\n              }\n            "}}]]}]]}]]}],"isPartial":"$@14","staleTime":"$7","varyParams":null}],"isUpgradeableISRFallback":false,"a":"$@15","rootVaryParams":null,"needsRuntimeRequest":"$@16"}
+5:null
+12:"$0:data:3:rsc:props:children:1:props:serverProvidedParams:params"
+7:300
+16:true
+7:C
+15:0
+b:"$undefined"
+e:"$undefined"
+14:"$undefined"
+6:"$undefined"
+13:"$undefined"

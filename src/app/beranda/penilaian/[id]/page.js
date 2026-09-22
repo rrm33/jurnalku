@@ -32,6 +32,8 @@ export default function PenilaianPage() {
   
   // State untuk melacak form input nilai (key = siswa_id, value = nilai string)
   const [nilaiState, setNilaiState] = useState({});
+  const [jawabanState, setJawabanState] = useState({});
+
 
   const fetchData = async () => {
     setLoading(true);
@@ -40,8 +42,9 @@ export default function PenilaianPage() {
     if (res.success && res.data.tugas) {
       setData(res.data);
       
-      // Initialize nilai state dari data yang ada di database
+      // Initialize nilai dan jawaban state dari data yang ada di database
       const initialNilai = {};
+      const initialJawaban = {};
       res.data.siswaList.forEach(siswa => {
         const pengumpulan = siswa.pengumpulanTugas && siswa.pengumpulanTugas.length > 0 ? siswa.pengumpulanTugas[0] : null;
         if (pengumpulan && pengumpulan.nilai !== null) {
@@ -49,8 +52,15 @@ export default function PenilaianPage() {
         } else {
           initialNilai[siswa.id] = "";
         }
+        
+        if (pengumpulan && pengumpulan.input_jawaban !== null) {
+          initialJawaban[siswa.id] = pengumpulan.input_jawaban || "";
+        } else {
+          initialJawaban[siswa.id] = "";
+        }
       });
       setNilaiState(initialNilai);
+      setJawabanState(initialJawaban);
     } else {
       // Jika tugas null atau gagal
       setData(res.success ? res.data : null);
@@ -81,16 +91,24 @@ export default function PenilaianPage() {
     }
   };
 
+  const handleJawabanChange = (siswaId, value) => {
+    setJawabanState(prev => ({ ...prev, [siswaId]: value }));
+  };
+
   const handleSaveBulk = async () => {
     if (!data || !data.tugas) return;
     
     setSaving(true);
     
     // Siapkan array data yang akan dikirim ke backend
-    const dataToSend = Object.keys(nilaiState).map(siswaId => ({
-      siswa_id: parseInt(siswaId),
-      nilai: nilaiState[siswaId]
-    }));
+    const dataToSend = data.siswaList.map(siswa => {
+      const sId = siswa.id;
+      return {
+        siswa_id: sId,
+        nilai: (nilaiState[sId] === undefined || nilaiState[sId] === "") ? null : parseInt(nilaiState[sId]),
+        jawaban: jawabanState[sId] || ""
+      };
+    });
 
     const res = await simpanNilaiMasal(data.tugas.id, dataToSend);
     
@@ -304,30 +322,24 @@ export default function PenilaianPage() {
                     </td>
                     
                     <td className="p-4">
-                      {isSubmitted ? (
-                        <div className="space-y-2">
-                           {submission.input_jawaban && (
-                             <div className="text-xs text-slate-600 bg-slate-50 p-2.5 rounded-lg border border-slate-200 max-h-24 overflow-y-auto custom-scrollbar whitespace-pre-wrap">
-                               <Linkify>{submission.input_jawaban}</Linkify>
-                             </div>
-                           )}
-                           
-                           {submission.upload_file && (
-                             <button onClick={() => setFileToView(submission.upload_file)} className="inline-flex items-center gap-2 text-xs font-bold text-pink-600 bg-pink-50 hover:bg-pink-100 px-3 py-1.5 rounded-lg transition-colors border border-pink-100">
-                               <FileText size={14} /> Buka Lampiran Jawaban
-                             </button>
-                           )}
-                           
-                           {!submission.input_jawaban && !submission.upload_file && (
-                             <span className="text-xs text-slate-400 italic">Mengirim tugas kosong (Hanya menandai selesai).</span>
-                           )}
-                        </div>
-                      ) : (
-                        <div className="text-xs text-slate-400 flex items-center gap-2">
-                          <AlertCircle size={14} />
-                          Belum ada rekam jejak.
-                        </div>
-                      )}
+                      <div className="space-y-2">
+                        <textarea
+                          value={jawabanState[siswa.id] ?? ""}
+                          onChange={(e) => handleJawabanChange(siswa.id, e.target.value)}
+                          placeholder="Ketik atau edit jawaban siswa..."
+                          className="w-full text-xs text-slate-600 bg-slate-50 p-2.5 rounded-lg border border-slate-200 min-h-[60px] max-h-32 focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-500 transition-all custom-scrollbar whitespace-pre-wrap"
+                        />
+                        {isSubmitted && submission.upload_file && (
+                          <button onClick={() => setFileToView(submission.upload_file)} className="inline-flex items-center gap-2 text-xs font-bold text-pink-600 bg-pink-50 hover:bg-pink-100 px-3 py-1.5 rounded-lg transition-colors border border-pink-100">
+                            <FileText size={14} /> Buka Lampiran Jawaban
+                          </button>
+                        )}
+                        {!isSubmitted && (
+                          <div className="text-[10px] text-slate-400 italic flex items-center gap-1">
+                            <AlertCircle size={12} /> Siswa belum mengumpulkan secara mandiri.
+                          </div>
+                        )}
+                      </div>
                     </td>
                     
                     <td className="p-4 bg-pink-50/20 group-hover:bg-pink-50/50 transition-colors">

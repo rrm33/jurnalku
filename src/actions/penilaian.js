@@ -158,7 +158,11 @@ export async function simpanNilaiMasal(tugasId, dataNilai) {
          if (pNilai > 100) pNilai = 100;
       }
 
-      if (pNilai !== null) {
+      const pJawaban = (item.jawaban && item.jawaban.trim() !== "") ? item.jawaban : null;
+      const existingRecord = existing.find(e => e.siswa_id === pSiswaId);
+
+      // Upsert jika ada nilai, atau ada jawaban, atau siswa sudah punya file (jangan dihapus filenya)
+      if (pNilai !== null || pJawaban !== null || (existingRecord && existingRecord.upload_file)) {
         operations.push(prisma.pengumpulanTugas.upsert({
           where: {
             tugas_id_siswa_id: {
@@ -166,39 +170,25 @@ export async function simpanNilaiMasal(tugasId, dataNilai) {
               siswa_id: pSiswaId
             }
           },
-          update: { nilai: pNilai },
+          update: { nilai: pNilai, input_jawaban: pJawaban },
           create: {
             tugas_id: parsedTugasId,
             siswa_id: pSiswaId,
-            nilai: pNilai
+            nilai: pNilai,
+            input_jawaban: pJawaban
           }
         }));
       } else {
-        // Jika nilai dikosongkan (hapus nilai) dan recordnya memang sudah ada
-        if (existingMap.has(pSiswaId)) {
-          const existingRecord = existing.find(e => e.siswa_id === pSiswaId);
-          // Jika tidak ada teks jawaban dan tidak ada file, berarti ini hanya record nilai kosong (ghost record). Hapus recordnya.
-          if (!existingRecord.input_jawaban && !existingRecord.upload_file) {
-            operations.push(prisma.pengumpulanTugas.delete({
-              where: {
-                tugas_id_siswa_id: {
-                  tugas_id: parsedTugasId,
-                  siswa_id: pSiswaId
-                }
+        // Jika semua kosong (tidak ada nilai, tidak ada jawaban, tidak ada file), dan record ada, maka hapus record.
+        if (existingRecord) {
+          operations.push(prisma.pengumpulanTugas.delete({
+            where: {
+              tugas_id_siswa_id: {
+                tugas_id: parsedTugasId,
+                siswa_id: pSiswaId
               }
-            }));
-          } else {
-            // Jika ada jawaban/file dari siswa, maka cukup set nilai menjadi null agar siswa bisa mengedit kembali.
-            operations.push(prisma.pengumpulanTugas.update({
-              where: {
-                tugas_id_siswa_id: {
-                  tugas_id: parsedTugasId,
-                  siswa_id: pSiswaId
-                }
-              },
-              data: { nilai: null }
-            }));
-          }
+            }
+          }));
         }
       }
     }
