@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { BookOpen, Users, LogOut, FileText, User, Menu, X, Megaphone, Home, Map, CheckSquare, ClipboardList } from "lucide-react";
 import DbIndicator from "@/components/DbIndicator";
 import TeacherMobileNav from "@/components/TeacherMobileNav";
+import PwaInstallButton from "@/components/PwaInstallButton";
 import { logout } from "@/actions/auth";
 import { getAdminNotifications } from "@/actions/notifications";
 import Swal from "sweetalert2";
@@ -97,7 +98,7 @@ export default function BerandaLayout({ children }) {
       <aside className={`hidden md:flex sticky top-0 left-0 z-50 w-64 bg-white border-r border-rose-50 shadow-sm flex-col h-screen`}>
         <div className="p-6 border-b border-rose-50/50 flex items-center justify-between bg-white relative overflow-hidden">
           <div className="flex items-center gap-3 relative z-10">
-            <img src="/icon.png" alt="Logo Jurnalku" className="w-10 h-10 object-contain drop-shadow-sm" />
+            <img src="/icon-512x512.jpg" alt="Logo Jurnalku" className="w-10 h-10 object-contain drop-shadow-sm" />
             <div>
               <h1 className="font-bold text-slate-700 text-lg leading-tight tracking-wide">Jurnal</h1>
               <p className="text-[11px] font-semibold text-rose-400 uppercase tracking-widest">Mengajar Pro</p>
@@ -197,6 +198,9 @@ export default function BerandaLayout({ children }) {
       <main className="flex-1 p-2 md:p-4 w-full min-h-screen">
         {children}
       </main>
+
+      {/* Floating PWA Install Button */}
+      <PwaInstallButton />
 
       {/* Bottom Nav for Mobile */}
       <TeacherMobileNav notifications={notifications} onLogout={handleLogout} />

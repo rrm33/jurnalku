@@ -2,9 +2,9 @@ import "./globals.css";
 
 export const metadata = {
   title: "Jurnal Mengajar",
-  description: "Aplikasi Jurnal Mengajar",
+  description: "Aplikasi Jurnal Mengajar dan Pembelajaran PWA",
   manifest: "/manifest.json",
-  themeColor: "#0ea5e9",
+  themeColor: "#dc2626",
 };
 
 export default function RootLayout({ children }) {
@@ -12,7 +12,7 @@ export default function RootLayout({ children }) {
     <html lang="en" className="antialiased">
       <head>
         <meta name="color-scheme" content="light only" />
-        <link rel="apple-touch-icon" href="/globe.svg" />
+        <link rel="apple-touch-icon" href="/icon-512x512.jpg" />
       </head>
       <body className="min-h-screen flex flex-col bg-slate-50 text-slate-800">
         {children}

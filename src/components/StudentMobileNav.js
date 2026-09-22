@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Home, ClipboardList, User, LogOut, Menu, X, Megaphone } from "lucide-react";
-import PwaInstallButton from "./PwaInstallButton";
 
 export default function StudentMobileNav({ newTugasCount, ajuanStatus, onLogout }) {
   const router = useRouter();
@@ -112,7 +111,6 @@ export default function StudentMobileNav({ newTugasCount, ajuanStatus, onLogout 
                 </div>
               </button>
 
-              <PwaInstallButton />
 
               <button onClick={onLogout} className="w-full flex items-center gap-4 px-4 py-3 bg-red-50 hover:bg-red-100 text-red-600 rounded-2xl transition-colors text-left mb-6">
                 <div className="w-10 h-10 bg-white/50 rounded-xl flex items-center justify-center text-red-500">

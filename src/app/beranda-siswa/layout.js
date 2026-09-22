@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { BookOpen, LogOut, Home, ClipboardList, User, Menu, X } from "lucide-react";
 import DbIndicator from "@/components/DbIndicator";
 import StudentMobileNav from "@/components/StudentMobileNav";
+import PwaInstallButton from "@/components/PwaInstallButton";
 import { logout } from "@/actions/auth";
 import { getNewTugasCount } from "@/actions/tugas-siswa";
 import { getAjuanStatusSiswa } from "@/actions/profil-siswa";
@@ -149,6 +150,9 @@ export default function BerandaSiswaLayout({ children }) {
       <main className="flex-1 p-2 md:p-4 w-full min-h-screen">
         {children}
       </main>
+
+      {/* Floating PWA Install Button */}
+      <PwaInstallButton />
 
       {/* Bottom Nav for Mobile */}
       <StudentMobileNav newTugasCount={newTugasCount} ajuanStatus={ajuanStatus} onLogout={handleLogout} />
