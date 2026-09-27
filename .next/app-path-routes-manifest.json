@@ -25,5 +25,6 @@
   "/beranda/penilaian/page": "/beranda/penilaian",
   "/beranda/presensi/[id]/page": "/beranda/presensi/[id]",
   "/beranda/profil/page": "/beranda/profil",
+  "/beranda/resize/page": "/beranda/resize",
   "/beranda/rpp/page": "/beranda/rpp"
 }

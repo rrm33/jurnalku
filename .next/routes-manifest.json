@@ -143,6 +143,12 @@
       "namedRegex": "^/beranda/profil(?:/)?$"
     },
     {
+      "page": "/beranda/resize",
+      "regex": "^/beranda/resize(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/beranda/resize(?:/)?$"
+    },
+    {
       "page": "/beranda/rpp",
       "regex": "^/beranda/rpp(?:/)?$",
       "routeKeys": {},

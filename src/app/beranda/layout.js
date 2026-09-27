@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { BookOpen, Users, LogOut, FileText, User, Menu, X, Megaphone, Home, Map, CheckSquare, ClipboardList } from "lucide-react";
+import { BookOpen, Users, LogOut, FileText, User, Menu, X, Megaphone, Home, Map, CheckSquare, ClipboardList, Crop } from "lucide-react";
 import DbIndicator from "@/components/DbIndicator";
 import TeacherMobileNav from "@/components/TeacherMobileNav";
 import PwaInstallButton from "@/components/PwaInstallButton";
@@ -134,6 +134,10 @@ export default function BerandaLayout({ children }) {
           
           <button onClick={() => handleNavigation("/beranda/informasi")} className={getMenuClass("/beranda/informasi")}>
             <Megaphone size={18} /> Informasi
+          </button>
+
+          <button onClick={() => handleNavigation("/beranda/resize")} className={getMenuClass("/beranda/resize")}>
+            <Crop size={18} /> Resize & Crop
           </button>
 
           <div className="text-[10px] font-bold text-slate-300 uppercase tracking-widest mb-3 mt-8 px-4">Master Data</div>
