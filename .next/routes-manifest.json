@@ -179,6 +179,12 @@
       "namedRegex": "^/beranda\\-siswa/profil(?:/)?$"
     },
     {
+      "page": "/beranda-siswa/resize",
+      "regex": "^/beranda\\-siswa/resize(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/beranda\\-siswa/resize(?:/)?$"
+    },
+    {
       "page": "/beranda-siswa/tugas",
       "regex": "^/beranda\\-siswa/tugas(?:/)?$",
       "routeKeys": {},
