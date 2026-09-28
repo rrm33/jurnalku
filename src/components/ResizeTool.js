@@ -5,6 +5,7 @@ import ReactCrop from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import { PDFDocument } from "pdf-lib";
 import { ArrowLeft, Image as ImageIcon, FileText, Download, Upload, Crop, Maximize2, ZoomIn, ZoomOut } from "lucide-react";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 
@@ -27,7 +28,6 @@ export default function ResizeTool({ hideBack = false }) {
   const [finalFileSize, setFinalFileSize] = useState(0);
   const [imageQuality, setImageQuality] = useState(80);
   const [imageFormat, setImageFormat] = useState("image/jpeg");
-  const [previewZoom, setPreviewZoom] = useState(1);
 
   const formatBytes = (bytes) => {
     if (bytes === 0) return '0 Bytes';
@@ -395,19 +395,32 @@ export default function ResizeTool({ hideBack = false }) {
                   <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl flex flex-col items-center">
                     <div className="w-full flex items-center justify-between mb-3 border-b border-slate-200 pb-2">
                       <h3 className="font-bold text-slate-700">Live Preview Hasil</h3>
-                      <div className="flex items-center gap-2 bg-white px-2 py-1 rounded-lg border border-slate-200 shadow-sm">
-                        <button onClick={() => setPreviewZoom(z => Math.max(0.1, z - 0.25))} className="text-slate-500 hover:text-pink-600"><ZoomOut size={16}/></button>
-                        <span className="text-xs font-bold text-slate-600 w-10 text-center">{Math.round(previewZoom * 100)}%</span>
-                        <button onClick={() => setPreviewZoom(z => Math.min(3, z + 0.25))} className="text-slate-500 hover:text-pink-600"><ZoomIn size={16}/></button>
-                      </div>
+                      <p className="text-[10px] text-slate-500 font-medium">Gunakan 2 jari / scroll untuk zoom</p>
                     </div>
-                    <div className="w-full overflow-auto max-h-[350px] flex items-start justify-start bg-transparent bg-checkered p-2 rounded-lg border border-slate-200 shadow-inner" style={{ backgroundImage: "url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAMUlEQVQ4T2NkYNgfQEhD/4nEi8gYjMPEgBQjV4PGAUZAQA2jxgFGBgQjYk+cRBo2BgAAX5745rP8O5AAAAAASUVORK5CYII=')" }}>
-                      <div style={{ transform: `scale(${previewZoom})`, transformOrigin: 'top left', transition: 'transform 0.1s ease' }}>
-                        <canvas 
-                          ref={previewCanvasRef} 
-                          className="max-w-none shadow-md rounded border border-slate-300 bg-white"
-                        />
-                      </div>
+                    <div className="w-full relative overflow-hidden h-[350px] bg-transparent bg-checkered p-2 rounded-lg border border-slate-200 shadow-inner" style={{ backgroundImage: "url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAMUlEQVQ4T2NkYNgfQEhD/4nEi8gYjMPEgBQjV4PGAUZAQA2jxgFGBgQjYk+cRBo2BgAAX5745rP8O5AAAAAASUVORK5CYII=')" }}>
+                      <TransformWrapper
+                        initialScale={1}
+                        centerOnInit={true}
+                        minScale={0.1}
+                        maxScale={8}
+                        wheel={{ step: 0.1 }}
+                      >
+                        {({ zoomIn, zoomOut, resetTransform }) => (
+                          <>
+                            <div className="absolute top-2 right-2 flex gap-1 z-10 bg-white/90 p-1 rounded-lg backdrop-blur shadow-sm border border-slate-200">
+                              <button type="button" onClick={() => zoomOut()} className="p-1.5 text-slate-600 hover:text-pink-600 rounded bg-white shadow-sm border border-slate-100"><ZoomOut size={14}/></button>
+                              <button type="button" onClick={() => resetTransform()} className="px-2 py-1.5 text-slate-600 hover:text-pink-600 rounded bg-white shadow-sm border border-slate-100 text-[10px] font-bold">RESET</button>
+                              <button type="button" onClick={() => zoomIn()} className="p-1.5 text-slate-600 hover:text-pink-600 rounded bg-white shadow-sm border border-slate-100"><ZoomIn size={14}/></button>
+                            </div>
+                            <TransformComponent wrapperStyle={{ width: "100%", height: "100%" }} contentStyle={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                              <canvas 
+                                ref={previewCanvasRef} 
+                                className="shadow-md rounded border border-slate-300 bg-white max-w-full max-h-full object-contain"
+                              />
+                            </TransformComponent>
+                          </>
+                        )}
+                      </TransformWrapper>
                     </div>
                   </div>
                 </div>
