@@ -5,15 +5,19 @@ import { cookies } from "next/headers";
 import webpush from "web-push";
 
 // Konfigurasi Web Push dengan VAPID dari environment
-const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
-const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY;
+const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ? process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY.replace(/['"]+/g, '') : null;
+const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY ? process.env.VAPID_PRIVATE_KEY.replace(/['"]+/g, '') : null;
 
 if (vapidPublicKey && vapidPrivateKey) {
-  webpush.setVapidDetails(
-    "mailto:ryanrizqimaulana@example.com",
-    vapidPublicKey,
-    vapidPrivateKey
-  );
+  try {
+    webpush.setVapidDetails(
+      "mailto:ryanrizqimaulana@example.com",
+      vapidPublicKey,
+      vapidPrivateKey
+    );
+  } catch (err) {
+    console.error("VAPID config error:", err);
+  }
 }
 
 export async function savePushSubscription(subscription) {
