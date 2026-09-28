@@ -26,6 +26,6 @@
   "/beranda/presensi/[id]/page": "app/beranda/presensi/[id]/page.js",
   "/beranda/profil/page": "app/beranda/profil/page.js",
   "/beranda/rpp/page": "app/beranda/rpp/page.js",
-  "/beranda/resize/page": "app/beranda/resize/page.js",
-  "/beranda-siswa/resize/page": "app/beranda-siswa/resize/page.js"
+  "/beranda-siswa/resize/page": "app/beranda-siswa/resize/page.js",
+  "/beranda/resize/page": "app/beranda/resize/page.js"
 }

@@ -4,6 +4,9 @@ export const metadata = {
   title: "Jurnal Mengajar",
   description: "Aplikasi Jurnal Mengajar dan Pembelajaran PWA",
   manifest: "/manifest.json",
+};
+
+export const viewport = {
   themeColor: "#dc2626",
 };
 

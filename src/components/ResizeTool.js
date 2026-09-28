@@ -8,7 +8,7 @@ import { ArrowLeft, Image as ImageIcon, FileText, Download, Upload, Crop, Maximi
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 
-export default function ResizeTool() {
+export default function ResizeTool({ hideBack = false }) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("image"); // 'image' or 'pdf'
   const [isDragging, setIsDragging] = useState(false);
@@ -226,9 +226,11 @@ export default function ResizeTool() {
 
   return (
     <div className="max-w-6xl mx-auto pb-16 animate-in fade-in zoom-in-95 duration-500">
-      <button onClick={() => router.back()} className="flex items-center gap-2 text-slate-500 hover:text-pink-600 font-semibold mb-6 transition-colors">
-        <ArrowLeft size={18} /> Kembali
-      </button>
+      {!hideBack && (
+        <button onClick={() => router.back()} className="flex items-center gap-2 text-slate-500 hover:text-pink-600 font-semibold mb-6 transition-colors">
+          <ArrowLeft size={18} /> Kembali
+        </button>
+      )}
 
       <div className="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-sm mb-8 relative overflow-hidden">
         <h1 className="text-2xl font-extrabold text-slate-800 mb-2">Alat Resize & Crop</h1>
