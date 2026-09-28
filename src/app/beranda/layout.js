@@ -137,7 +137,7 @@ export default function BerandaLayout({ children }) {
           </button>
 
           <button onClick={() => handleNavigation("/beranda/resize")} className={getMenuClass("/beranda/resize")}>
-            <Crop size={18} /> Resize & Crop
+            <Crop size={18} /> Alat Produktivitas
           </button>
 
           <div className="text-[10px] font-bold text-slate-300 uppercase tracking-widest mb-3 mt-8 px-4">Master Data</div>

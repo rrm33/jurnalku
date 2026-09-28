@@ -25,6 +25,8 @@ export default function ResizeTool({ hideBack = false }) {
   const [finalWidth, setFinalWidth] = useState(0);
   const [finalHeight, setFinalHeight] = useState(0);
   const [finalFileSize, setFinalFileSize] = useState(0);
+  const [imageQuality, setImageQuality] = useState(80);
+  const [imageFormat, setImageFormat] = useState("image/jpeg");
 
   const formatBytes = (bytes) => {
     if (bytes === 0) return '0 Bytes';
@@ -36,7 +38,10 @@ export default function ResizeTool({ hideBack = false }) {
 
   // PDF State
   const [pdfFile, setPdfFile] = useState(null);
-  const [pdfScale, setPdfScale] = useState(50); // percentage
+  const [pdfScale, setPdfScale] = useState(100); // percentage
+  const [pdfOriginalSize, setPdfOriginalSize] = useState(0);
+  const [pdfFinalSize, setPdfFinalSize] = useState(0);
+  const [isCalculatingPdf, setIsCalculatingPdf] = useState(false);
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -66,10 +71,44 @@ export default function ResizeTool({ hideBack = false }) {
   const processPdfFile = (file) => {
     if (file && file.type === "application/pdf") {
       setPdfFile(file);
+      setPdfOriginalSize(file.size);
+      setPdfFinalSize(file.size);
+      setPdfScale(100);
     } else {
       Swal.fire("Format tidak didukung", "Harap masukkan file PDF", "error");
     }
   };
+
+  // PDF Preview Calculation
+  useEffect(() => {
+    if (!pdfFile || pdfScale === 100) return;
+    
+    const calculatePdfSize = async () => {
+      setIsCalculatingPdf(true);
+      try {
+        const arrayBuffer = await pdfFile.arrayBuffer();
+        const pdfDoc = await PDFDocument.load(arrayBuffer);
+        const pages = pdfDoc.getPages();
+        const scaleRatio = pdfScale / 100;
+
+        for (const page of pages) {
+          const { width, height } = page.getSize();
+          page.scale(scaleRatio, scaleRatio);
+          page.setSize(width * scaleRatio, height * scaleRatio);
+        }
+
+        const pdfBytes = await pdfDoc.save();
+        setPdfFinalSize(pdfBytes.length);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsCalculatingPdf(false);
+      }
+    };
+
+    const timer = setTimeout(calculatePdfSize, 800);
+    return () => clearTimeout(timer);
+  }, [pdfScale, pdfFile]);
 
   const handleDrop = (e) => {
     e.preventDefault();
@@ -166,11 +205,11 @@ export default function ResizeTool({ hideBack = false }) {
       if (previewCanvasRef.current && finalWidth > 0) {
         previewCanvasRef.current.toBlob((blob) => {
           if (blob) setFinalFileSize(blob.size);
-        }, "image/png", 1);
+        }, imageFormat, imageQuality / 100);
       }
     }, 300);
     return () => clearTimeout(timer);
-  }, [finalWidth, finalHeight, completedCrop, imageScale, imgSrc]);
+  }, [finalWidth, finalHeight, completedCrop, imageScale, imgSrc, imageFormat, imageQuality]);
 
   const downloadImage = async () => {
     if (!previewCanvasRef.current) return;
@@ -180,10 +219,11 @@ export default function ResizeTool({ hideBack = false }) {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "resized-image.png";
+      const ext = imageFormat === "image/jpeg" ? "jpg" : imageFormat === "image/webp" ? "webp" : "png";
+      a.download = `resized-image.${ext}`;
       a.click();
       URL.revokeObjectURL(url);
-    }, "image/png", 1);
+    }, imageFormat, imageQuality / 100);
   };
 
   const handlePdfUpload = (e) => {
@@ -309,6 +349,33 @@ export default function ResizeTool({ hideBack = false }) {
                       className="w-full accent-pink-600 mb-4"
                     />
 
+                    <div className="grid grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <label className="flex justify-between text-xs font-bold text-slate-600 mb-1">
+                          <span>Kualitas:</span>
+                          <span className="text-pink-600">{imageQuality}%</span>
+                        </label>
+                        <input 
+                          type="range" min="1" max="100" 
+                          value={imageQuality} 
+                          onChange={(e) => setImageQuality(parseInt(e.target.value))}
+                          className="w-full accent-pink-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs font-bold text-slate-600 block mb-1">Format:</label>
+                        <select 
+                          value={imageFormat} 
+                          onChange={(e) => setImageFormat(e.target.value)}
+                          className="w-full p-1.5 bg-slate-50 border border-slate-200 rounded text-xs font-medium outline-none"
+                        >
+                          <option value="image/jpeg">JPG / JPEG</option>
+                          <option value="image/webp">WEBP (Terkecil)</option>
+                          <option value="image/png">PNG</option>
+                        </select>
+                      </div>
+                    </div>
+
                     <div className="bg-slate-50 rounded-lg p-3 text-center border border-slate-200">
                       <p className="text-xs text-slate-500 font-semibold mb-1">Ukuran Hasil Akhir:</p>
                       <p className="text-lg font-black text-slate-700">{finalWidth}px <span className="text-slate-400 font-normal">x</span> {finalHeight}px</p>
@@ -359,20 +426,43 @@ export default function ResizeTool({ hideBack = false }) {
             </div>
 
             {pdfFile && (
-              <div className="bg-slate-50 border border-slate-200 p-6 rounded-xl max-w-md mx-auto">
-                <h3 className="font-bold text-slate-700 mb-4">Pengaturan Resize PDF</h3>
-                <label className="text-sm font-semibold text-slate-600 mb-2 block">Skala Halaman ({pdfScale}%)</label>
+              <div className="bg-slate-50 border border-slate-200 p-6 rounded-xl max-w-lg mx-auto">
+                <h3 className="font-bold text-slate-700 mb-4 border-b border-slate-200 pb-2">Pengaturan Ukuran PDF</h3>
+                
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div className="bg-white p-3 rounded-lg border border-slate-200 text-center shadow-sm">
+                    <p className="text-xs text-slate-400 font-bold uppercase tracking-wider mb-1">Ukuran Asli</p>
+                    <p className="text-lg font-black text-slate-600">{formatBytes(pdfOriginalSize)}</p>
+                  </div>
+                  <div className="bg-rose-50 p-3 rounded-lg border border-rose-200 text-center shadow-sm relative">
+                    <p className="text-xs text-rose-500 font-bold uppercase tracking-wider mb-1">Hasil (Estimasi)</p>
+                    <p className="text-lg font-black text-rose-700">
+                      {isCalculatingPdf ? "Menghitung..." : formatBytes(pdfFinalSize)}
+                    </p>
+                  </div>
+                </div>
+
+                <label className="flex justify-between text-sm font-semibold text-slate-600 mb-2">
+                  <span>Skala Halaman</span>
+                  <span className="text-rose-600 bg-rose-100 px-2 rounded">{pdfScale}px / {pdfScale}%</span>
+                </label>
                 <input 
                   type="range" 
                   min="10" 
-                  max="200" 
+                  max="100" 
                   value={pdfScale} 
                   onChange={(e) => setPdfScale(parseInt(e.target.value))}
-                  className="w-full accent-pink-600 mb-2"
+                  className="w-full accent-rose-600 mb-2"
                 />
-                <p className="text-xs text-slate-500 mb-6">Mengubah ukuran dimensi halaman (Width & Height) PDF. Berguna jika dokumen terlalu besar untuk di-print.</p>
+                <p className="text-xs text-slate-500 mb-6 bg-slate-100 p-2 rounded">
+                  Menurunkan skala halaman akan mengecilkan panjang dan lebar konten PDF yang berujung pada turunnya ukuran file (MB).
+                </p>
                 
-                <button onClick={processAndDownloadPdf} className="w-full flex justify-center items-center gap-2 bg-pink-600 hover:bg-pink-700 text-white font-bold py-2.5 rounded-xl transition-all shadow-md">
+                <button 
+                  onClick={processAndDownloadPdf} 
+                  disabled={isCalculatingPdf}
+                  className="w-full flex justify-center items-center gap-2 bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 rounded-xl transition-all shadow-md disabled:opacity-50"
+                >
                   <Download size={18} /> Download PDF Baru
                 </button>
               </div>

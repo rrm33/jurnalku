@@ -116,8 +116,8 @@ export default function StudentMobileNav({ newTugasCount, ajuanStatus, onLogout 
                   <Crop size={18} />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-bold text-slate-700 text-sm">Resize & Crop File</h3>
-                  <p className="text-xs text-slate-500">Ubah ukuran gambar dan PDF</p>
+                  <h3 className="font-bold text-slate-700 text-sm">Alat Produktivitas</h3>
+                  <p className="text-xs text-slate-500">Alat untuk PDF, Gambar, dan QR</p>
                 </div>
               </button>
 

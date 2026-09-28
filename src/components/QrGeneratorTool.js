@@ -51,26 +51,34 @@ export default function QrGeneratorTool() {
             </div>
           </div>
 
-          <div className="flex flex-col items-center justify-center bg-slate-50 p-6 rounded-2xl border border-slate-200">
+          <div className="flex flex-col items-center justify-center bg-slate-50 p-6 rounded-2xl border border-slate-200 min-h-[300px]">
             <h3 className="font-bold text-slate-700 flex items-center gap-2 mb-6"><QrCode size={18}/> Preview QR Code</h3>
             
-            <div ref={qrRef} className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 mb-6">
-              <QRCodeCanvas 
-                value={text || "https://jurnalku.com"} 
-                size={200} 
-                fgColor={color}
-                level="H"
-                includeMargin={true}
-              />
-            </div>
+            {text ? (
+              <>
+                <div ref={qrRef} className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 mb-6">
+                  <QRCodeCanvas 
+                    value={text} 
+                    size={200} 
+                    fgColor={color}
+                    level="H"
+                    includeMargin={true}
+                  />
+                </div>
 
-            <button 
-              onClick={downloadQr} 
-              disabled={!text}
-              className="w-full max-w-xs flex justify-center items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <Download size={18} /> Download QR Code
-            </button>
+                <button 
+                  onClick={downloadQr} 
+                  className="w-full max-w-xs flex justify-center items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition-all shadow-md"
+                >
+                  <Download size={18} /> Download QR Code
+                </button>
+              </>
+            ) : (
+              <div className="text-center text-slate-400">
+                <QrCode size={48} className="mx-auto mb-3 opacity-20" />
+                <p className="text-sm">Masukkan teks atau link untuk melihat QR Code</p>
+              </div>
+            )}
           </div>
         </div>
       </div>

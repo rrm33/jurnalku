@@ -122,7 +122,7 @@ export default function BerandaSiswaLayout({ children }) {
           </button>
           
           <button onClick={() => handleNavigation("/beranda-siswa/resize")} className={getMenuClass("/beranda-siswa/resize")}>
-            <Crop size={18} /> Resize & Crop
+            <Crop size={18} /> Alat Produktivitas
           </button>
         </nav>
 

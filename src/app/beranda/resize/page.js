@@ -1,9 +1,9 @@
-import ResizeTool from "@/components/ResizeTool";
+import ToolsBundle from "@/components/ToolsBundle";
 
 export const metadata = {
-  title: 'Alat Resize & Crop - Jurnalku',
+  title: 'Alat Tambahan - Jurnalku',
 };
 
 export default function Page() {
-  return <ResizeTool />;
+  return <ToolsBundle />;
 }
