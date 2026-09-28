@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Crop, FileImage, QrCode } from "lucide-react";
+import { Crop, FileImage, QrCode, Layers } from "lucide-react";
 import ResizeTool from "@/components/ResizeTool";
 import ImageToPdfTool from "@/components/ImageToPdfTool";
 import QrGeneratorTool from "@/components/QrGeneratorTool";
+import PdfTools from "@/components/PdfTools";
 
 export default function ToolsBundle() {
   const [activeTab, setActiveTab] = useState("resize");
@@ -26,6 +27,12 @@ export default function ToolsBundle() {
           <FileImage size={16} /> Gambar ke PDF
         </button>
         <button 
+          onClick={() => setActiveTab("pdftools")}
+          className={`flex items-center gap-2 py-2 px-5 rounded-xl font-bold text-sm transition-all shadow-sm ${activeTab === "pdftools" ? "bg-indigo-600 text-white scale-105" : "bg-white text-slate-600 border border-slate-200 hover:border-indigo-200 hover:text-indigo-600"}`}
+        >
+          <Layers size={16} /> Gabung/Pisah PDF
+        </button>
+        <button 
           onClick={() => setActiveTab("qrcode")}
           className={`flex items-center gap-2 py-2 px-5 rounded-xl font-bold text-sm transition-all shadow-sm ${activeTab === "qrcode" ? "bg-emerald-600 text-white scale-105" : "bg-white text-slate-600 border border-slate-200 hover:border-emerald-200 hover:text-emerald-600"}`}
         >
@@ -37,6 +44,7 @@ export default function ToolsBundle() {
       <div className="w-full">
         {activeTab === "resize" && <ResizeTool hideBack={true} />}
         {activeTab === "img2pdf" && <ImageToPdfTool />}
+        {activeTab === "pdftools" && <PdfTools />}
         {activeTab === "qrcode" && <QrGeneratorTool />}
       </div>
     </div>
