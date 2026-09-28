@@ -24,6 +24,15 @@ export default function ResizePage() {
   // Final dimension states for display
   const [finalWidth, setFinalWidth] = useState(0);
   const [finalHeight, setFinalHeight] = useState(0);
+  const [finalFileSize, setFinalFileSize] = useState(0);
+
+  const formatBytes = (bytes) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
 
   // PDF State
   const [pdfFile, setPdfFile] = useState(null);
@@ -150,6 +159,18 @@ export default function ResizePage() {
       ctx.drawImage(image, 0, 0, targetW, targetH);
     }
   }, [completedCrop, imageScale, imgSrc]);
+
+  // Calculate file size from preview canvas
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (previewCanvasRef.current && finalWidth > 0) {
+        previewCanvasRef.current.toBlob((blob) => {
+          if (blob) setFinalFileSize(blob.size);
+        }, "image/png", 1);
+      }
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [finalWidth, finalHeight, completedCrop, imageScale, imgSrc]);
 
   const downloadImage = async () => {
     if (!previewCanvasRef.current) return;
@@ -289,6 +310,9 @@ export default function ResizePage() {
                     <div className="bg-slate-50 rounded-lg p-3 text-center border border-slate-200">
                       <p className="text-xs text-slate-500 font-semibold mb-1">Ukuran Hasil Akhir:</p>
                       <p className="text-lg font-black text-slate-700">{finalWidth}px <span className="text-slate-400 font-normal">x</span> {finalHeight}px</p>
+                      {finalFileSize > 0 && (
+                        <p className="text-sm font-bold text-pink-600 mt-1">{formatBytes(finalFileSize)}</p>
+                      )}
                     </div>
                     
                     <div className="pt-4 mt-2">
