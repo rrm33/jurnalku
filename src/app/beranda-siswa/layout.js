@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { BookOpen, LogOut, Home, ClipboardList, User, Menu, X, Crop } from "lucide-react";
+import { BookOpen, LogOut, Home, ClipboardList, User, Menu, X, Crop, Bell } from "lucide-react";
 import DbIndicator from "@/components/DbIndicator";
 import StudentMobileNav from "@/components/StudentMobileNav";
 import PwaInstallButton from "@/components/PwaInstallButton";
