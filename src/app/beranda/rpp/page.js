@@ -486,9 +486,9 @@ export default function BerandaPage() {
                       <FileText size={16} className="text-rose-500 shrink-0" />
                       <span className="truncate">{formData.existing_file.split('/').pop()}</span>
                     </div>
-                    <a href={formData.existing_file} target="_blank" rel="noopener noreferrer" className="text-[11px] font-bold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg whitespace-nowrap transition-colors shrink-0">
+                    <button type="button" onClick={() => setFileToView(formData.existing_file)} className="text-[11px] font-bold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg whitespace-nowrap transition-colors shrink-0">
                       Lihat File
-                    </a>
+                    </button>
                   </div>
                 )}
                 <div className="flex gap-2">
@@ -527,9 +527,9 @@ export default function BerandaPage() {
                             <FileText size={16} className="text-pink-500 shrink-0" />
                             <span className="truncate">{formData.existing_file_tugas.split('/').pop()}</span>
                           </div>
-                          <a href={formData.existing_file_tugas} target="_blank" rel="noopener noreferrer" className="text-[11px] font-bold text-pink-600 hover:text-pink-700 bg-pink-50 hover:bg-pink-100 px-3 py-1.5 rounded-lg whitespace-nowrap transition-colors shrink-0">
+                          <button type="button" onClick={() => setFileToView(formData.existing_file_tugas)} className="text-[11px] font-bold text-pink-600 hover:text-pink-700 bg-pink-50 hover:bg-pink-100 px-3 py-1.5 rounded-lg whitespace-nowrap transition-colors shrink-0">
                             Lihat File
-                          </a>
+                          </button>
                         </div>
                       )}
                       <input type="file" id="file_tugas_input" className="w-full px-3 py-2 border border-slate-200 rounded-xl outline-none bg-white focus:border-pink-400 focus:ring-2 focus:ring-pink-100 transition-all font-medium text-sm file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100" />
