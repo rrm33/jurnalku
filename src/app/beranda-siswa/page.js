@@ -4,6 +4,7 @@ import { getKbmStatsSiswa } from "@/actions/tugas-siswa";
 import { BookOpen, ClipboardList, CheckCircle2, User, Sparkles, TrendingUp, Bell } from "lucide-react";
 import { calculateProfileCompletion, getProfileProgressColor } from "@/utils/profile";
 import { prisma } from "@/lib/prisma";
+import BroadcastPopup from "@/components/BroadcastPopup";
 
 export default async function BerandaSiswa() {
   const cookieStore = await cookies();
@@ -20,6 +21,7 @@ export default async function BerandaSiswa() {
 
   return (
     <div className="animate-in fade-in zoom-in-95 duration-500 relative pb-10">
+      <BroadcastPopup />
       {parsed.needsPassword && <SetPasswordForm siswaId={parsed.id} nama={parsed.nama} />}
       
       {/* Modern Profile Header */}

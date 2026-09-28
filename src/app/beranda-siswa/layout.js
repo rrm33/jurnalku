@@ -121,6 +121,10 @@ export default function BerandaSiswaLayout({ children }) {
             <User size={18} /> Pesan (Chat)
           </button>
           
+          <button onClick={() => handleNavigation("/beranda-siswa/broadcast")} className={getMenuClass("/beranda-siswa/broadcast")}>
+            <Bell size={18} /> Pengumuman
+          </button>
+          
           <button onClick={() => handleNavigation("/beranda-siswa/resize")} className={getMenuClass("/beranda-siswa/resize")}>
             <Crop size={18} /> Alat Produktivitas
           </button>

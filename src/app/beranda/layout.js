@@ -180,6 +180,10 @@ export default function BerandaLayout({ children }) {
           <button onClick={() => handleNavigation("/beranda/chat")} className={getMenuClass("/beranda/chat")}>
             <Megaphone size={18} /> Pesan (Chat)
           </button>
+          
+          <button onClick={() => handleNavigation("/beranda/broadcast")} className={getMenuClass("/beranda/broadcast")}>
+            <Megaphone size={18} /> Pesan Broadcast
+          </button>
         </nav>
 
         <div className="p-4 border-t border-rose-50 bg-white">

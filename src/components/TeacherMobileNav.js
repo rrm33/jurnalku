@@ -191,6 +191,19 @@ export default function TeacherMobileNav({ notifications, onLogout }) {
                 </div>
               </button>
 
+              <button 
+                onClick={() => handleNavigation('/beranda/broadcast')}
+                className="w-full flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 transition-colors text-left"
+              >
+                <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-indigo-500">
+                  <Megaphone size={18} />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-slate-700 text-sm">Pesan Broadcast</h3>
+                  <p className="text-xs text-slate-500">Pengumuman ke semua siswa</p>
+                </div>
+              </button>
+
               <div className="h-4 border-b border-slate-100 mb-4"></div>
 
 
