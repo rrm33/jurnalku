@@ -11,6 +11,8 @@ export default function PdfTools() {
   // State for Merge
   const [mergeFiles, setMergeFiles] = useState([]);
   const [isMerging, setIsMerging] = useState(false);
+  const [dragItemIndex, setDragItemIndex] = useState(null);
+  const [dragOverItemIndex, setDragOverItemIndex] = useState(null);
 
   // State for Split
   const [splitFile, setSplitFile] = useState(null);
@@ -32,6 +34,25 @@ export default function PdfTools() {
 
   const removeMergeFile = (index) => {
     setMergeFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleDragStart = (index) => {
+    setDragItemIndex(index);
+  };
+
+  const handleDragEnter = (index) => {
+    setDragOverItemIndex(index);
+  };
+
+  const handleDragEnd = () => {
+    if (dragItemIndex !== null && dragOverItemIndex !== null && dragItemIndex !== dragOverItemIndex) {
+      const _mergeFiles = [...mergeFiles];
+      const draggedItem = _mergeFiles.splice(dragItemIndex, 1)[0];
+      _mergeFiles.splice(dragOverItemIndex, 0, draggedItem);
+      setMergeFiles(_mergeFiles);
+    }
+    setDragItemIndex(null);
+    setDragOverItemIndex(null);
   };
 
   const processMerge = async () => {
@@ -188,19 +209,31 @@ export default function PdfTools() {
 
             {mergeFiles.length > 0 && (
               <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200">
-                <h3 className="font-bold text-slate-700 mb-4 flex items-center gap-2">
+                <h3 className="font-bold text-slate-700 mb-2 flex items-center gap-2">
                   <FileText size={18}/> File Terpilih ({mergeFiles.length})
                 </h3>
+                <p className="text-xs text-slate-500 mb-4">Tahan dan geser (drag & drop) item ke atas/bawah untuk mengubah urutan PDF.</p>
                 <div className="space-y-2 mb-6">
                   {mergeFiles.map((f, i) => (
-                    <div key={i} className="flex items-center justify-between bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+                    <div 
+                      key={i} 
+                      draggable 
+                      onDragStart={() => handleDragStart(i)}
+                      onDragEnter={() => handleDragEnter(i)}
+                      onDragEnd={handleDragEnd}
+                      onDragOver={(e) => e.preventDefault()}
+                      className={`flex items-center justify-between bg-white p-3 rounded-xl border shadow-sm cursor-move transition-all ${dragItemIndex === i ? 'opacity-50 border-indigo-400' : 'border-slate-200 hover:border-indigo-300'}`}
+                    >
                       <div className="flex items-center gap-3 overflow-hidden">
-                        <div className="bg-indigo-100 text-indigo-600 font-black text-xs w-6 h-6 flex items-center justify-center rounded-md">
+                        <div className="text-slate-400 cursor-grab active:cursor-grabbing">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+                        </div>
+                        <div className="bg-indigo-100 text-indigo-600 font-black text-xs w-6 h-6 flex items-center justify-center rounded-md shrink-0">
                           {i + 1}
                         </div>
-                        <span className="text-sm font-semibold text-slate-600 truncate">{f.name}</span>
+                        <span className="text-sm font-semibold text-slate-600 truncate" title={f.name}>{f.name}</span>
                       </div>
-                      <button onClick={() => removeMergeFile(i)} className="text-rose-500 hover:bg-rose-50 p-1.5 rounded-lg transition-colors">
+                      <button onClick={() => removeMergeFile(i)} className="text-rose-500 hover:bg-rose-50 p-1.5 rounded-lg transition-colors shrink-0">
                         <Trash2 size={16} />
                       </button>
                     </div>
