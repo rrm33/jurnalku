@@ -11,82 +11,150 @@ import Swal from "sweetalert2";
 export default function ResizePage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("image"); // 'image' or 'pdf'
+  const [isDragging, setIsDragging] = useState(false);
 
   // Image State
   const [imgSrc, setImgSrc] = useState("");
   const imgRef = useRef(null);
+  const previewCanvasRef = useRef(null);
   const [crop, setCrop] = useState();
   const [completedCrop, setCompletedCrop] = useState(null);
-  const [targetWidth, setTargetWidth] = useState(0);
-  const [targetHeight, setTargetHeight] = useState(0);
-  const [keepAspect, setKeepAspect] = useState(true);
+  const [imageScale, setImageScale] = useState(100); // percentage
+
+  // Final dimension states for display
+  const [finalWidth, setFinalWidth] = useState(0);
+  const [finalHeight, setFinalHeight] = useState(0);
 
   // PDF State
   const [pdfFile, setPdfFile] = useState(null);
-  const [pdfScale, setPdfScale] = useState(50); // percentage to scale down
+  const [pdfScale, setPdfScale] = useState(50); // percentage
 
-  const onSelectFile = (e) => {
-    if (e.target.files && e.target.files.length > 0) {
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const processImageFile = (file) => {
+    if (file && file.type.startsWith("image/")) {
       setCrop(undefined);
+      setCompletedCrop(null);
+      setImageScale(100);
       const reader = new FileReader();
       reader.addEventListener("load", () => {
         setImgSrc(reader.result?.toString() || "");
       });
-      reader.readAsDataURL(e.target.files[0]);
+      reader.readAsDataURL(file);
+    } else {
+      Swal.fire("Format tidak didukung", "Harap masukkan file gambar", "error");
+    }
+  };
+
+  const processPdfFile = (file) => {
+    if (file && file.type === "application/pdf") {
+      setPdfFile(file);
+    } else {
+      Swal.fire("Format tidak didukung", "Harap masukkan file PDF", "error");
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      const file = e.dataTransfer.files[0];
+      if (activeTab === "image") {
+        processImageFile(file);
+      } else {
+        processPdfFile(file);
+      }
+    }
+  };
+
+  const onSelectFile = (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      processImageFile(e.target.files[0]);
     }
   };
 
   const onImageLoad = (e) => {
-    const { width, height } = e.currentTarget;
-    setTargetWidth(width);
-    setTargetHeight(height);
+    const { width, height, naturalWidth, naturalHeight } = e.currentTarget;
+    setFinalWidth(naturalWidth);
+    setFinalHeight(naturalHeight);
   };
 
-  const handleWidthChange = (val) => {
-    const newW = parseInt(val) || 0;
-    setTargetWidth(newW);
-    if (keepAspect && imgRef.current) {
-      const aspect = imgRef.current.height / imgRef.current.width;
-      setTargetHeight(Math.round(newW * aspect));
-    }
-  };
+  // Update preview canvas whenever crop or scale changes
+  useEffect(() => {
+    if (
+      completedCrop?.width &&
+      completedCrop?.height &&
+      imgRef.current &&
+      previewCanvasRef.current
+    ) {
+      const image = imgRef.current;
+      const canvas = previewCanvasRef.current;
+      const ctx = canvas.getContext("2d");
 
-  const handleHeightChange = (val) => {
-    const newH = parseInt(val) || 0;
-    setTargetHeight(newH);
-    if (keepAspect && imgRef.current) {
-      const aspect = imgRef.current.width / imgRef.current.height;
-      setTargetWidth(Math.round(newH * aspect));
+      if (!ctx) return;
+
+      const scaleX = image.naturalWidth / image.width;
+      const scaleY = image.naturalHeight / image.height;
+
+      const cropX = completedCrop.x * scaleX;
+      const cropY = completedCrop.y * scaleY;
+      const cropW = completedCrop.width * scaleX;
+      const cropH = completedCrop.height * scaleY;
+
+      // Apply User Scale
+      const targetW = Math.round(cropW * (imageScale / 100));
+      const targetH = Math.round(cropH * (imageScale / 100));
+
+      setFinalWidth(targetW);
+      setFinalHeight(targetH);
+
+      canvas.width = targetW;
+      canvas.height = targetH;
+
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(
+        image,
+        cropX,
+        cropY,
+        cropW,
+        cropH,
+        0,
+        0,
+        targetW,
+        targetH
+      );
+    } else if (imgRef.current && previewCanvasRef.current && !completedCrop?.width) {
+      // No crop active, just scale the whole image
+      const image = imgRef.current;
+      const canvas = previewCanvasRef.current;
+      const ctx = canvas.getContext("2d");
+
+      const targetW = Math.round(image.naturalWidth * (imageScale / 100));
+      const targetH = Math.round(image.naturalHeight * (imageScale / 100));
+
+      setFinalWidth(targetW);
+      setFinalHeight(targetH);
+
+      canvas.width = targetW;
+      canvas.height = targetH;
+
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(image, 0, 0, targetW, targetH);
     }
-  };
+  }, [completedCrop, imageScale, imgSrc]);
 
   const downloadImage = async () => {
-    if (!imgRef.current) return;
-
-    const canvas = document.createElement("canvas");
-    const scaleX = imgRef.current.naturalWidth / imgRef.current.width;
-    const scaleY = imgRef.current.naturalHeight / imgRef.current.height;
-
-    // Use cropped area if defined, otherwise full image
-    const cropX = completedCrop?.width ? completedCrop.x * scaleX : 0;
-    const cropY = completedCrop?.height ? completedCrop.y * scaleY : 0;
-    const cropW = completedCrop?.width ? completedCrop.width * scaleX : imgRef.current.naturalWidth;
-    const cropH = completedCrop?.height ? completedCrop.height * scaleY : imgRef.current.naturalHeight;
-
-    canvas.width = targetWidth;
-    canvas.height = targetHeight;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    // Draw
-    ctx.drawImage(
-      imgRef.current,
-      cropX, cropY, cropW, cropH, // Source
-      0, 0, targetWidth, targetHeight // Destination
-    );
-
-    canvas.toBlob((blob) => {
+    if (!previewCanvasRef.current) return;
+    
+    previewCanvasRef.current.toBlob((blob) => {
       if (!blob) return;
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -99,7 +167,7 @@ export default function ResizePage() {
 
   const handlePdfUpload = (e) => {
     if (e.target.files && e.target.files.length > 0) {
-      setPdfFile(e.target.files[0]);
+      processPdfFile(e.target.files[0]);
     }
   };
 
@@ -136,7 +204,7 @@ export default function ResizePage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto pb-16 animate-in fade-in zoom-in-95 duration-500">
+    <div className="max-w-6xl mx-auto pb-16 animate-in fade-in zoom-in-95 duration-500">
       <button onClick={() => router.back()} className="flex items-center gap-2 text-slate-500 hover:text-pink-600 font-semibold mb-6 transition-colors">
         <ArrowLeft size={18} /> Kembali
       </button>
@@ -164,19 +232,26 @@ export default function ResizePage() {
         {/* IMAGE TOOL */}
         {activeTab === "image" && (
           <div className="space-y-6">
-            <div className="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center hover:bg-slate-50 transition-colors">
+            <div 
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              className={`border-2 border-dashed rounded-2xl p-6 text-center transition-colors ${isDragging ? 'border-pink-500 bg-pink-50' : 'border-slate-200 hover:bg-slate-50'}`}
+            >
               <input type="file" accept="image/*" onChange={onSelectFile} className="hidden" id="img-upload" />
               <label htmlFor="img-upload" className="cursor-pointer flex flex-col items-center gap-3">
-                <div className="w-12 h-12 bg-pink-100 text-pink-600 rounded-full flex items-center justify-center">
+                <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${isDragging ? 'bg-pink-600 text-white' : 'bg-pink-100 text-pink-600'}`}>
                   <Upload size={20} />
                 </div>
-                <span className="font-bold text-slate-600">Pilih Gambar</span>
+                <span className="font-bold text-slate-600">Klik atau Tarik (Drag & Drop) Gambar ke sini</span>
               </label>
             </div>
 
             {imgSrc && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="md:col-span-2 bg-slate-50 border border-slate-200 p-4 rounded-xl flex items-center justify-center overflow-auto max-h-[500px]">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                {/* Kiri: Area Crop */}
+                <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl flex flex-col items-center overflow-auto">
+                  <h3 className="font-bold text-slate-700 w-full mb-3 flex items-center gap-2 border-b border-slate-200 pb-2"><Crop size={16} /> Area Asli & Crop</h3>
                   <ReactCrop 
                     crop={crop} 
                     onChange={(_, percentCrop) => setCrop(percentCrop)} 
@@ -187,31 +262,51 @@ export default function ResizePage() {
                       alt="Upload" 
                       src={imgSrc} 
                       onLoad={onImageLoad}
-                      style={{ maxHeight: '100%', maxWidth: '100%' }}
+                      className="max-h-[400px] w-auto mx-auto border border-slate-300 shadow-sm"
                     />
                   </ReactCrop>
+                  <p className="text-xs text-slate-500 mt-3 text-center">Seret/Tarik pada area gambar untuk memotong (crop).</p>
                 </div>
                 
-                <div className="space-y-4">
-                  <h3 className="font-bold text-slate-700 flex items-center gap-2 border-b pb-2"><Maximize2 size={16}/> Ukuran Target</h3>
-                  <div>
-                    <label className="text-xs font-semibold text-slate-500">Lebar (px)</label>
-                    <input type="number" value={targetWidth} onChange={(e) => handleWidthChange(e.target.value)} className="w-full mt-1 p-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-pink-500 outline-none" />
+                {/* Kanan: Pengaturan & Live Preview */}
+                <div className="space-y-6">
+                  <div className="bg-white border border-slate-200 p-5 rounded-xl shadow-sm">
+                    <h3 className="font-bold text-slate-700 flex items-center gap-2 border-b border-slate-100 pb-3 mb-4"><Maximize2 size={16}/> Pengaturan Ukuran (Resize)</h3>
+                    
+                    <label className="flex justify-between text-sm font-bold text-slate-600 mb-2">
+                      <span>Skala Gambar:</span>
+                      <span className="text-pink-600 bg-pink-50 px-2 rounded-md">{imageScale}%</span>
+                    </label>
+                    <input 
+                      type="range" 
+                      min="10" 
+                      max="200" 
+                      value={imageScale} 
+                      onChange={(e) => setImageScale(parseInt(e.target.value))}
+                      className="w-full accent-pink-600 mb-4"
+                    />
+
+                    <div className="bg-slate-50 rounded-lg p-3 text-center border border-slate-200">
+                      <p className="text-xs text-slate-500 font-semibold mb-1">Ukuran Hasil Akhir:</p>
+                      <p className="text-lg font-black text-slate-700">{finalWidth}px <span className="text-slate-400 font-normal">x</span> {finalHeight}px</p>
+                    </div>
+                    
+                    <div className="pt-4 mt-2">
+                      <button onClick={downloadImage} className="w-full flex justify-center items-center gap-2 bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 rounded-xl transition-all shadow-md">
+                        <Download size={18} /> Download Hasil
+                      </button>
+                    </div>
                   </div>
-                  <div>
-                    <label className="text-xs font-semibold text-slate-500">Tinggi (px)</label>
-                    <input type="number" value={targetHeight} onChange={(e) => handleHeightChange(e.target.value)} className="w-full mt-1 p-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-pink-500 outline-none" />
-                  </div>
-                  <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
-                    <input type="checkbox" checked={keepAspect} onChange={(e) => setKeepAspect(e.target.checked)} className="accent-pink-600 rounded" />
-                    Pertahankan Rasio (Aspect Ratio)
-                  </label>
-                  
-                  <div className="pt-4 border-t border-slate-100 mt-4">
-                    <button onClick={downloadImage} className="w-full flex justify-center items-center gap-2 bg-pink-600 hover:bg-pink-700 text-white font-bold py-2.5 rounded-xl transition-all shadow-md">
-                      <Download size={18} /> Download Hasil
-                    </button>
-                    <p className="text-xs text-slate-400 mt-2 text-center">*(Jika area di-crop, maka yang di-resize hanya area crop tersebut)</p>
+
+                  <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl flex flex-col items-center">
+                    <h3 className="font-bold text-slate-700 w-full mb-3 border-b border-slate-200 pb-2">Live Preview Hasil</h3>
+                    <div className="w-full overflow-auto max-h-[300px] flex items-center justify-center bg-transparent bg-checkered p-2 rounded-lg border border-slate-200 shadow-inner" style={{ backgroundImage: "url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAMUlEQVQ4T2NkYNgfQEhD/4nEi8gYjMPEgBQjV4PGAUZAQA2jxgFGBgQjYk+cRBo2BgAAX5745rP8O5AAAAAASUVORK5CYII=')" }}>
+                      <canvas 
+                        ref={previewCanvasRef} 
+                        className="max-w-full max-h-full object-contain shadow-md rounded border border-slate-300 bg-white"
+                        style={{ width: finalWidth < 500 ? finalWidth : '100%', height: 'auto' }}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -222,13 +317,18 @@ export default function ResizePage() {
         {/* PDF TOOL */}
         {activeTab === "pdf" && (
           <div className="space-y-6">
-            <div className="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center hover:bg-slate-50 transition-colors">
+            <div 
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              className={`border-2 border-dashed rounded-2xl p-6 text-center transition-colors ${isDragging ? 'border-rose-500 bg-rose-50' : 'border-slate-200 hover:bg-slate-50'}`}
+            >
               <input type="file" accept="application/pdf" onChange={handlePdfUpload} className="hidden" id="pdf-upload" />
               <label htmlFor="pdf-upload" className="cursor-pointer flex flex-col items-center gap-3">
-                <div className="w-12 h-12 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center">
+                <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${isDragging ? 'bg-rose-600 text-white' : 'bg-rose-100 text-rose-600'}`}>
                   <FileText size={20} />
                 </div>
-                <span className="font-bold text-slate-600">{pdfFile ? pdfFile.name : "Pilih File PDF"}</span>
+                <span className="font-bold text-slate-600">{pdfFile ? pdfFile.name : "Klik atau Tarik (Drag & Drop) PDF ke sini"}</span>
               </label>
             </div>
 
