@@ -61,6 +61,7 @@ model Siswa {
   sentMessages     Message[] @relation("SiswaSentMessages")
   receivedMessages Message[] @relation("SiswaReceivedMessages")
   broadcastReads   BroadcastRead[]
+  pushSubscriptions PushSubscription[]
 }
 
 model AjuanProfilSiswa {
@@ -215,4 +216,16 @@ model BroadcastRead {
 
   @@unique([broadcast_id, siswa_id])
 }
+
+model PushSubscription {
+  id        Int      @id @default(autoincrement())
+  siswa_id  Int
+  endpoint  String   @db.Text
+  auth      String
+  p256dh    String
+  createdAt DateTime @default(now())
+  
+  siswa     Siswa    @relation(fields: [siswa_id], references: [id], onDelete: Cascade)
+}
+
 

@@ -6,6 +6,7 @@ import { BookOpen, LogOut, Home, ClipboardList, User, Menu, X, Crop, Bell } from
 import DbIndicator from "@/components/DbIndicator";
 import StudentMobileNav from "@/components/StudentMobileNav";
 import PwaInstallButton from "@/components/PwaInstallButton";
+import PushSubscriber from "@/components/PushSubscriber";
 import { logout } from "@/actions/auth";
 import { getNewTugasCount } from "@/actions/tugas-siswa";
 import { getAjuanStatusSiswa } from "@/actions/profil-siswa";
@@ -157,6 +158,7 @@ export default function BerandaSiswaLayout({ children }) {
       {/* Konten Utama */}
       <main className="flex-1 p-2 md:p-4 w-full min-h-screen">
         {children}
+        <PushSubscriber />
       </main>
 
       {/* Floating PWA Install Button */}

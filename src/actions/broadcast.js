@@ -58,6 +58,25 @@ export async function sendBroadcast(judul, pesan) {
       }
     });
 
+    // Send Web Push to all active siswa
+    const allSiswa = await prisma.siswa.findMany({
+      where: { status: "Aktif" },
+      select: { id: true }
+    });
+    
+    if (allSiswa.length > 0) {
+      const { sendWebPush } = require("./push");
+      const siswaIds = allSiswa.map(s => s.id);
+      
+      // Fire and forget (don't await)
+      sendWebPush(
+        siswaIds, 
+        `Pengumuman dari ${session.nama || "Guru"}`, 
+        judul,
+        "/beranda-siswa/broadcast"
+      ).catch(console.error);
+    }
+
     return { success: true, data: broadcast };
   } catch (error) {
     console.error("Error send broadcast:", error);
