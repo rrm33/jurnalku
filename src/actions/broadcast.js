@@ -1,12 +1,21 @@
 "use server";
 
-import prisma from "@/lib/prisma";
-import { getUserSession } from "./auth";
+import { prisma } from "@/lib/prisma";
+import { cookies } from "next/headers";
+import { unstable_noStore as noStore } from "next/cache";
+
+async function getSession() {
+  const cookieStore = await cookies();
+  const session = cookieStore.get('session');
+  if (!session) return null;
+  return JSON.parse(session.value);
+}
 
 export async function getBroadcasts(guruId) {
+  noStore();
   try {
     const broadcasts = await prisma.broadcast.findMany({
-      where: { guru_id: guruId },
+      where: { guru_id: parseInt(guruId) },
       orderBy: { createdAt: 'desc' },
       include: {
         reads: true,
@@ -36,7 +45,7 @@ export async function getBroadcasts(guruId) {
 
 export async function sendBroadcast(judul, pesan) {
   try {
-    const session = await getUserSession();
+    const session = await getSession();
     if (!session || session.role !== 'guru') {
       return { success: false, error: "Unauthorized" };
     }
@@ -45,7 +54,7 @@ export async function sendBroadcast(judul, pesan) {
       data: {
         judul,
         pesan,
-        guru_id: session.id
+        guru_id: parseInt(session.id)
       }
     });
 
@@ -57,24 +66,24 @@ export async function sendBroadcast(judul, pesan) {
 }
 
 export async function getUnreadBroadcastsForSiswa() {
+  noStore();
   try {
-    const session = await getUserSession();
+    const session = await getSession();
     if (!session || session.role !== 'siswa') {
       return { success: false, error: "Unauthorized" };
     }
 
-    // Get all broadcasts the student hasn't read yet
     const unreadBroadcasts = await prisma.broadcast.findMany({
       where: {
         NOT: {
           reads: {
             some: {
-              siswa_id: session.id
+              siswa_id: parseInt(session.id)
             }
           }
         }
       },
-      orderBy: { createdAt: 'asc' }, // show oldest unread first
+      orderBy: { createdAt: 'asc' }, 
       include: {
         guru: {
           select: { nama: true }
@@ -91,20 +100,20 @@ export async function getUnreadBroadcastsForSiswa() {
 
 export async function markBroadcastAsRead(broadcastId) {
   try {
-    const session = await getUserSession();
+    const session = await getSession();
     if (!session || session.role !== 'siswa') return { success: false };
 
     await prisma.broadcastRead.upsert({
       where: {
         broadcast_id_siswa_id: {
-          broadcast_id: broadcastId,
-          siswa_id: session.id
+          broadcast_id: parseInt(broadcastId),
+          siswa_id: parseInt(session.id)
         }
       },
       update: {},
       create: {
-        broadcast_id: broadcastId,
-        siswa_id: session.id
+        broadcast_id: parseInt(broadcastId),
+        siswa_id: parseInt(session.id)
       }
     });
 
@@ -116,8 +125,9 @@ export async function markBroadcastAsRead(broadcastId) {
 }
 
 export async function getAllBroadcastsForSiswa() {
+  noStore();
   try {
-    const session = await getUserSession();
+    const session = await getSession();
     if (!session || session.role !== 'siswa') {
       return { success: false, error: "Unauthorized" };
     }
@@ -129,7 +139,7 @@ export async function getAllBroadcastsForSiswa() {
           select: { nama: true }
         },
         reads: {
-          where: { siswa_id: session.id }
+          where: { siswa_id: parseInt(session.id) }
         }
       }
     });

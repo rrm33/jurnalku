@@ -4,6 +4,13 @@ import { prisma } from "@/lib/prisma"
 import { cookies } from "next/headers"
 
 // Mengecek koneksi ke MySQL
+export async function getSessionClient() {
+  const cookieStore = await cookies();
+  const session = cookieStore.get('session');
+  if (!session) return null;
+  return JSON.parse(session.value);
+}
+
 export async function checkConnection() {
   try {
     await prisma.$queryRaw`SELECT 1`;
