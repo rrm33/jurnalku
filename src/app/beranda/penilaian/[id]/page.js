@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { getTugasDenganPenilaian, simpanNilaiMasal } from "@/actions/penilaian";
-import { ArrowLeft, CheckCircle2, Clock, Download, FileText, CheckSquare, FileWarning, Search, Save, AlertCircle, X } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Clock, Download, FileText, CheckSquare, FileWarning, Search, Save, AlertCircle, X, ExternalLink } from "lucide-react";
 import FileViewerModal from "@/components/FileViewerModal";
 import Linkify from "@/components/Linkify";
 import Countdown from "@/components/Countdown";
@@ -329,6 +329,23 @@ export default function PenilaianPage() {
                           placeholder="Ketik atau edit jawaban siswa..."
                           className="w-full text-xs text-slate-600 bg-slate-50 p-2.5 rounded-lg border border-slate-200 min-h-[60px] max-h-32 focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-500 transition-all custom-scrollbar whitespace-pre-wrap"
                         />
+                        {/* Tampilkan link yang bisa diklik dari jawaban */}
+                        {jawabanState[siswa.id] && jawabanState[siswa.id].match(/(https?:\/\/[^\s]+)/g) && (
+                          <div className="flex flex-wrap gap-2 mt-1">
+                            {jawabanState[siswa.id].match(/(https?:\/\/[^\s]+)/g).map((url, idx) => (
+                              <a 
+                                key={idx} 
+                                href={url} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="inline-flex items-center gap-1.5 text-[11px] font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded-md transition-colors border border-blue-100"
+                              >
+                                <ExternalLink size={12} /> Buka Link
+                              </a>
+                            ))}
+                          </div>
+                        )}
+                        
                         {isSubmitted && submission.upload_file && (
                           <button onClick={() => setFileToView(submission.upload_file)} className="inline-flex items-center gap-2 text-xs font-bold text-pink-600 bg-pink-50 hover:bg-pink-100 px-3 py-1.5 rounded-lg transition-colors border border-pink-100">
                             <FileText size={14} /> Buka Lampiran Jawaban

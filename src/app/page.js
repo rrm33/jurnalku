@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Crop, FileImage, QrCode, LogIn } from "lucide-react";
+import { Crop, FileImage, QrCode, LogIn, Minimize } from "lucide-react";
 import ResizeTool from "@/components/ResizeTool";
 import ImageToPdfTool from "@/components/ImageToPdfTool";
 import QrGeneratorTool from "@/components/QrGeneratorTool";
+import ImageCompressTool from "@/components/ImageCompressTool";
 
 export default function LandingPage() {
   const [activeTab, setActiveTab] = useState("resize");
@@ -48,6 +49,12 @@ export default function LandingPage() {
             <Crop size={18} /> Resize & Crop
           </button>
           <button 
+            onClick={() => setActiveTab("compress")}
+            className={`flex items-center gap-2 py-3 px-6 rounded-2xl font-bold text-sm transition-all shadow-sm ${activeTab === "compress" ? "bg-amber-600 text-white scale-105" : "bg-white text-slate-600 border border-slate-200 hover:border-amber-200 hover:text-amber-600"}`}
+          >
+            <Minimize size={18} /> Kompres Gambar
+          </button>
+          <button 
             onClick={() => setActiveTab("img2pdf")}
             className={`flex items-center gap-2 py-3 px-6 rounded-2xl font-bold text-sm transition-all shadow-sm ${activeTab === "img2pdf" ? "bg-blue-600 text-white scale-105" : "bg-white text-slate-600 border border-slate-200 hover:border-blue-200 hover:text-blue-600"}`}
           >
@@ -64,6 +71,7 @@ export default function LandingPage() {
         {/* Render Tool */}
         <div className="w-full">
           {activeTab === "resize" && <ResizeTool hideBack={true} />}
+          {activeTab === "compress" && <ImageCompressTool />}
           {activeTab === "img2pdf" && <ImageToPdfTool />}
           {activeTab === "qrcode" && <QrGeneratorTool />}
         </div>
