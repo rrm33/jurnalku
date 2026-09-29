@@ -117,7 +117,7 @@ export default function BroadcastPage() {
                   </div>
                 </div>
                 <div className="text-sm text-slate-600 whitespace-pre-wrap mb-4 bg-slate-50 p-3 rounded-lg border border-slate-100">
-                  <Linkify text={b.pesan} />
+                  <Linkify>{b.pesan}</Linkify>
                 </div>
                 <div className="text-xs text-slate-400 font-medium">
                   Dikirim pada: {new Date(b.createdAt).toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'short' })}

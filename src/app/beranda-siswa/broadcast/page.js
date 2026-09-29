@@ -53,7 +53,7 @@ export default function StudentBroadcastPage() {
                   </div>
                 </div>
                 <div className="text-sm text-slate-600 whitespace-pre-wrap mb-4 bg-slate-50 p-3 rounded-lg border border-slate-100">
-                  <Linkify text={b.pesan} />
+                  <Linkify>{b.pesan}</Linkify>
                 </div>
                 <div className="flex justify-between items-center text-xs text-slate-400 font-medium mt-2 border-t border-slate-100 pt-3">
                   <span>Dikirim: {new Date(b.createdAt).toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'short' })}</span>

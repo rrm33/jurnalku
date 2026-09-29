@@ -1,0 +1,1 @@
+globalThis.__RSC_MANIFEST=(globalThis.__RSC_MANIFEST||{});globalThis.__RSC_MANIFEST["/api/calibrate/route"]={"moduleLoading":{"prefix":"/_next/"},"ssrModuleMapping":{},"edgeSSRModuleMapping":{},"clientModules":{},"entryCSSFiles":{"/Users/ryanrizqimaulana/Documents/Aplikasi/jurnal/src/app/api/calibrate/route":[]},"rscModuleMapping":{},"edgeRscModuleMapping":{}};

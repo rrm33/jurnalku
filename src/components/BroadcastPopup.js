@@ -70,7 +70,7 @@ export default function BroadcastPopup() {
         
         <div className="p-6 md:p-8 max-h-[60vh] overflow-y-auto">
           <div className="text-slate-700 leading-relaxed whitespace-pre-wrap">
-            <Linkify text={currentMsg.pesan} />
+            <Linkify>{currentMsg.pesan}</Linkify>
           </div>
         </div>
         
