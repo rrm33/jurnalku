@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Users, CheckSquare, ChevronDown, ChevronUp, Trash2, Edit2, Link as LinkIcon, CheckCircle2, Upload, FileText, Copy } from "lucide-react";
-import { getRpps, saveRpp, deleteRpp, toggleStatusRpp, toggleActiveRpp } from "@/actions/rpp";
+import { getRpps, saveRpp, deleteRpp, toggleStatusRpp, toggleActiveRpp, saveCatatanRpp } from "@/actions/rpp";
 import { getKelas, getMapel } from "@/actions/master";
 import FileViewerModal from "@/components/FileViewerModal";
 import Swal from "sweetalert2";
@@ -339,7 +339,7 @@ export default function BerandaPage() {
             {/* Body Accordion (Expanded) */}
             {expandedId === rpp.id && (
               <div className="px-5 md:px-6 pb-6 pt-2 border-t border-slate-100 bg-slate-50/50 animate-in slide-in-from-top-2 duration-200">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 mt-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 mt-4">
                   <div>
                     <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Tujuan Pembelajaran</h4>
                     <p className="text-sm text-slate-700 leading-relaxed font-medium whitespace-pre-wrap">{rpp.tujuan_pembelajaran}</p>
@@ -356,6 +356,31 @@ export default function BerandaPage() {
                          </button>
                       </div>
                     )}
+                  </div>
+                  <div onClick={(e) => e.stopPropagation()}>
+                    <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex justify-between items-center">
+                      Catatan Pertemuan
+                      <span className="text-[9px] text-emerald-500 font-medium normal-case">*otomatis tersimpan</span>
+                    </h4>
+                    <textarea 
+                      defaultValue={rpp.catatan || ""}
+                      onBlur={async (e) => {
+                        const val = e.target.value;
+                        if (val !== (rpp.catatan || "")) {
+                           const res = await saveCatatanRpp(rpp.id, val);
+                           if (res.success) {
+                             const newRppList = [...rppList];
+                             const rppIndex = newRppList.findIndex(r => r.id === rpp.id);
+                             if (rppIndex !== -1) {
+                               newRppList[rppIndex].catatan = val;
+                               setRppList(newRppList);
+                             }
+                           }
+                        }
+                      }}
+                      placeholder="Tulis catatan, evaluasi, atau kendala di sini..."
+                      className="w-full h-full min-h-[100px] px-3 py-2 text-sm text-slate-700 bg-white border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-medium resize-none shadow-inner"
+                    />
                   </div>
                 </div>
                 

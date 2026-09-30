@@ -204,3 +204,16 @@ export async function toggleActiveRpp(id, currentActiveStatus) {
     return { success: false, message: error.message };
   }
 }
+
+export async function saveCatatanRpp(id, catatan) {
+  try {
+    await prisma.rpp.update({
+      where: { id: parseInt(id) },
+      data: { catatan: catatan }
+    });
+    return { success: true };
+  } catch (error) {
+    console.error("Error save catatan:", error);
+    return { success: false, message: error.message };
+  }
+}
