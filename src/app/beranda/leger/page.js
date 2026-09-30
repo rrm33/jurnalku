@@ -137,12 +137,12 @@ export default function LegerGuruPage() {
                     <td className="px-4 py-3 text-slate-500">{idx + 1}</td>
                     <td className="px-4 py-3 font-semibold text-slate-700">{siswa.nama}</td>
                     {tugasList.map(tugas => (
-                      <td key={tugas.id} className="px-4 py-3 text-center">
+                      <td key={tugas.id} className={`px-4 py-3 text-center ${siswa.nilaiTugas[tugas.id] === 0 || siswa.nilaiTugas[tugas.id] === "0" ? "text-red-600 font-bold" : ""}`}>
                         {siswa.nilaiTugas[tugas.id]}
                       </td>
                     ))}
-                    <td className="px-4 py-3 text-center font-bold text-slate-700">{siswa.jumlah}</td>
-                    <td className="px-4 py-3 text-center font-bold text-slate-700">{siswa.rataRata}</td>
+                    <td className={`px-4 py-3 text-center font-bold ${siswa.jumlah === 0 || siswa.jumlah === "0" ? "text-red-600" : "text-slate-700"}`}>{siswa.jumlah}</td>
+                    <td className={`px-4 py-3 text-center font-bold ${siswa.rataRata === 0 || siswa.rataRata === "0" ? "text-red-600" : "text-slate-700"}`}>{siswa.rataRata}</td>
                     <td className="px-4 py-3 text-center text-slate-500 font-medium">
                       {Math.round(siswa.profile_completeness || 0)}%
                     </td>

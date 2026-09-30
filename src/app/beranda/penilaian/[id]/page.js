@@ -305,9 +305,15 @@ export default function PenilaianPage() {
                     <td className="p-4">
                       {isSubmitted ? (
                         <div className="flex flex-col gap-1.5">
-                          <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg w-fit border border-emerald-100">
-                            <CheckCircle2 size={14} /> Selesai
-                          </div>
+                          {submission.nilai !== null ? (
+                            <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg w-fit border border-emerald-100">
+                              <CheckCircle2 size={14} /> Dinilai
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-1.5 text-xs font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-lg w-fit border border-amber-100">
+                              <Clock size={14} /> Mengerjakan
+                            </div>
+                          )}
                           {submission.created_at && (
                             <div className="text-[9px] font-bold text-slate-400 flex items-center gap-1">
                               <Clock size={10} /> {new Date(submission.created_at).toLocaleString('id-ID', {day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'})}
@@ -370,7 +376,7 @@ export default function PenilaianPage() {
                             onChange={(e) => handleNilaiChange(siswa.id, e.target.value)}
                             onWheel={(e) => e.target.blur()}
                             placeholder="-"
-                            className="w-full text-center px-2 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-500 font-bold text-slate-800 transition-all"
+                            className={`w-full text-center px-2 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-500 font-bold transition-all ${nilaiState[siswa.id] === "0" || nilaiState[siswa.id] === 0 ? "text-red-600" : "text-slate-800"}`}
                           />
                         </div>
                         {nilaiState[siswa.id] !== "" && (

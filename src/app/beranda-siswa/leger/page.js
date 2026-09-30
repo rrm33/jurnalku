@@ -139,12 +139,12 @@ export default function LegerSiswaPage() {
                       {isMe && <span className="ml-2 text-[10px] bg-emerald-500 text-white px-2 py-0.5 rounded-full uppercase">Saya</span>}
                     </td>
                     {tugasList.map(tugas => (
-                      <td key={tugas.id} className={`px-4 py-3 text-center ${isMe ? 'font-bold text-emerald-700' : ''}`}>
+                      <td key={tugas.id} className={`px-4 py-3 text-center ${siswa.nilaiTugas[tugas.id] === 0 || siswa.nilaiTugas[tugas.id] === "0" ? 'text-red-600 font-bold' : (isMe ? 'font-bold text-emerald-700' : '')}`}>
                         {siswa.nilaiTugas[tugas.id]}
                       </td>
                     ))}
-                    <td className={`px-4 py-3 text-center ${isMe ? 'font-bold text-emerald-700' : 'font-bold text-slate-700'}`}>{siswa.jumlah}</td>
-                    <td className={`px-4 py-3 text-center ${isMe ? 'font-bold text-emerald-700' : 'font-bold text-slate-700'}`}>{siswa.rataRata}</td>
+                    <td className={`px-4 py-3 text-center ${siswa.jumlah === 0 || siswa.jumlah === "0" ? 'text-red-600 font-bold' : (isMe ? 'font-bold text-emerald-700' : 'font-bold text-slate-700')}`}>{siswa.jumlah}</td>
+                    <td className={`px-4 py-3 text-center ${siswa.rataRata === 0 || siswa.rataRata === "0" ? 'text-red-600 font-bold' : (isMe ? 'font-bold text-emerald-700' : 'font-bold text-slate-700')}`}>{siswa.rataRata}</td>
                     <td className={`px-4 py-3 text-center ${isMe ? 'font-bold text-emerald-700' : 'font-medium text-slate-500'}`}>
                       {Math.round(siswa.profile_completeness || 0)}%
                     </td>

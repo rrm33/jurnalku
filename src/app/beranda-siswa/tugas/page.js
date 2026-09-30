@@ -334,9 +334,9 @@ export default function KbmSiswaPage() {
                                    )}
 
                                    {submission.nilai !== null ? (
-                                      <div className="mt-4 p-4 bg-gradient-to-r from-amber-100 to-yellow-100 border border-amber-200 rounded-2xl flex flex-col items-center justify-center shadow-sm">
-                                        <span className="font-bold text-amber-800 text-[10px] uppercase tracking-wider mb-1">Nilai Akhir</span>
-                                        <span className="text-4xl font-black text-amber-600 drop-shadow-sm">{submission.nilai}</span>
+                                      <div className={`mt-4 p-4 ${submission.nilai === 0 ? 'bg-gradient-to-r from-red-100 to-rose-100 border-red-200' : 'bg-gradient-to-r from-amber-100 to-yellow-100 border-amber-200'} border rounded-2xl flex flex-col items-center justify-center shadow-sm`}>
+                                        <span className={`font-bold ${submission.nilai === 0 ? 'text-red-800' : 'text-amber-800'} text-[10px] uppercase tracking-wider mb-1`}>Nilai Akhir</span>
+                                        <span className={`text-4xl font-black ${submission.nilai === 0 ? 'text-red-600' : 'text-amber-600'} drop-shadow-sm`}>{submission.nilai}</span>
                                       </div>
                                    ) : !isDeadlinePast && (
                                       <button
