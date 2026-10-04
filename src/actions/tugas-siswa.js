@@ -203,3 +203,50 @@ export async function submitTugas(formDataPayload) {
     return { success: false, message: "Gagal menyimpan jawaban." };
   }
 }
+
+export async function getKbmDetailSiswa(kbmId) {
+  noStore();
+  try {
+    const cookieStore = await cookies();
+    const session = cookieStore.get('session');
+    if (!session) return null;
+    
+    const parsed = JSON.parse(session.value);
+    if (parsed.role !== "siswa") return null;
+    const siswaId = parseInt(parsed.id);
+
+    const kbm = await prisma.rpp.findUnique({
+      where: {
+        id: parseInt(kbmId),
+      },
+      include: {
+        mapel: true,
+        guru: true,
+        tugas: {
+          include: {
+            pengumpulan: {
+              where: {
+                siswa_id: siswaId
+              }
+            }
+          }
+        }
+      }
+    });
+
+    if (!kbm || kbm.is_active === false) return null;
+
+    // Pastikan siswa ini benar-benar ada di kelas KBM ini
+    const siswa = await prisma.siswa.findUnique({
+      where: { id: siswaId },
+      select: { kelas_id: true }
+    });
+    
+    if (!siswa || siswa.kelas_id !== kbm.kelas_id) return null;
+
+    return kbm;
+  } catch (error) {
+    console.error("Error getKbmDetailSiswa:", error);
+    return null;
+  }
+}

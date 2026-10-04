@@ -128,6 +128,7 @@ model Tugas {
   deadline         DateTime?
   poin_maks        Int       @default(100)
   file             String?
+  gunakan_code_editor Boolean @default(false)
   
   rpp_id           Int
   rpp              Rpp       @relation(fields: [rpp_id], references: [id])

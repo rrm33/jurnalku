@@ -70,6 +70,7 @@ export async function saveRpp(formDataPayload, guruId = 1) {
     const judul_tugas = formDataPayload.get('judul_tugas');
     const deskripsi_tugas = formDataPayload.get('deskripsi_tugas');
     const deadline_tugas = formDataPayload.get('deadline_tugas');
+    const gunakan_code_editor = formDataPayload.get('gunakan_code_editor') === 'true';
     
     // Handle File Tugas
     const fileTugasObj = formDataPayload.get('file_tugas');
@@ -108,7 +109,8 @@ export async function saveRpp(formDataPayload, guruId = 1) {
           deskripsi: deskripsi_tugas,
           deadline: deadline_tugas ? new Date(deadline_tugas + "+07:00") : null,
           file: fileTugasPath,
-          poin_maks: 100
+          poin_maks: 100,
+          gunakan_code_editor
         };
 
         if (existingTugas) {
@@ -154,6 +156,7 @@ export async function saveRpp(formDataPayload, guruId = 1) {
               deadline: deadline_tugas ? new Date(deadline_tugas + "+07:00") : null,
               file: fileTugasPath,
               poin_maks: 100,
+              gunakan_code_editor,
               rpp_id: newRpp.id
             }
           });

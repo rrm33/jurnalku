@@ -37,6 +37,7 @@ export default function BerandaPage() {
     deskripsi_tugas: "",
     deadline_tugas: "",
     existing_file_tugas: "",
+    gunakan_code_editor: false,
   });
 
   const getKelasColor = (nama) => {
@@ -118,6 +119,7 @@ export default function BerandaPage() {
       deskripsi_tugas: tugas ? tugas.deskripsi : "",
       deadline_tugas: tugas && tugas.deadline ? new Date(new Date(tugas.deadline).getTime() + (7 * 60 * 60 * 1000)).toISOString().slice(0, 16) : "",
       existing_file_tugas: tugas ? (tugas.file || "") : "",
+      gunakan_code_editor: tugas ? (tugas.gunakan_code_editor || false) : false,
     });
     setIsOpen(true);
   };
@@ -139,6 +141,7 @@ export default function BerandaPage() {
       deskripsi_tugas: tugas ? tugas.deskripsi : "",
       deadline_tugas: tugas && tugas.deadline ? new Date(new Date(tugas.deadline).getTime() + (7 * 60 * 60 * 1000)).toISOString().slice(0, 16) : "",
       existing_file_tugas: tugas ? (tugas.file || "") : "",
+      gunakan_code_editor: tugas ? (tugas.gunakan_code_editor || false) : false,
     });
     setIsOpen(true);
   };
@@ -176,6 +179,7 @@ export default function BerandaPage() {
     submission.append('deskripsi_tugas', formData.deskripsi_tugas);
     submission.append('deadline_tugas', formData.deadline_tugas);
     submission.append('existing_file_tugas', formData.existing_file_tugas);
+    submission.append('gunakan_code_editor', formData.gunakan_code_editor);
     const fileTugasInput = document.getElementById("file_tugas_input");
     if (fileTugasInput && fileTugasInput.files[0]) {
       submission.append('file_tugas', fileTugasInput.files[0]);
@@ -558,6 +562,14 @@ export default function BerandaPage() {
                         </div>
                       )}
                       <input type="file" id="file_tugas_input" className="w-full px-3 py-2 border border-slate-200 rounded-xl outline-none bg-white focus:border-pink-400 focus:ring-2 focus:ring-pink-100 transition-all font-medium text-sm file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100" />
+                    </div>
+                    
+                    <div className="pt-2">
+                      <label className="flex items-center gap-3 cursor-pointer p-3 bg-white border border-slate-200 rounded-xl">
+                        <input type="checkbox" checked={formData.gunakan_code_editor} onChange={e => setFormData({...formData, gunakan_code_editor: e.target.checked})} className="w-5 h-5 rounded text-pink-600 focus:ring-pink-500" />
+                        <span className="font-bold text-slate-700 text-sm">Gunakan Editor Kode (Mode Praktikum Flutter/Dart)</span>
+                      </label>
+                      <p className="text-xs text-slate-500 mt-2 px-1">Jika diaktifkan, siswa akan diberikan fasilitas editor kode (split screen) yang mencegah Paste, khusus untuk tugas programming.</p>
                     </div>
                   </div>
                 )}
