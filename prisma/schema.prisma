@@ -153,6 +153,7 @@ model Presensi {
 model PengumpulanTugas {
   id             Int       @id @default(autoincrement())
   input_jawaban  String?   @db.Text
+  kode_jawaban   String?   @db.Text
   upload_file    String?
   nilai          Int?
   created_at     DateTime  @default(now())

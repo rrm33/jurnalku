@@ -150,6 +150,7 @@ export async function submitTugas(formDataPayload) {
 
     const tugas_id = parseInt(formDataPayload.get('tugas_id'));
     const input_jawaban = formDataPayload.get('input_jawaban');
+    const kode_jawaban = formDataPayload.get('kode_jawaban');
     
     const file = formDataPayload.get('upload_file');
     let filePath = null;
@@ -182,6 +183,7 @@ export async function submitTugas(formDataPayload) {
         where: { id: existingPengumpulan.id },
         data: {
           input_jawaban,
+          kode_jawaban,
           ...(filePath && { upload_file: filePath })
         }
       });
@@ -189,6 +191,7 @@ export async function submitTugas(formDataPayload) {
       await prisma.pengumpulanTugas.create({
         data: {
           input_jawaban,
+          kode_jawaban,
           upload_file: filePath,
           tugas_id,
           siswa_id: siswaId
