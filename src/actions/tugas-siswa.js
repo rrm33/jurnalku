@@ -84,7 +84,7 @@ export async function getKbmSiswa() {
           }
         }
       },
-      orderBy: { pertemuan_ke: "asc" }
+      orderBy: { pertemuan_ke: "desc" }
     });
 
     // Filter di JavaScript (Hanya RPP yang is_active !== false)

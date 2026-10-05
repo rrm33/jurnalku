@@ -16,7 +16,7 @@ export async function getRpps(guruId = 1) {
         tahun_pelajaran: true,
         tugas: true
       },
-      orderBy: { pertemuan_ke: "asc" },
+      orderBy: { pertemuan_ke: "desc" },
     });
   } catch (error) {
     console.error("Error getRpps:", error);
