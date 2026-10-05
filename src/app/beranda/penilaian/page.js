@@ -14,6 +14,8 @@ export default function DaftarPenilaianPage() {
   const [selectedFilterKelas, setSelectedFilterKelas] = useState("");
 
   useEffect(() => {
+    const saved = sessionStorage.getItem('penilaian_filter_kelas');
+    if (saved) setSelectedFilterKelas(saved);
     fetchData();
   }, []);
 
@@ -74,7 +76,10 @@ export default function DaftarPenilaianPage() {
           <div className="w-full md:w-auto">
             <select 
               value={selectedFilterKelas}
-              onChange={(e) => setSelectedFilterKelas(e.target.value)}
+              onChange={(e) => {
+                 setSelectedFilterKelas(e.target.value);
+                 sessionStorage.setItem('penilaian_filter_kelas', e.target.value);
+              }}
               className="w-full md:w-64 bg-white border border-slate-200 text-slate-700 px-4 py-2.5 rounded-xl font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-100"
             >
               <option value="">Semua Kelas</option>

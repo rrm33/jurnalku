@@ -18,6 +18,10 @@ export default function LegerGuruPage() {
   const [hasSearched, setHasSearched] = useState(false);
 
   useEffect(() => {
+    const savedMapel = sessionStorage.getItem('leger_mapel');
+    const savedKelas = sessionStorage.getItem('leger_kelas');
+    if (savedMapel) setSelectedMapel(savedMapel);
+    if (savedKelas) setSelectedKelas(savedKelas);
     fetchOptions();
   }, []);
 

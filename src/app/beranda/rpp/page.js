@@ -75,6 +75,8 @@ export default function BerandaPage() {
   };
 
   useEffect(() => {
+    const saved = sessionStorage.getItem('rpp_filter_kelas');
+    if (saved) setSelectedFilterKelas(saved);
     fetchData();
   }, []);
 
@@ -248,7 +250,10 @@ export default function BerandaPage() {
         <div className="flex items-center gap-4">
           <select 
             value={selectedFilterKelas}
-            onChange={(e) => setSelectedFilterKelas(e.target.value)}
+            onChange={(e) => {
+               setSelectedFilterKelas(e.target.value);
+               sessionStorage.setItem('rpp_filter_kelas', e.target.value);
+            }}
             className="hidden md:block bg-white border border-slate-200 text-slate-700 px-4 py-2.5 rounded-xl font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-100"
           >
             <option value="">Semua Kelas</option>
@@ -267,7 +272,10 @@ export default function BerandaPage() {
       <div className="mb-6 md:hidden">
         <select 
           value={selectedFilterKelas}
-          onChange={(e) => setSelectedFilterKelas(e.target.value)}
+          onChange={(e) => {
+             setSelectedFilterKelas(e.target.value);
+             sessionStorage.setItem('rpp_filter_kelas', e.target.value);
+          }}
           className="w-full bg-white border border-slate-200 text-slate-700 px-4 py-2.5 rounded-xl font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-100"
         >
           <option value="">Semua Kelas</option>
