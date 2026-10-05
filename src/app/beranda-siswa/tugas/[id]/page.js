@@ -24,6 +24,7 @@ export default function TugasDetailPage() {
 
   // DartPad Embed Logic
   const iframeRef = useRef(null);
+  const formRef = useRef(null);
 
   const fetchData = async () => {
     setLoading(true);
@@ -179,7 +180,7 @@ export default function TugasDetailPage() {
           </div>
 
           <div className="bg-white rounded-b-[2rem] p-6 md:p-8 border border-slate-100 shadow-sm">
-             <form onSubmit={handleSubmit} className="space-y-6">
+             <form ref={formRef} onSubmit={handleSubmit} className="space-y-6 scroll-mt-24">
                 
                 {/* Jawaban Teks selalu muncul */}
                 <div>
@@ -205,11 +206,6 @@ export default function TugasDetailPage() {
                            </button>
                         </div>
                         <div className="relative flex-1 flex flex-col">
-                          {editorDisabled && submission && !isEditing && !hasGrade && (
-                            <div className="absolute inset-0 z-10 bg-black/40 flex items-center justify-center backdrop-blur-[1px]">
-                               <span className="bg-slate-800 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-lg border border-slate-600">Scroll ke bawah dan klik "Edit Jawaban" untuk membuka editor</span>
-                            </div>
-                          )}
                           <textarea
                             value={kodeText}
                             onChange={(e) => setKodeText(e.target.value)}
@@ -308,7 +304,9 @@ export default function TugasDetailPage() {
                                   type="button"
                                   onClick={() => {
                                     setIsEditing(true);
-                                    window.scrollTo({ top: 400, behavior: 'smooth' });
+                                    setTimeout(() => {
+                                      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                    }, 100);
                                   }}
                                   className="w-full py-3.5 rounded-xl font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 transition-all shadow-sm flex justify-center items-center gap-2 text-sm"
                                 >
