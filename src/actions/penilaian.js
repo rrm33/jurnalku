@@ -28,7 +28,7 @@ export async function getDaftarPenilaian() {
           }
         },
       },
-      orderBy: { id: 'desc' }
+      orderBy: { pertemuan_ke: "asc" }
     });
 
     const classIds = [...new Set(rppsWithTugas.map(r => r.kelas_id))];
