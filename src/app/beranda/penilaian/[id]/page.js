@@ -46,6 +46,7 @@ export default function PenilaianPage() {
       // Initialize nilai dan jawaban state dari data yang ada di database
       const initialNilai = {};
       const initialJawaban = {};
+      const initialCatatan = {};
       res.data.siswaList.forEach(siswa => {
         const pengumpulan = siswa.pengumpulanTugas && siswa.pengumpulanTugas.length > 0 ? siswa.pengumpulanTugas[0] : null;
         if (pengumpulan && pengumpulan.nilai !== null) {
@@ -58,6 +59,12 @@ export default function PenilaianPage() {
           initialJawaban[siswa.id] = pengumpulan.input_jawaban || "";
         } else {
           initialJawaban[siswa.id] = "";
+        }
+
+        if (pengumpulan && pengumpulan.catatan_guru !== null) {
+          initialCatatan[siswa.id] = pengumpulan.catatan_guru || "";
+        } else {
+          initialCatatan[siswa.id] = "";
         }
       });
       setNilaiState(initialNilai);
