@@ -33,6 +33,7 @@ export default function PenilaianPage() {
   // State untuk melacak form input nilai (key = siswa_id, value = nilai string)
   const [nilaiState, setNilaiState] = useState({});
   const [jawabanState, setJawabanState] = useState({});
+  const [catatanState, setCatatanState] = useState({});
 
 
   const fetchData = async () => {
@@ -61,6 +62,7 @@ export default function PenilaianPage() {
       });
       setNilaiState(initialNilai);
       setJawabanState(initialJawaban);
+      setCatatanState(initialCatatan);
     } else {
       // Jika tugas null atau gagal
       setData(res.success ? res.data : null);
@@ -94,6 +96,10 @@ export default function PenilaianPage() {
   const handleJawabanChange = (siswaId, value) => {
     setJawabanState(prev => ({ ...prev, [siswaId]: value }));
   };
+  
+  const handleCatatanChange = (siswaId, value) => {
+    setCatatanState(prev => ({ ...prev, [siswaId]: value }));
+  };
 
   const handleSaveBulk = async () => {
     if (!data || !data.tugas) return;
@@ -106,7 +112,8 @@ export default function PenilaianPage() {
       return {
         siswa_id: sId,
         nilai: (nilaiState[sId] === undefined || nilaiState[sId] === "") ? null : parseInt(nilaiState[sId]),
-        jawaban: jawabanState[sId] || ""
+        jawaban: jawabanState[sId] || "",
+        catatan: catatanState[sId] || ""
       };
     });
 
@@ -328,12 +335,18 @@ export default function PenilaianPage() {
                     </td>
                     
                     <td className="p-4">
-                      <div className="space-y-2">
+                      <div className="space-y-3">
+                        {/* Teks Jawaban Siswa (Read-only) */}
+                        <div className="text-xs text-slate-600 bg-slate-50 p-2.5 rounded-lg border border-slate-200 min-h-[40px] max-h-32 overflow-y-auto whitespace-pre-wrap">
+                           {jawabanState[siswa.id] ? jawabanState[siswa.id] : <span className="italic text-slate-400">Tidak ada teks jawaban.</span>}
+                        </div>
+                        
+                        {/* Input Tanggapan Guru */}
                         <textarea
-                          value={jawabanState[siswa.id] ?? ""}
-                          onChange={(e) => handleJawabanChange(siswa.id, e.target.value)}
-                          placeholder="Ketik atau edit jawaban siswa..."
-                          className="w-full text-xs text-slate-600 bg-slate-50 p-2.5 rounded-lg border border-slate-200 min-h-[60px] max-h-32 focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-500 transition-all custom-scrollbar whitespace-pre-wrap"
+                          value={catatanState[siswa.id] ?? ""}
+                          onChange={(e) => handleCatatanChange(siswa.id, e.target.value)}
+                          placeholder="Beri tanggapan/catatan untuk siswa..."
+                          className="w-full text-xs text-slate-700 bg-white p-2.5 rounded-lg border border-emerald-200 min-h-[60px] focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 transition-all shadow-inner placeholder:text-slate-400"
                         />
                         {/* Tampilkan link yang bisa diklik dari jawaban */}
                         {jawabanState[siswa.id] && jawabanState[siswa.id].match(/(https?:\/\/[^\s]+)/g) && (

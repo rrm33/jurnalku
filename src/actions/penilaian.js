@@ -159,10 +159,11 @@ export async function simpanNilaiMasal(tugasId, dataNilai) {
       }
 
       const pJawaban = (item.jawaban && item.jawaban.trim() !== "") ? item.jawaban : null;
+      const pCatatan = (item.catatan && item.catatan.trim() !== "") ? item.catatan : null;
       const existingRecord = existing.find(e => e.siswa_id === pSiswaId);
 
-      // Upsert jika ada nilai, atau ada jawaban, atau siswa sudah punya file (jangan dihapus filenya)
-      if (pNilai !== null || pJawaban !== null || (existingRecord && existingRecord.upload_file)) {
+      // Upsert jika ada nilai, atau ada jawaban, atau catatan, atau siswa sudah punya file
+      if (pNilai !== null || pJawaban !== null || pCatatan !== null || (existingRecord && existingRecord.upload_file) || (existingRecord && existingRecord.kode_jawaban)) {
         operations.push(prisma.pengumpulanTugas.upsert({
           where: {
             tugas_id_siswa_id: {
@@ -170,12 +171,13 @@ export async function simpanNilaiMasal(tugasId, dataNilai) {
               siswa_id: pSiswaId
             }
           },
-          update: { nilai: pNilai, input_jawaban: pJawaban },
+          update: { nilai: pNilai, input_jawaban: pJawaban, catatan_guru: pCatatan },
           create: {
             tugas_id: parsedTugasId,
             siswa_id: pSiswaId,
             nilai: pNilai,
-            input_jawaban: pJawaban
+            input_jawaban: pJawaban,
+            catatan_guru: pCatatan
           }
         }));
       } else {
