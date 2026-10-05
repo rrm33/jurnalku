@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Users, CheckSquare, ChevronDown, ChevronUp, Trash2, Edit2, Link as LinkIcon, CheckCircle2, Upload, FileText, Copy } from "lucide-react";
-import { getRpps, deleteRpp, toggleStatusRpp, toggleActiveRpp, saveCatatanRpp } from "@/actions/rpp";
+import { getRpps, saveRpp, deleteRpp, toggleStatusRpp, toggleActiveRpp, saveCatatanRpp } from "@/actions/rpp";
+import { getKelas, getMapel } from "@/actions/master";
 import FileViewerModal from "@/components/FileViewerModal";
 import Swal from "sweetalert2";
 
@@ -17,7 +18,27 @@ export default function BerandaPage() {
   const [selectedFilterKelas, setSelectedFilterKelas] = useState("");
   const [fileToView, setFileToView] = useState(null);
 
+  // Modal Form State
+  const [isOpen, setIsOpen] = useState(false);
+  const fileInputRef = useRef(null);
   
+  const [formData, setFormData] = useState({
+    id: null,
+    pertemuan_ke: 1,
+    tanggal: "",
+    mapel_id: "",
+    kelas_ids: [], // Array of class IDs
+    judul: "",
+    tujuan_pembelajaran: "",
+    aktivitas_pembelajaran: "",
+    existing_file: "", // Untuk mode edit jika sudah ada file
+    ada_tugas: false,
+    judul_tugas: "",
+    deskripsi_tugas: "",
+    deadline_tugas: "",
+    existing_file_tugas: "",
+    gunakan_code_editor: false,
+  });
 
   const getKelasColor = (nama) => {
     if (!nama) return "bg-slate-100 text-slate-600 border-slate-200";
@@ -63,8 +84,47 @@ export default function BerandaPage() {
     setExpandedId(expandedId === id ? null : id);
   };
 
-  
+  const handleCreateNew = () => {
+    setFormData({
+      id: null,
+      pertemuan_ke: rppList.length > 0 ? (rppList[0].pertemuan_ke + 1) : 1, 
+      tanggal: new Date().toISOString().slice(0, 10),
+      mapel_id: "",
+      kelas_ids: [],
+      judul: "",
+      tujuan_pembelajaran: "",
+      aktivitas_pembelajaran: "",
+      existing_file: "",
+      ada_tugas: false,
+      judul_tugas: "",
+      deskripsi_tugas: "",
+      deadline_tugas: "",
+      existing_file_tugas: "",
+    });
+    setIsOpen(true);
+  };
 
+  const handleEdit = (rpp) => {
+    const tugas = rpp.tugas && rpp.tugas.length > 0 ? rpp.tugas[0] : null;
+    setFormData({
+      id: rpp.id,
+      pertemuan_ke: rpp.pertemuan_ke,
+      tanggal: rpp.tanggal ? new Date(rpp.tanggal).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
+      mapel_id: rpp.mapel_id,
+      kelas_ids: [String(rpp.kelas_id)], // Saat edit, paksa isi 1 array
+      judul: rpp.judul,
+      tujuan_pembelajaran: rpp.tujuan_pembelajaran,
+      aktivitas_pembelajaran: rpp.aktivitas_pembelajaran,
+      existing_file: rpp.upload_file || "",
+      ada_tugas: !!tugas,
+      judul_tugas: tugas ? tugas.judul : "",
+      deskripsi_tugas: tugas ? tugas.deskripsi : "",
+      deadline_tugas: tugas && tugas.deadline ? new Date(new Date(tugas.deadline).getTime() + (7 * 60 * 60 * 1000)).toISOString().slice(0, 16) : "",
+      existing_file_tugas: tugas ? (tugas.file || "") : "",
+      gunakan_code_editor: tugas ? (tugas.gunakan_code_editor || false) : false,
+    });
+    setIsOpen(true);
+  };
 
   const handleDuplicate = (rpp) => {
     const tugas = rpp.tugas && rpp.tugas.length > 0 ? rpp.tugas[0] : null;
@@ -200,7 +260,7 @@ export default function BerandaPage() {
             {kelasList.map(k => <option key={k.id} value={k.id}>{k.nama}</option>)}
           </select>
           <button 
-            onClick={() => router.push('/beranda/rpp/form')}
+            onClick={handleCreateNew}
             className="hidden md:flex bg-rose-600 hover:bg-rose-700 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md shadow-rose-200 transition-colors items-center gap-2"
           >
             <span className="text-lg leading-none">+</span> Buat RPP Baru
@@ -357,7 +417,7 @@ export default function BerandaPage() {
                     <button onClick={() => handleDuplicate(rpp)} title="Salin RPP (Duplikat)" className="p-2.5 text-blue-600 hover:bg-blue-50 bg-white border border-slate-200 rounded-xl transition-colors">
                       <Copy size={16} />
                     </button>
-                    <button onClick={() => router.push(`/beranda/rpp/form?id=${rpp.id}`)} className="p-2.5 text-rose-600 hover:bg-rose-50 bg-white border border-slate-200 rounded-xl transition-colors">
+                    <button onClick={() => handleEdit(rpp)} className="p-2.5 text-rose-600 hover:bg-rose-50 bg-white border border-slate-200 rounded-xl transition-colors">
                       <Edit2 size={16} />
                     </button>
                     <button onClick={() => handleDelete(rpp.id)} className="p-2.5 text-rose-600 hover:bg-rose-50 bg-white border border-slate-200 rounded-xl transition-colors">
@@ -377,6 +437,161 @@ export default function BerandaPage() {
       </button>
 
       {/* Modal Form Tambah/Edit RPP */}
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in overflow-y-auto pt-10 pb-10">
+          <div className="w-full max-w-2xl bg-white border border-slate-200 rounded-2xl shadow-2xl p-6 md:p-8 my-auto animate-in zoom-in-95">
+            <h3 className="text-xl font-bold text-slate-800 mb-6 pb-4 border-b border-slate-100">{formData.id ? 'Edit' : 'Buat'} Jurnal / RPP Baru</h3>
+            <form onSubmit={handleSubmit} className="space-y-5">
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div>
+                  <label className="block text-xs font-bold text-slate-600 mb-2">Pertemuan Ke- *</label>
+                  <input type="number" min="1" required value={formData.pertemuan_ke} onChange={e => setFormData({...formData, pertemuan_ke: e.target.value})} onWheel={(e) => e.target.blur()} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-bold bg-slate-50" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-600 mb-2">Tanggal *</label>
+                  <input type="date" required value={formData.tanggal} onChange={e => setFormData({...formData, tanggal: e.target.value})} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-bold bg-slate-50" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-600 mb-2">Pilih Mapel *</label>
+                  <select required value={formData.mapel_id} onChange={e => setFormData({...formData, mapel_id: e.target.value})} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-bold bg-white">
+                    <option value="">-- Mapel --</option>
+                    {mapelList.map(k => <option key={k.id} value={k.id}>{k.nama}</option>)}
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-600 mb-3 flex justify-between items-center">
+                  <span>Pilih Kelas Tujuan *</span>
+                  {formData.id && <span className="text-[10px] bg-amber-50 text-amber-600 px-2 py-0.5 rounded border border-amber-200">Mode Edit (1 Kelas)</span>}
+                </label>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                  {kelasList.map(kelas => {
+                    const isSelected = formData.kelas_ids.includes(String(kelas.id));
+                    const isEditing = !!formData.id;
+                    const isDisabled = isEditing && !isSelected; // Disable non-selected in edit mode
+
+                    if (isDisabled) return null; // Hide other classes in edit mode completely
+
+                    return (
+                      <label 
+                        key={kelas.id} 
+                        className={`flex items-center gap-2 p-2.5 border rounded-xl transition-all 
+                          ${isEditing ? 'cursor-not-allowed opacity-80' : 'cursor-pointer hover:bg-slate-50'} 
+                          ${isSelected ? 'bg-rose-50 border-rose-400 text-rose-700' : 'bg-white border-slate-200 text-slate-600'}`}
+                      >
+                        <input 
+                          type="checkbox" 
+                          className="hidden" 
+                          checked={isSelected} 
+                          disabled={isEditing}
+                          onChange={() => {
+                            if (!isEditing) toggleKelasSelection(kelas.id);
+                          }} 
+                        />
+                        <div className={`w-4 h-4 rounded shadow-inner flex items-center justify-center shrink-0 border ${isSelected ? 'bg-rose-600 border-rose-600' : 'bg-slate-100 border-slate-300'}`}>
+                          {isSelected && <CheckSquare size={12} className="text-white" />}
+                        </div>
+                        <span className="text-xs font-bold select-none truncate">{kelas.nama}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-600 mb-2">Judul Materi Pembelajaran *</label>
+                <input type="text" required placeholder="Contoh: Pengenalan Aljabar Linear" value={formData.judul} onChange={e => setFormData({...formData, judul: e.target.value})} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-medium" />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-600 mb-2">Tujuan Pembelajaran *</label>
+                <textarea required rows="3" placeholder="Siswa diharapkan mampu..." value={formData.tujuan_pembelajaran} onChange={e => setFormData({...formData, tujuan_pembelajaran: e.target.value})} className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-medium resize-none"></textarea>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-600 mb-2">Aktivitas Pembelajaran *</label>
+                <textarea required rows="4" placeholder="1. Pembukaan&#10;2. Penjelasan materi&#10;3. Latihan Soal" value={formData.aktivitas_pembelajaran} onChange={e => setFormData({...formData, aktivitas_pembelajaran: e.target.value})} className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-medium resize-none"></textarea>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-600 mb-2">Lampiran Dokumen / Modul (Opsional)</label>
+                {formData.existing_file && (
+                  <div className="mb-3 p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-sm font-medium text-slate-700 truncate mr-2">
+                      <FileText size={16} className="text-rose-500 shrink-0" />
+                      <span className="truncate">{formData.existing_file.split('/').pop()}</span>
+                    </div>
+                    <button type="button" onClick={() => setFileToView(formData.existing_file)} className="text-[11px] font-bold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg whitespace-nowrap transition-colors shrink-0">
+                      Lihat File
+                    </button>
+                  </div>
+                )}
+                <div className="flex gap-2">
+                  <div className="w-10 h-10 bg-slate-100 text-slate-400 rounded-xl flex items-center justify-center shrink-0 border border-slate-200">
+                    <Upload size={18} />
+                  </div>
+                  <input type="file" ref={fileInputRef} className="w-full px-3 py-2 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-medium text-sm file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100" />
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-slate-100 mt-4">
+                <label className="flex items-center gap-3 cursor-pointer p-3 bg-pink-50 border border-pink-100 rounded-xl mb-4">
+                  <input type="checkbox" checked={formData.ada_tugas} onChange={e => setFormData({...formData, ada_tugas: e.target.checked})} className="w-5 h-5 rounded text-pink-600 focus:ring-pink-500" />
+                  <span className="font-bold text-pink-800">Berikan Tugas untuk RPP ini</span>
+                </label>
+
+                {formData.ada_tugas && (
+                  <div className="space-y-4 bg-slate-50 p-4 border border-slate-200 rounded-xl mb-4">
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Judul Tugas</label>
+                      <input type="text" required={formData.ada_tugas} value={formData.judul_tugas} onChange={e => setFormData({...formData, judul_tugas: e.target.value})} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-100 transition-all font-medium" />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Deskripsi / Pertanyaan Tugas</label>
+                      <textarea required={formData.ada_tugas} rows="3" value={formData.deskripsi_tugas} onChange={e => setFormData({...formData, deskripsi_tugas: e.target.value})} className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-100 transition-all font-medium resize-none"></textarea>
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Batas Waktu (Deadline)</label>
+                      <input type="datetime-local" value={formData.deadline_tugas} onChange={e => setFormData({...formData, deadline_tugas: e.target.value})} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-100 transition-all font-medium bg-white" />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Lampiran File Tugas (Opsional)</label>
+                      {formData.existing_file_tugas && (
+                        <div className="mb-3 p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between">
+                          <div className="flex items-center gap-2 text-sm font-medium text-slate-700 truncate mr-2">
+                            <FileText size={16} className="text-pink-500 shrink-0" />
+                            <span className="truncate">{formData.existing_file_tugas.split('/').pop()}</span>
+                          </div>
+                          <button type="button" onClick={() => setFileToView(formData.existing_file_tugas)} className="text-[11px] font-bold text-pink-600 hover:text-pink-700 bg-pink-50 hover:bg-pink-100 px-3 py-1.5 rounded-lg whitespace-nowrap transition-colors shrink-0">
+                            Lihat File
+                          </button>
+                        </div>
+                      )}
+                      <input type="file" id="file_tugas_input" className="w-full px-3 py-2 border border-slate-200 rounded-xl outline-none bg-white focus:border-pink-400 focus:ring-2 focus:ring-pink-100 transition-all font-medium text-sm file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100" />
+                    </div>
+                    
+                    <div className="pt-2">
+                      <label className="flex items-center gap-3 cursor-pointer p-3 bg-white border border-slate-200 rounded-xl">
+                        <input type="checkbox" checked={formData.gunakan_code_editor} onChange={e => setFormData({...formData, gunakan_code_editor: e.target.checked})} className="w-5 h-5 rounded text-pink-600 focus:ring-pink-500" />
+                        <span className="font-bold text-slate-700 text-sm">Gunakan Editor Kode (Mode Praktikum Flutter/Dart)</span>
+                      </label>
+                      <p className="text-xs text-slate-500 mt-2 px-1">Jika diaktifkan, siswa akan diberikan fasilitas editor kode (split screen) yang mencegah Paste, khusus untuk tugas programming.</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex gap-3 justify-end pt-6 border-t border-slate-100 mt-6">
+                <button type="button" onClick={() => setIsOpen(false)} className="px-6 py-2.5 rounded-xl font-bold text-slate-500 hover:bg-slate-100 transition-colors">Batal</button>
+                <button type="submit" className="px-6 py-2.5 rounded-xl font-bold text-white bg-rose-600 hover:bg-rose-700 shadow-md shadow-rose-200 transition-colors">Simpan Jurnal</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* File Viewer Modal */}
       <FileViewerModal url={fileToView} onClose={() => setFileToView(null)} />
     </>

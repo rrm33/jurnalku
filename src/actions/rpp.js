@@ -220,3 +220,19 @@ export async function saveCatatanRpp(id, catatan) {
     return { success: false, message: error.message };
   }
 }
+
+export async function getRppById(id) {
+  try {
+    return await prisma.rpp.findUnique({
+      where: { id: parseInt(id) },
+      include: {
+        kelas: true,
+        mapel: true,
+        tugas: true
+      }
+    });
+  } catch (error) {
+    console.error("Error getRppById:", error);
+    return null;
+  }
+}
