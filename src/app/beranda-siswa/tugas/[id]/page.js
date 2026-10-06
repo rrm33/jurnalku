@@ -21,6 +21,8 @@ export default function TugasDetailPage() {
   const fileInputRef = useRef(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [dartpadReady, setDartpadReady] = useState(false);
+  const [initialSyncDone, setInitialSyncDone] = useState(false);
 
   // DartPad Embed Logic
   const iframeRef = useRef(null);
@@ -45,6 +47,31 @@ export default function TugasDetailPage() {
   useEffect(() => {
     fetchData();
   }, [params.id]);
+
+
+
+
+
+  useEffect(() => {
+    const handleMessage = (e) => {
+      if (e.origin === 'https://dartpad.dev' && e.data && e.data.type === 'ready') {
+        setDartpadReady(true);
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
+
+  useEffect(() => {
+    if (dartpadReady && !loading && !initialSyncDone && iframeRef.current) {
+      const template = "import 'package:flutter/material.dart';\n\nvoid main() {\n  runApp(const MyApp());\n}\n\nclass MyApp extends StatelessWidget {\n  const MyApp({super.key});\n  @override\n  Widget build(BuildContext context) {\n    return const MaterialApp(\n      home: Scaffold(\n        body: Center(\n          child: Text('Tulis kode program di editor sebelah kiri lalu klik Jalankan', textAlign: TextAlign.center)\n        )\n      )\n    );\n  }\n}";
+      iframeRef.current.contentWindow.postMessage({
+        sourceCode: kodeText || template,
+        type: 'sourceCode'
+      }, '*');
+      setInitialSyncDone(true);
+    }
+  }, [dartpadReady, loading, initialSyncDone, kodeText]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
