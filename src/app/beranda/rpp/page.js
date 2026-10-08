@@ -292,7 +292,7 @@ export default function BerandaPage() {
             {/* Body Accordion (Expanded) */}
             {expandedId === rpp.id && (
               <div className="px-5 md:px-6 pb-6 pt-2 border-t border-slate-100 bg-slate-50/50 animate-in slide-in-from-top-2 duration-200">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 mt-4">
+                <div className="flex flex-col gap-6 mb-6 mt-4">
                   <div>
                     <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Tujuan Pembelajaran</h4>
                     <p className="text-sm text-slate-700 leading-relaxed font-medium whitespace-pre-wrap">{rpp.tujuan_pembelajaran}</p>

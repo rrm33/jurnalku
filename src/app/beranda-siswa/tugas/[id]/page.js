@@ -162,7 +162,7 @@ export default function TugasDetailPage() {
         </div>
 
         <div className="p-6 md:p-8">
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="flex flex-col gap-6">
             <div>
               <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Tujuan Pembelajaran</h4>
               <p className="text-sm text-slate-700 leading-relaxed font-medium whitespace-pre-wrap">{kbm.tujuan_pembelajaran}</p>
