@@ -1,11 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { LogIn } from "lucide-react";
+import { LogIn, ArrowRight } from "lucide-react";
 import ToolsBundle from "@/components/ToolsBundle";
+import { getSessionClient } from "@/actions/auth";
 
 export default function LandingPage() {
+  const router = useRouter();
+  const [session, setSession] = useState(null);
+
+  useEffect(() => {
+    async function checkUserSession() {
+      const sess = await getSessionClient();
+      if (sess) {
+        setSession(sess);
+        if (sess.role === "guru") router.replace("/beranda");
+        else if (sess.role === "siswa") router.replace("/beranda-siswa");
+      }
+    }
+    checkUserSession();
+  }, [router]);
+
   return (
     <div className="min-h-screen bg-slate-50 font-sans selection:bg-rose-200">
       {/* Navbar */}
@@ -15,9 +32,18 @@ export default function LandingPage() {
             <img src="/icon.png" alt="Logo Jurnalku" className="w-8 h-8 md:w-10 md:h-10 object-contain drop-shadow-sm" />
             <h1 className="font-extrabold text-slate-800 text-xl tracking-tight">Jurnalku<span className="text-rose-600">.</span></h1>
           </div>
-          <Link href="/login" className="flex items-center gap-2 bg-rose-600 hover:bg-rose-700 text-white font-bold py-2 px-4 rounded-xl transition-all shadow-sm text-sm">
-            <LogIn size={16} /> Login Jurnal
-          </Link>
+          {session ? (
+            <Link 
+              href={session.role === "guru" ? "/beranda" : "/beranda-siswa"} 
+              className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-xl transition-all shadow-sm text-sm"
+            >
+              Ke Beranda <ArrowRight size={16} />
+            </Link>
+          ) : (
+            <Link href="/login" className="flex items-center gap-2 bg-rose-600 hover:bg-rose-700 text-white font-bold py-2 px-4 rounded-xl transition-all shadow-sm text-sm">
+              <LogIn size={16} /> Login Jurnal
+            </Link>
+          )}
         </div>
       </header>
 

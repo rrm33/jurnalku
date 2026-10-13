@@ -91,16 +91,24 @@ export async function updateProfilSiswa(formDataPayload) {
       
       const cookieStore = await cookies();
       const session = cookieStore.get('session');
-      if (session) {
-        const parsed = JSON.parse(session.value);
-        if (parsed.needsPassword) {
+      if (session && session.value) {
+        let parsed = null;
+        try {
+          parsed = JSON.parse(decodeURIComponent(session.value));
+        } catch {
+          try {
+            parsed = JSON.parse(session.value);
+          } catch {}
+        }
+        if (parsed && parsed.needsPassword) {
           parsed.needsPassword = false;
           cookieStore.set('session', JSON.stringify(parsed), {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
+            maxAge: 30 * 24 * 60 * 60,
+            expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
             sameSite: 'lax',
-            path: '/',
-            maxAge: 30 * 24 * 60 * 60
+            secure: false,
+            path: '/'
           });
         }
       }

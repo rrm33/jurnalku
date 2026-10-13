@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import { Database, ServerCrash } from "lucide-react";
-import { checkConnection, getSiswaTanpaPassword, loginGuru, seedDummyGuru, loginSiswa, loginSiswaTanpaPassword } from "@/actions/auth";
+import { checkConnection, getSiswaTanpaPassword, loginGuru, seedDummyGuru, loginSiswa, loginSiswaTanpaPassword, getSessionClient } from "@/actions/auth";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -22,6 +22,16 @@ export default function LoginPage() {
   const [searchSiswa, setSearchSiswa] = useState("");
 
   useEffect(() => {
+    // 0. Cek Sesi Aktif (jika sudah login di tab lain, langsung arahkan ke beranda)
+    const checkActiveSession = async () => {
+      const sess = await getSessionClient();
+      if (sess) {
+        if (sess.role === "guru") router.replace("/beranda");
+        else if (sess.role === "siswa") router.replace("/beranda-siswa");
+      }
+    };
+    checkActiveSession();
+
     // 1. Cek Koneksi DB
     const initData = async () => {
       const conn = await checkConnection();

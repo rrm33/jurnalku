@@ -3,12 +3,33 @@
 import { prisma } from "@/lib/prisma"
 import { cookies } from "next/headers"
 
-// Mengecek koneksi ke MySQL
+const COOKIE_MAX_AGE = 30 * 24 * 60 * 60; // 30 hari
+
+function getCookieOptions() {
+  return {
+    httpOnly: true,
+    maxAge: COOKIE_MAX_AGE,
+    expires: new Date(Date.now() + COOKIE_MAX_AGE * 1000),
+    sameSite: 'lax',
+    secure: false, // Aman di HTTP dan HTTPS (mencegah cookie tertolak saat diakses via HTTP / reverse-proxy)
+    path: '/'
+  };
+}
+
+// Mengecek koneksi dan sesi aktif
 export async function getSessionClient() {
-  const cookieStore = await cookies();
-  const session = cookieStore.get('session');
-  if (!session) return null;
-  return JSON.parse(session.value);
+  try {
+    const cookieStore = await cookies();
+    const session = cookieStore.get('session');
+    if (!session || !session.value) return null;
+    try {
+      return JSON.parse(decodeURIComponent(session.value));
+    } catch {
+      return JSON.parse(session.value);
+    }
+  } catch {
+    return null;
+  }
 }
 
 export async function checkConnection() {
@@ -45,8 +66,12 @@ export async function loginGuru(nip, password) {
       return { success: false, message: "Password salah" }
     }
     
-    const cookieStore = await cookies()
-    cookieStore.set('session', JSON.stringify({ id: guru.id, role: 'guru', nama: guru.nama }), { httpOnly: true, maxAge: 30 * 24 * 60 * 60, sameSite: 'lax', secure: process.env.NODE_ENV === 'production', path: '/' });
+    const cookieStore = await cookies();
+    cookieStore.set(
+      'session',
+      JSON.stringify({ id: guru.id, role: 'guru', nama: guru.nama }),
+      getCookieOptions()
+    );
     
     return { success: true, data: { nama: guru.nama } }
   } catch (error) {
@@ -68,8 +93,12 @@ export async function loginSiswa(nisn, password) {
       return { success: false, message: "Password salah" }
     }
     
-    const cookieStore = await cookies()
-    cookieStore.set('session', JSON.stringify({ id: siswa.id, role: 'siswa', nama: siswa.nama, needsPassword: false }), { httpOnly: true, maxAge: 30 * 24 * 60 * 60, sameSite: 'lax', secure: process.env.NODE_ENV === 'production', path: '/' });
+    const cookieStore = await cookies();
+    cookieStore.set(
+      'session',
+      JSON.stringify({ id: siswa.id, role: 'siswa', nama: siswa.nama, needsPassword: false }),
+      getCookieOptions()
+    );
     
     return { success: true, data: { nama: siswa.nama } }
   } catch (error) {
@@ -85,7 +114,11 @@ export async function loginSiswaTanpaPassword(id) {
     if (siswa.password) return { success: false, message: "Siswa sudah memiliki password" };
 
     const cookieStore = await cookies();
-    cookieStore.set('session', JSON.stringify({ id: siswa.id, role: 'siswa', nama: siswa.nama, needsPassword: true }), { httpOnly: true, maxAge: 30 * 24 * 60 * 60, sameSite: 'lax', secure: process.env.NODE_ENV === 'production', path: '/' });
+    cookieStore.set(
+      'session',
+      JSON.stringify({ id: siswa.id, role: 'siswa', nama: siswa.nama, needsPassword: true }),
+      getCookieOptions()
+    );
     
     return { success: true, data: { nama: siswa.nama } };
   } catch (error) {
@@ -100,7 +133,13 @@ export async function setSiswaPassword(id, newPassword) {
     const session = cookieStore.get('session');
     if (!session) return { success: false, message: "Tidak ada sesi aktif" };
     
-    const parsed = JSON.parse(session.value);
+    let parsed;
+    try {
+      parsed = JSON.parse(decodeURIComponent(session.value));
+    } catch {
+      parsed = JSON.parse(session.value);
+    }
+
     if (parsed.id !== id || parsed.role !== 'siswa') return { success: false, message: "Sesi tidak valid" };
 
     await prisma.siswa.update({
@@ -109,7 +148,11 @@ export async function setSiswaPassword(id, newPassword) {
     });
 
     // Perbarui sesi agar needsPassword menjadi false
-    cookieStore.set('session', JSON.stringify({ ...parsed, needsPassword: false }), { httpOnly: true, maxAge: 30 * 24 * 60 * 60, sameSite: 'lax', secure: process.env.NODE_ENV === 'production', path: '/' });
+    cookieStore.set(
+      'session',
+      JSON.stringify({ ...parsed, needsPassword: false }),
+      getCookieOptions()
+    );
 
     return { success: true, message: "Password berhasil disimpan" };
   } catch (error) {
@@ -133,7 +176,7 @@ export async function seedDummyGuru() {
         data: {
           nip: "123456789",
           nama: "Guru Testing",
-          password: "password123", // Jangan lakukan ini di production, harus dihash
+          password: "password123",
           email: "guru@sekolah.com"
         }
       })
