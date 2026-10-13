@@ -6,6 +6,7 @@ import { Users, CheckSquare, ChevronDown, ChevronUp, Trash2, Edit2, Link as Link
 import { getRpps, deleteRpp, toggleStatusRpp, toggleActiveRpp, saveCatatanRpp } from "@/actions/rpp";
 import { getKelas, getMapel } from "@/actions/master";
 import FileViewerModal from "@/components/FileViewerModal";
+import FormattedContent from "@/components/FormattedContent";
 import Swal from "sweetalert2";
 
 export default function BerandaPage() {
@@ -299,7 +300,7 @@ export default function BerandaPage() {
                   </div>
                   <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
                     <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Aktivitas Pembelajaran</h4>
-                    <p className="text-sm text-slate-700 leading-relaxed font-medium whitespace-pre-line">{rpp.aktivitas_pembelajaran}</p>
+                    <FormattedContent content={rpp.aktivitas_pembelajaran} />
                     
                     {rpp.upload_file && (
                       <div className="mt-4">

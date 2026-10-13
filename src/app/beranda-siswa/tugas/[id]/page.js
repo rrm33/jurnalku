@@ -7,6 +7,7 @@ import { ArrowLeft, CheckCircle2, Clock, FileText, AlertCircle, Play } from "luc
 import Swal from "sweetalert2";
 import FileViewerModal from "@/components/FileViewerModal";
 import Linkify from "@/components/Linkify";
+import FormattedContent from "@/components/FormattedContent";
 
 export default function TugasDetailPage() {
   const params = useParams();
@@ -169,7 +170,7 @@ export default function TugasDetailPage() {
             </div>
             <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100">
               <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Aktivitas Pembelajaran</h4>
-              <p className="text-sm text-slate-700 leading-relaxed font-medium whitespace-pre-line">{kbm.aktivitas_pembelajaran}</p>
+              <FormattedContent content={kbm.aktivitas_pembelajaran} />
               
               {kbm.upload_file && (
                 <div className="mt-4">

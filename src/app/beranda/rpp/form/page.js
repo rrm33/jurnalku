@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowLeft, Save, Upload, CheckSquare, Trash2 } from "lucide-react";
+import { ArrowLeft, Save, Upload, CheckSquare, Trash2, Code, Eye, X } from "lucide-react";
 import { saveRpp, getRppById } from "@/actions/rpp";
 import { getKelas, getMapel } from "@/actions/master";
+import FormattedContent from "@/components/FormattedContent";
 import Swal from "sweetalert2";
 
 function RppFormContent() {
@@ -20,6 +21,12 @@ function RppFormContent() {
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedFileTugas, setSelectedFileTugas] = useState(null);
+
+  const [showCodeModal, setShowCodeModal] = useState(false);
+  const [codeSnippet, setCodeSnippet] = useState("");
+  const [codeLang, setCodeLang] = useState("dart");
+  const [showPreview, setShowPreview] = useState(false);
+  const aktivitasTextareaRef = useRef(null);
 
   const [formData, setFormData] = useState({
     id: null,
@@ -88,6 +95,39 @@ function RppFormContent() {
       } else {
         return { ...prev, kelas_ids: [...prev.kelas_ids, String(kelasId)] };
       }
+    });
+  };
+
+  const handleInsertCode = () => {
+    if (!codeSnippet.trim()) {
+      Swal.fire("Peringatan", "Kode tidak boleh kosong", "warning");
+      return;
+    }
+
+    const formattedBlock = `\n\`\`\`${codeLang}\n${codeSnippet.trim()}\n\`\`\`\n`;
+
+    const textarea = aktivitasTextareaRef.current;
+    if (textarea) {
+      const start = textarea.selectionStart || 0;
+      const end = textarea.selectionEnd || 0;
+      const currentVal = formData.aktivitas_pembelajaran || "";
+      const newVal = currentVal.substring(0, start) + formattedBlock + currentVal.substring(end);
+      setFormData(prev => ({ ...prev, aktivitas_pembelajaran: newVal }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        aktivitas_pembelajaran: (prev.aktivitas_pembelajaran || "") + formattedBlock
+      }));
+    }
+
+    setCodeSnippet("");
+    setShowCodeModal(false);
+    Swal.fire({
+      icon: "success",
+      title: "Kotak Kode Disisipkan!",
+      text: "Kode berhasil disisipkan ke Kegiatan Pembelajaran.",
+      timer: 1500,
+      showConfirmButton: false
     });
   };
 
@@ -217,8 +257,57 @@ function RppFormContent() {
           </div>
 
           <div>
-            <label className="block text-sm font-bold text-slate-700 mb-2">Kegiatan Pembelajaran (Bisa link/teks) *</label>
-            <textarea required rows="6" value={formData.aktivitas_pembelajaran} onChange={e => setFormData({...formData, aktivitas_pembelajaran: e.target.value})} placeholder="1. Guru menjelaskan...&#10;2. Siswa membaca link https://..." className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all bg-slate-50 leading-relaxed"></textarea>
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+              <label className="block text-sm font-bold text-slate-700">Kegiatan Pembelajaran (Bisa link/teks/kode) *</label>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowCodeModal(true)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-black text-emerald-400 hover:text-emerald-300 text-xs font-mono font-bold rounded-xl transition-all shadow-sm active:scale-95"
+                >
+                  <Code size={14} />
+                  + Sisipkan Kotak Kode
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowPreview(!showPreview)}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl border transition-all ${
+                    showPreview
+                      ? "bg-rose-50 border-rose-200 text-rose-600 shadow-inner"
+                      : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50 shadow-sm"
+                  }`}
+                >
+                  <Eye size={14} />
+                  {showPreview ? "Edit Teks" : "Lihat Pratinjau"}
+                </button>
+              </div>
+            </div>
+
+            {showPreview ? (
+              <div className="p-5 rounded-xl border-2 border-dashed border-rose-200 bg-white min-h-[180px]">
+                <div className="text-[11px] font-bold text-rose-500 uppercase tracking-wider mb-3 flex items-center gap-1.5 border-b border-rose-100 pb-2">
+                  <Eye size={13} /> Pratinjau Tampilan untuk Siswa & Guru:
+                </div>
+                <FormattedContent content={formData.aktivitas_pembelajaran || "Belum ada materi kegiatan pembelajaran yang ditulis."} />
+              </div>
+            ) : (
+              <textarea
+                ref={aktivitasTextareaRef}
+                required
+                rows={7}
+                value={formData.aktivitas_pembelajaran}
+                onChange={e => setFormData({...formData, aktivitas_pembelajaran: e.target.value})}
+                placeholder="1. Guru menjelaskan materi...&#10;2. Pelajari contoh kode berikut:&#10;```dart&#10;void main() {&#10;  runApp(const MyApp());&#10;}&#10;```&#10;3. Buka link https://...&#10;4. Siswa mempraktikkan kode di atas."
+                className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all bg-slate-50 leading-relaxed font-sans"
+              ></textarea>
+            )}
+
+            <p className="text-xs text-slate-500 mt-1.5 flex items-center gap-1.5">
+              <span>💡</span>
+              <span>
+                Klik tombol <b>+ Sisipkan Kotak Kode</b> untuk memasukkan kode. Atau tulis manual di antara tanda <code>```dart</code> dan <code>```</code>.
+              </span>
+            </p>
           </div>
 
           <div>
@@ -291,6 +380,108 @@ function RppFormContent() {
             </button>
           </div>
         </form>
+
+        {/* Modal Sisipkan Kotak Kode */}
+        {showCodeModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl border border-slate-100 flex flex-col max-h-[90vh]">
+              {/* Header */}
+              <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-xl bg-slate-900 text-emerald-400 flex items-center justify-center shadow-inner">
+                    <Code size={18} />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-slate-800 text-base">Sisipkan Kotak Kode Program</h3>
+                    <p className="text-xs text-slate-500">Akan ditampilkan dalam kotak khusus bergaya code editor untuk siswa.</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowCodeModal(false)}
+                  className="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-600 transition-colors"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              {/* Body */}
+              <div className="py-4 space-y-4 overflow-y-auto">
+                <div>
+                  <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">
+                    Bahasa Pemrograman
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      { id: "dart", label: "Flutter / Dart" },
+                      { id: "html", label: "HTML" },
+                      { id: "css", label: "CSS" },
+                      { id: "javascript", label: "JavaScript" },
+                      { id: "python", label: "Python" },
+                      { id: "code", label: "Lainnya" }
+                    ].map(item => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => setCodeLang(item.id)}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                          codeLang === item.id
+                            ? "bg-slate-900 text-emerald-400 shadow-sm"
+                            : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                        }`}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">
+                    Isi Kode Program
+                  </label>
+                  <div className="rounded-2xl overflow-hidden border border-slate-800 bg-slate-900 shadow-inner">
+                    <div className="bg-slate-800 px-4 py-2 flex items-center justify-between border-b border-slate-700 text-xs font-mono text-slate-400">
+                      <span className="flex items-center gap-1.5">
+                        <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
+                        Editor Kode ({codeLang.toUpperCase()})
+                      </span>
+                      <span className="text-[10px] text-slate-500">Hanya tampilan, tidak dijalankan</span>
+                    </div>
+                    <textarea
+                      rows={8}
+                      value={codeSnippet}
+                      onChange={e => setCodeSnippet(e.target.value)}
+                      placeholder="// Tempel (paste) atau ketik kode program kamu di sini...&#10;void main() {&#10;  runApp(const MyApp());&#10;}"
+                      className="w-full p-4 bg-slate-900 text-emerald-400 font-mono text-xs sm:text-sm outline-none resize-none leading-relaxed placeholder:text-slate-600 selection:bg-emerald-900 selection:text-white"
+                      spellCheck="false"
+                      style={{ tabSize: 2 }}
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="pt-4 border-t border-slate-100 flex justify-end gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setShowCodeModal(false)}
+                  className="px-5 py-2.5 rounded-xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 text-xs transition-colors"
+                >
+                  Batal
+                </button>
+                <button
+                  type="button"
+                  onClick={handleInsertCode}
+                  className="px-5 py-2.5 rounded-xl font-bold text-white bg-rose-500 hover:bg-rose-600 text-xs transition-colors flex items-center gap-1.5 shadow-md shadow-rose-200"
+                >
+                  <Code size={14} />
+                  Sisipkan ke Kegiatan
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
