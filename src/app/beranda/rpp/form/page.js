@@ -12,7 +12,9 @@ function RppFormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
+  const duplicateId = searchParams.get("duplicate_id");
   const isEdit = !!id;
+  const isDuplicate = !!duplicateId;
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -52,20 +54,23 @@ function RppFormContent() {
     setKelasList(kelas);
     setMapelList(mapel);
 
-    if (isEdit) {
-      const rpp = await getRppById(id);
+    const targetId = id || duplicateId;
+    if (targetId) {
+      const rpp = await getRppById(targetId);
       if (rpp) {
         const tugas = rpp.tugas && rpp.tugas.length > 0 ? rpp.tugas[0] : null;
         setFormData({
-          id: rpp.id,
+          id: isDuplicate ? null : rpp.id,
           pertemuan_ke: rpp.pertemuan_ke,
-          tanggal: rpp.tanggal ? new Date(rpp.tanggal).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
+          tanggal: isDuplicate
+            ? new Date().toISOString().slice(0, 10)
+            : (rpp.tanggal ? new Date(rpp.tanggal).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10)),
           mapel_id: rpp.mapel_id,
-          kelas_ids: [String(rpp.kelas_id)],
-          judul: rpp.judul,
+          kelas_ids: isDuplicate ? [] : [String(rpp.kelas_id)],
+          judul: isDuplicate ? `${rpp.judul} (Salinan)` : rpp.judul,
           tujuan_pembelajaran: rpp.tujuan_pembelajaran,
           aktivitas_pembelajaran: rpp.aktivitas_pembelajaran,
-          existing_file: rpp.file_rpp || "",
+          existing_file: rpp.upload_file || rpp.file_rpp || "",
           ada_tugas: !!tugas,
           judul_tugas: tugas ? tugas.judul : "",
           deskripsi_tugas: tugas ? tugas.deskripsi : "",
@@ -85,7 +90,7 @@ function RppFormContent() {
 
   useEffect(() => {
     fetchData();
-  }, [id]);
+  }, [id, duplicateId]);
 
   const handleCheckboxKelas = (kelasId) => {
     setFormData(prev => {
@@ -196,9 +201,16 @@ function RppFormContent() {
         <button onClick={() => router.push('/beranda/rpp')} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
           <ArrowLeft size={24} className="text-slate-600" />
         </button>
-        <h1 className="text-2xl font-extrabold text-slate-800">
-          {isEdit ? "Edit Kegiatan Belajar" : "Buat Kegiatan Belajar Baru"}
-        </h1>
+        <div>
+          <h1 className="text-2xl font-extrabold text-slate-800">
+            {isEdit ? "Edit Kegiatan Belajar" : isDuplicate ? "Salin Kegiatan Belajar (Duplikat)" : "Buat Kegiatan Belajar Baru"}
+          </h1>
+          {isDuplicate && (
+            <p className="text-xs text-blue-600 font-semibold mt-1 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100 w-fit">
+              ℹ️ Mode Duplikat: Data materi berhasil disalin. Silakan pilih kelas tujuan baru untuk menyimpan.
+            </p>
+          )}
+        </div>
       </div>
 
       <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-slate-100">

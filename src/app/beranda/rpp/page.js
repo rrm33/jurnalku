@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Users, CheckSquare, ChevronDown, ChevronUp, Trash2, Edit2, Link as LinkIcon, CheckCircle2, Upload, FileText, Copy } from "lucide-react";
 import { getRpps, deleteRpp, toggleStatusRpp, toggleActiveRpp, saveCatatanRpp } from "@/actions/rpp";
@@ -69,85 +69,7 @@ export default function BerandaPage() {
 
 
   const handleDuplicate = (rpp) => {
-    const tugas = rpp.tugas && rpp.tugas.length > 0 ? rpp.tugas[0] : null;
-    setFormData({
-      id: null,
-      pertemuan_ke: rpp.pertemuan_ke,
-      tanggal: rpp.tanggal ? new Date(rpp.tanggal).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
-      mapel_id: rpp.mapel_id,
-      kelas_ids: [], // Kosongkan agar guru memilih kelas tujuan
-      judul: rpp.judul + " (Salinan)",
-      tujuan_pembelajaran: rpp.tujuan_pembelajaran,
-      aktivitas_pembelajaran: rpp.aktivitas_pembelajaran,
-      existing_file: rpp.upload_file || "",
-      ada_tugas: !!tugas,
-      judul_tugas: tugas ? tugas.judul : "",
-      deskripsi_tugas: tugas ? tugas.deskripsi : "",
-      deadline_tugas: tugas && tugas.deadline ? new Date(new Date(tugas.deadline).getTime() + (7 * 60 * 60 * 1000)).toISOString().slice(0, 16) : "",
-      existing_file_tugas: tugas ? (tugas.file || "") : "",
-      gunakan_code_editor: tugas ? (tugas.gunakan_code_editor || false) : false,
-    });
-    setIsOpen(true);
-  };
-
-  const toggleKelasSelection = (id) => {
-    setFormData(prev => {
-      const isSelected = prev.kelas_ids.includes(String(id));
-      if (isSelected) {
-        return { ...prev, kelas_ids: prev.kelas_ids.filter(kId => kId !== String(id)) };
-      } else {
-        return { ...prev, kelas_ids: [...prev.kelas_ids, String(id)] };
-      }
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (formData.kelas_ids.length === 0 || !formData.mapel_id) {
-      return Swal.fire("Peringatan", "Pilih minimal satu Kelas dan Mata Pelajaran!", "warning");
-    }
-    
-    // Siapkan FormData
-    const submission = new FormData();
-    submission.append('id', formData.id);
-    submission.append('pertemuan_ke', formData.pertemuan_ke);
-    submission.append('tanggal', formData.tanggal);
-    submission.append('judul', formData.judul);
-    submission.append('tujuan_pembelajaran', formData.tujuan_pembelajaran);
-    submission.append('aktivitas_pembelajaran', formData.aktivitas_pembelajaran);
-    submission.append('mapel_id', formData.mapel_id);
-    submission.append('existing_file', formData.existing_file);
-    
-    submission.append('ada_tugas', formData.ada_tugas);
-    submission.append('judul_tugas', formData.judul_tugas);
-    submission.append('deskripsi_tugas', formData.deskripsi_tugas);
-    submission.append('deadline_tugas', formData.deadline_tugas);
-    submission.append('existing_file_tugas', formData.existing_file_tugas);
-    submission.append('gunakan_code_editor', formData.gunakan_code_editor);
-    const fileTugasInput = document.getElementById("file_tugas_input");
-    if (fileTugasInput && fileTugasInput.files[0]) {
-      submission.append('file_tugas', fileTugasInput.files[0]);
-    }
-    
-    formData.kelas_ids.forEach(id => {
-      submission.append('kelas_ids[]', id);
-    });
-
-    if (fileInputRef.current && fileInputRef.current.files[0]) {
-      submission.append('upload_file', fileInputRef.current.files[0]);
-    }
-    
-    Swal.fire({ title: "Menyimpan...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-    
-    const res = await saveRpp(submission, 1);
-    
-    if (res.success) {
-      Swal.fire("Berhasil", "Jurnal Mengajar disimpan!", "success");
-      setIsOpen(false);
-      fetchData();
-    } else {
-      Swal.fire("Gagal", res.message, "error");
-    }
+    router.push(`/beranda/rpp/form?duplicate_id=${rpp.id}`);
   };
 
   const handleDelete = async (id) => {
