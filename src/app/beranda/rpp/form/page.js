@@ -2,11 +2,12 @@
 
 import { useState, useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowLeft, Save, Upload, CheckSquare, Trash2, Code, Eye, X } from "lucide-react";
+import { ArrowLeft, Save, Upload, CheckSquare, Trash2, Code, Eye, X, FileText } from "lucide-react";
 import { saveRpp, getRppById } from "@/actions/rpp";
 import { getKelas, getMapel } from "@/actions/master";
 import FormattedContent from "@/components/FormattedContent";
 import AktivitasEditor from "@/components/AktivitasEditor";
+import FileViewerModal from "@/components/FileViewerModal";
 import Swal from "sweetalert2";
 
 function RppFormContent() {
@@ -24,6 +25,7 @@ function RppFormContent() {
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedFileTugas, setSelectedFileTugas] = useState(null);
+  const [fileToView, setFileToView] = useState(null);
 
   const [showCodeModal, setShowCodeModal] = useState(false);
   const [codeSnippet, setCodeSnippet] = useState("");
@@ -127,6 +129,56 @@ function RppFormContent() {
       text: "Kode berhasil disisipkan ke Kegiatan Pembelajaran.",
       timer: 1500,
       showConfirmButton: false
+    });
+  };
+
+  const handleDeleteExistingFile = () => {
+    Swal.fire({
+      title: "Hapus Lampiran Materi?",
+      text: "Lampiran file PDF ini akan dilepas dari RPP saat Anda menyimpan perubahan.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#e11d48",
+      cancelButtonColor: "#64748b",
+      confirmButtonText: "Ya, Hapus Lampiran",
+      cancelButtonText: "Batal"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setFormData(prev => ({ ...prev, existing_file: "" }));
+        setSelectedFile(null);
+        Swal.fire({
+          icon: "success",
+          title: "Lampiran Dilepas",
+          text: "Lampiran telah dilepas. Klik 'Simpan KBM' untuk menyimpan perubahan.",
+          timer: 1600,
+          showConfirmButton: false
+        });
+      }
+    });
+  };
+
+  const handleDeleteExistingFileTugas = () => {
+    Swal.fire({
+      title: "Hapus Lampiran Tugas?",
+      text: "Lampiran file panduan tugas ini akan dilepas saat Anda menyimpan perubahan.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#e11d48",
+      cancelButtonColor: "#64748b",
+      confirmButtonText: "Ya, Hapus Lampiran",
+      cancelButtonText: "Batal"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setFormData(prev => ({ ...prev, existing_file_tugas: "" }));
+        setSelectedFileTugas(null);
+        Swal.fire({
+          icon: "success",
+          title: "Lampiran Tugas Dilepas",
+          text: "Lampiran tugas telah dilepas. Klik 'Simpan KBM' untuk menyimpan perubahan.",
+          timer: 1600,
+          showConfirmButton: false
+        });
+      }
     });
   };
 
@@ -280,26 +332,77 @@ function RppFormContent() {
           </div>
 
           <div>
-            <label className="block text-sm font-bold text-slate-700 mb-2">File Lampiran PDF (Opsional)</label>
-            <div className="flex items-center gap-3">
-              <input type="file" accept=".pdf" className="hidden" id="file_rpp" onChange={(e) => setSelectedFile(e.target.files[0])} />
-              <label htmlFor="file_rpp" className="cursor-pointer bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-colors text-sm">
-                <Upload size={16} /> Pilih File PDF
-              </label>
-              <span className="text-xs text-slate-500 font-medium">
-                {selectedFile ? selectedFile.name : formData.existing_file ? 'File tersimpan: ' + formData.existing_file.split('/').pop() : 'Belum ada file'}
-              </span>
-            </div>
-            {formData.existing_file && (
-              <div className="mt-2 text-xs">
-                <label className="flex items-center gap-2 text-rose-600 cursor-pointer w-fit p-1 hover:bg-rose-50 rounded">
-                  <input type="checkbox" onChange={(e) => {
-                    if (e.target.checked) setFormData({...formData, existing_file: ""});
-                  }} />
-                  <Trash2 size={14} /> Hapus file saat ini
-                </label>
+            <label className="block text-sm font-bold text-slate-700 mb-2">File Lampiran PDF Materi (Opsional)</label>
+            
+            {/* Tampilkan lampiran yang sudah ada saat mode edit */}
+            {formData.existing_file && !selectedFile && (
+              <div className="mb-3 p-3.5 bg-slate-50 border border-slate-200 rounded-2xl flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
+                    <FileText size={18} />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-xs font-bold text-slate-700 truncate max-w-xs sm:max-w-md">
+                      {formData.existing_file.split('/').pop()}
+                    </p>
+                    <p className="text-[11px] text-slate-400">Lampiran file materi saat ini</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setFileToView(formData.existing_file)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl text-xs font-bold transition-colors"
+                  >
+                    <Eye size={14} /> Buka Lampiran
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleDeleteExistingFile}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl text-xs font-bold transition-colors"
+                  >
+                    <Trash2 size={14} /> Hapus Lampiran
+                  </button>
+                </div>
               </div>
             )}
+
+            {/* Tombol pilih file baru */}
+            <div className="flex flex-wrap items-center gap-3">
+              <input
+                type="file"
+                accept=".pdf"
+                className="hidden"
+                id="file_rpp"
+                onChange={(e) => setSelectedFile(e.target.files[0] || null)}
+              />
+              <label
+                htmlFor="file_rpp"
+                className="cursor-pointer bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-colors text-sm"
+              >
+                <Upload size={16} /> {formData.existing_file ? "Ganti File PDF" : "Pilih File PDF"}
+              </label>
+
+              {selectedFile ? (
+                <div className="flex items-center gap-2 bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-xl text-xs font-bold">
+                  <FileText size={14} />
+                  <span className="truncate max-w-xs">{selectedFile.name}</span>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedFile(null)}
+                    className="p-1 hover:bg-emerald-100 rounded-lg text-emerald-800 transition-colors ml-1"
+                    title="Batalkan pilihan file baru"
+                  >
+                    <X size={13} />
+                  </button>
+                </div>
+              ) : (
+                !formData.existing_file && (
+                  <span className="text-xs text-slate-400 font-medium">Belum ada file lampiran</span>
+                )
+              )}
+            </div>
           </div>
 
           <div className="pt-4 border-t border-slate-100">
@@ -325,10 +428,75 @@ function RppFormContent() {
               </div>
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">Lampiran File Tugas (Opsional)</label>
-                <input type="file" accept=".pdf" className="w-full px-4 py-2 border border-slate-200 rounded-xl bg-white" onChange={e => setSelectedFileTugas(e.target.files[0])} />
+                
+                {/* Tampilkan file tugas yang sudah ada */}
                 {formData.existing_file_tugas && !selectedFileTugas && (
-                  <p className="text-xs text-slate-500 mt-1">File saat ini: {formData.existing_file_tugas.split('/').pop()}</p>
+                  <div className="mb-3 p-3 bg-white border border-slate-200 rounded-2xl flex flex-wrap items-center justify-between gap-3 shadow-xs">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+                        <FileText size={16} />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-xs font-bold text-slate-700 truncate max-w-xs">
+                          {formData.existing_file_tugas.split('/').pop()}
+                        </p>
+                        <p className="text-[10px] text-slate-400">Lampiran panduan/soal tugas saat ini</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setFileToView(formData.existing_file_tugas)}
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 rounded-lg text-xs font-bold transition-colors"
+                      >
+                        <Eye size={13} /> Buka Lampiran
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleDeleteExistingFileTugas}
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-xs font-bold transition-colors"
+                      >
+                        <Trash2 size={13} /> Hapus
+                      </button>
+                    </div>
+                  </div>
                 )}
+
+                <div className="flex flex-wrap items-center gap-3">
+                  <input
+                    type="file"
+                    accept=".pdf"
+                    className="hidden"
+                    id="file_tugas"
+                    onChange={(e) => setSelectedFileTugas(e.target.files[0] || null)}
+                  />
+                  <label
+                    htmlFor="file_tugas"
+                    className="cursor-pointer bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 px-4 py-2 rounded-xl font-bold flex items-center gap-2 transition-colors text-xs shadow-xs"
+                  >
+                    <Upload size={14} /> {formData.existing_file_tugas ? "Ganti File Tugas" : "Pilih File Lampiran Tugas"}
+                  </label>
+
+                  {selectedFileTugas ? (
+                    <div className="flex items-center gap-2 bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-xl text-xs font-bold">
+                      <FileText size={14} />
+                      <span className="truncate max-w-xs">{selectedFileTugas.name}</span>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedFileTugas(null)}
+                        className="p-1 hover:bg-emerald-100 rounded-lg text-emerald-800 transition-colors ml-1"
+                        title="Batalkan pilihan file tugas"
+                      >
+                        <X size={13} />
+                      </button>
+                    </div>
+                  ) : (
+                    !formData.existing_file_tugas && (
+                      <span className="text-xs text-slate-400 font-medium">Belum ada file tugas</span>
+                    )
+                  )}
+                </div>
               </div>
               <div>
                 <label className="flex items-center gap-2 cursor-pointer p-3 bg-emerald-50 border border-emerald-200 rounded-xl w-fit">
@@ -450,6 +618,11 @@ function RppFormContent() {
               </div>
             </div>
           </div>
+        )}
+
+        {/* Modal Pratinjau Lampiran File */}
+        {fileToView && (
+          <FileViewerModal url={fileToView} onClose={() => setFileToView(null)} />
         )}
       </div>
     </div>
