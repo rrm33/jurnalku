@@ -236,3 +236,40 @@ export async function getRppById(id) {
     return null;
   }
 }
+
+export async function uploadEditorImage(formData) {
+  try {
+    const file = formData.get("image");
+    if (!file || file.size === 0) {
+      return { success: false, message: "File gambar tidak ditemukan." };
+    }
+
+    if (!file.type.startsWith("image/")) {
+      return { success: false, message: "Hanya format gambar yang diperbolehkan (JPG, PNG, GIF, WEBP, SVG)." };
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      return { success: false, message: "Ukuran gambar maksimal 5 MB." };
+    }
+
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+    const rawExt = file.name ? file.name.split(".").pop().toLowerCase() : "jpg";
+    const ext = rawExt.replace(/[^a-z0-9]/gi, "") || "jpg";
+    const filename = `editor_${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${ext}`;
+    const uploadDir = path.join(process.cwd(), "public/uploads/rpp");
+
+    await fs.mkdir(uploadDir, { recursive: true });
+    await fs.writeFile(path.join(uploadDir, filename), buffer);
+
+    return { 
+      success: true, 
+      url: `/uploads/rpp/${filename}`, 
+      name: file.name || "Gambar" 
+    };
+  } catch (error) {
+    console.error("Error uploadEditorImage:", error);
+    return { success: false, message: error.message };
+  }
+}
+

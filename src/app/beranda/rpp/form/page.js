@@ -6,6 +6,7 @@ import { ArrowLeft, Save, Upload, CheckSquare, Trash2, Code, Eye, X } from "luci
 import { saveRpp, getRppById } from "@/actions/rpp";
 import { getKelas, getMapel } from "@/actions/master";
 import FormattedContent from "@/components/FormattedContent";
+import AktivitasEditor from "@/components/AktivitasEditor";
 import Swal from "sweetalert2";
 
 function RppFormContent() {
@@ -27,8 +28,6 @@ function RppFormContent() {
   const [showCodeModal, setShowCodeModal] = useState(false);
   const [codeSnippet, setCodeSnippet] = useState("");
   const [codeLang, setCodeLang] = useState("dart");
-  const [showPreview, setShowPreview] = useState(false);
-  const aktivitasTextareaRef = useRef(null);
 
   const [formData, setFormData] = useState({
     id: null,
@@ -111,19 +110,14 @@ function RppFormContent() {
 
     const formattedBlock = `\n\`\`\`${codeLang}\n${codeSnippet.trim()}\n\`\`\`\n`;
 
-    const textarea = aktivitasTextareaRef.current;
-    if (textarea) {
-      const start = textarea.selectionStart || 0;
-      const end = textarea.selectionEnd || 0;
-      const currentVal = formData.aktivitas_pembelajaran || "";
-      const newVal = currentVal.substring(0, start) + formattedBlock + currentVal.substring(end);
-      setFormData(prev => ({ ...prev, aktivitas_pembelajaran: newVal }));
-    } else {
-      setFormData(prev => ({
+    setFormData(prev => {
+      const current = prev.aktivitas_pembelajaran || "";
+      const separator = current && !current.endsWith("\n") ? "\n" : "";
+      return {
         ...prev,
-        aktivitas_pembelajaran: (prev.aktivitas_pembelajaran || "") + formattedBlock
-      }));
-    }
+        aktivitas_pembelajaran: current + separator + formattedBlock
+      };
+    });
 
     setCodeSnippet("");
     setShowCodeModal(false);
@@ -140,6 +134,11 @@ function RppFormContent() {
     e.preventDefault();
     if (formData.kelas_ids.length === 0) {
       Swal.fire("Error", "Pilih minimal 1 kelas", "error");
+      return;
+    }
+
+    if (!formData.aktivitas_pembelajaran || !formData.aktivitas_pembelajaran.trim()) {
+      Swal.fire("Peringatan", "Kegiatan Pembelajaran wajib diisi.", "warning");
       return;
     }
     
@@ -269,57 +268,15 @@ function RppFormContent() {
           </div>
 
           <div>
-            <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-              <label className="block text-sm font-bold text-slate-700">Kegiatan Pembelajaran (Bisa link/teks/kode) *</label>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowCodeModal(true)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-black text-emerald-400 hover:text-emerald-300 text-xs font-mono font-bold rounded-xl transition-all shadow-sm active:scale-95"
-                >
-                  <Code size={14} />
-                  + Sisipkan Kotak Kode
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowPreview(!showPreview)}
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl border transition-all ${
-                    showPreview
-                      ? "bg-rose-50 border-rose-200 text-rose-600 shadow-inner"
-                      : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50 shadow-sm"
-                  }`}
-                >
-                  <Eye size={14} />
-                  {showPreview ? "Edit Teks" : "Lihat Pratinjau"}
-                </button>
-              </div>
-            </div>
-
-            {showPreview ? (
-              <div className="p-5 rounded-xl border-2 border-dashed border-rose-200 bg-white min-h-[180px]">
-                <div className="text-[11px] font-bold text-rose-500 uppercase tracking-wider mb-3 flex items-center gap-1.5 border-b border-rose-100 pb-2">
-                  <Eye size={13} /> Pratinjau Tampilan untuk Siswa & Guru:
-                </div>
-                <FormattedContent content={formData.aktivitas_pembelajaran || "Belum ada materi kegiatan pembelajaran yang ditulis."} />
-              </div>
-            ) : (
-              <textarea
-                ref={aktivitasTextareaRef}
-                required
-                rows={7}
-                value={formData.aktivitas_pembelajaran}
-                onChange={e => setFormData({...formData, aktivitas_pembelajaran: e.target.value})}
-                placeholder="1. Guru menjelaskan materi...&#10;2. Pelajari contoh kode berikut:&#10;```dart&#10;void main() {&#10;  runApp(const MyApp());&#10;}&#10;```&#10;3. Buka link https://...&#10;4. Siswa mempraktikkan kode di atas."
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all bg-slate-50 leading-relaxed font-sans"
-              ></textarea>
-            )}
-
-            <p className="text-xs text-slate-500 mt-1.5 flex items-center gap-1.5">
-              <span>💡</span>
-              <span>
-                Klik tombol <b>+ Sisipkan Kotak Kode</b> untuk memasukkan kode. Atau tulis manual di antara tanda <code>```dart</code> dan <code>```</code>.
-              </span>
-            </p>
+            <label className="block text-sm font-bold text-slate-700 mb-2">
+              Kegiatan Pembelajaran (Teks, Format, Gambar & Kode) *
+            </label>
+            <AktivitasEditor
+              value={formData.aktivitas_pembelajaran}
+              onChange={(val) => setFormData(prev => ({ ...prev, aktivitas_pembelajaran: val }))}
+              onOpenCodeModal={() => setShowCodeModal(true)}
+              placeholder="Tulis kegiatan pembelajaran di sini... Anda bisa memformat teks (tebal, miring, judul, daftar), menempel (paste) atau mengunggah gambar, dan menyisipkan kotak kode program."
+            />
           </div>
 
           <div>

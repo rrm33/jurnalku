@@ -8,17 +8,28 @@ import path from "path";
 async function getSessionData() {
   const cookieStore = await cookies();
   const session = cookieStore.get("session");
-  if (!session) return null;
+  if (!session || !session.value) return null;
   try {
-    return JSON.parse(session.value);
+    return JSON.parse(decodeURIComponent(session.value));
   } catch (e) {
-    return null;
+    try {
+      return JSON.parse(session.value);
+    } catch {
+      return null;
+    }
   }
+}
+
+function isAdminSession(session) {
+  if (!session) return false;
+  return session.role === "admin" || session.id === 1;
 }
 
 export async function getInformasiList() {
   const session = await getSessionData();
-  if (!session || session.role !== "guru") return { success: false, message: "Unauthorized" };
+  if (!session || (session.role !== "guru" && session.role !== "admin")) {
+    return { success: false, message: "Unauthorized" };
+  }
 
   try {
     const data = await prisma.informasi.findMany({
@@ -29,7 +40,7 @@ export async function getInformasiList() {
         }
       }
     });
-    return { success: true, data };
+    return { success: true, data, isAdmin: isAdminSession(session) };
   } catch (error) {
     return { success: false, message: error.message };
   }
@@ -37,7 +48,9 @@ export async function getInformasiList() {
 
 export async function saveInformasi(formData) {
   const session = await getSessionData();
-  if (!session || session.role !== "guru") return { success: false, message: "Unauthorized" };
+  if (!isAdminSession(session)) {
+    return { success: false, message: "Akses ditolak: Hanya Administrator yang dapat mengelola informasi." };
+  }
 
   try {
     const id = formData.get("id");
@@ -92,7 +105,9 @@ export async function saveInformasi(formData) {
 
 export async function deleteInformasi(id) {
   const session = await getSessionData();
-  if (!session || session.role !== "guru") return { success: false, message: "Unauthorized" };
+  if (!isAdminSession(session)) {
+    return { success: false, message: "Akses ditolak: Hanya Administrator yang dapat menghapus informasi." };
+  }
 
   try {
     await prisma.informasi.delete({

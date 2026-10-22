@@ -16,6 +16,7 @@ export default function BerandaLayout({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [notifications, setNotifications] = useState({ ajuan: 0, penilaian: 0 });
   const [currentUser, setCurrentUser] = useState(null);
+  const isAdmin = currentUser?.role === "admin" || currentUser?.id === 1;
 
   useEffect(() => {
     async function loadUserSession() {
@@ -145,9 +146,11 @@ export default function BerandaLayout({ children }) {
             )}
           </button>
           
-          <button onClick={() => handleNavigation("/beranda/informasi")} className={getMenuClass("/beranda/informasi")}>
-            <Megaphone size={18} /> Informasi
-          </button>
+          {isAdmin && (
+            <button onClick={() => handleNavigation("/beranda/informasi")} className={getMenuClass("/beranda/informasi")}>
+              <Megaphone size={18} /> Informasi
+            </button>
+          )}
 
           <button onClick={() => handleNavigation("/beranda/resize")} className={getMenuClass("/beranda/resize")}>
             <Crop size={18} /> Alat Produktivitas
@@ -163,9 +166,11 @@ export default function BerandaLayout({ children }) {
             <Users size={18} /> Data Siswa
           </button>
           
-          <button onClick={() => handleNavigation("/beranda/master/user")} className={getMenuClass("/beranda/master/user")}>
-            <UserCog size={18} /> Kelola User
-          </button>
+          {isAdmin && (
+            <button onClick={() => handleNavigation("/beranda/master/user")} className={getMenuClass("/beranda/master/user")}>
+              <UserCog size={18} /> Kelola User
+            </button>
+          )}
           
           <button onClick={() => handleNavigation("/beranda/master/ajuan-profil")} className={`${getMenuClass("/beranda/master/ajuan-profil")} justify-between`}>
             <div className="flex items-center gap-3">
@@ -248,7 +253,7 @@ export default function BerandaLayout({ children }) {
       <PwaInstallButton />
 
       {/* Bottom Nav for Mobile */}
-      <TeacherMobileNav notifications={notifications} onLogout={handleLogout} />
+      <TeacherMobileNav notifications={notifications} currentUser={currentUser} onLogout={handleLogout} />
     </div>
   );
 }

@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { getInformasiList, saveInformasi, deleteInformasi } from "@/actions/informasi";
-import { Trash2, Edit, Plus, FileText, Download, Play, Megaphone, Image as ImageIcon, Search, ChevronDown, ChevronUp, X } from "lucide-react";
+import { Trash2, Edit, Plus, FileText, Download, Play, Megaphone, Image as ImageIcon, Search, ChevronDown, ChevronUp, X, ShieldAlert } from "lucide-react";
 import FileViewerModal from "@/components/FileViewerModal";
 import Swal from "sweetalert2";
 
 export default function InformasiPage() {
+  const router = useRouter();
   const [dataList, setDataList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -23,7 +25,24 @@ export default function InformasiPage() {
     setLoading(true);
     const res = await getInformasiList();
     if (res.success) {
+      if (!res.isAdmin) {
+        Swal.fire({
+          title: "Akses Ditolak",
+          text: "Halaman Pengumuman Informasi hanya dapat diakses oleh Administrator.",
+          icon: "error",
+          confirmButtonColor: "#e11d48",
+          confirmButtonText: "Kembali ke Beranda"
+        }).then(() => {
+          router.replace("/beranda");
+        });
+        return;
+      }
       setDataList(res.data);
+    } else {
+      Swal.fire("Akses Ditolak", res.message || "Gagal memuat data", "error").then(() => {
+        router.replace("/beranda");
+      });
+      return;
     }
     setLoading(false);
   };
