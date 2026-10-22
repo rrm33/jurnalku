@@ -36,8 +36,10 @@ export function middleware(request) {
   }
 
   if (session) {
-    // Jika role GURU mencoba akses /beranda-siswa, lempar ke /beranda
-    if (session.role === 'guru' && path.startsWith('/beranda-siswa')) {
+    const isGuruOrAdmin = session.role === 'guru' || session.role === 'admin';
+
+    // Jika role GURU/ADMIN mencoba akses /beranda-siswa, lempar ke /beranda
+    if (isGuruOrAdmin && path.startsWith('/beranda-siswa')) {
       return NextResponse.redirect(new URL('/beranda', request.nextUrl));
     }
     
@@ -48,7 +50,7 @@ export function middleware(request) {
 
     // Jika sudah login, cegah masuk halaman login atau root ('/'), langsung lempar ke beranda masing-masing
     if (path === '/' || path === '/login') {
-      if (session.role === 'guru') {
+      if (isGuruOrAdmin) {
         return NextResponse.redirect(new URL('/beranda', request.nextUrl));
       }
       if (session.role === 'siswa') {

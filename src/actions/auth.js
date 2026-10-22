@@ -66,14 +66,15 @@ export async function loginGuru(nip, password) {
       return { success: false, message: "Password salah" }
     }
     
+    const userRole = guru.role || (guru.id === 1 ? 'admin' : 'guru');
     const cookieStore = await cookies();
     cookieStore.set(
       'session',
-      JSON.stringify({ id: guru.id, role: 'guru', nama: guru.nama }),
+      JSON.stringify({ id: guru.id, role: userRole, nama: guru.nama, foto: guru.foto }),
       getCookieOptions()
     );
     
-    return { success: true, data: { nama: guru.nama } }
+    return { success: true, data: { nama: guru.nama, role: userRole } }
   } catch (error) {
     return { success: false, message: "Terjadi kesalahan server" }
   }

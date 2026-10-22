@@ -24,7 +24,7 @@ export default function ProfilPage() {
 
   const fetchData = async () => {
     setLoading(true);
-    const data = await getProfilGuru(1);
+    const data = await getProfilGuru();
     if (data) {
       setFormData({
         nip: data.nip || "",
@@ -72,9 +72,10 @@ export default function ProfilPage() {
       submission.append("foto", fileInputRef.current.files[0]);
     }
 
-    const res = await updateProfilGuru(submission, 1);
+    const res = await updateProfilGuru(submission);
     if (res.success) {
       Swal.fire("Berhasil", "Profil Anda berhasil diperbarui!", "success");
+      window.dispatchEvent(new Event('refreshUserSession'));
       fetchData(); 
     } else {
       Swal.fire("Gagal", res.message, "error");

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Code, Copy, Check } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Code, Copy, Check, ChevronDown, ChevronUp } from "lucide-react";
 
 function CodeBlock({ code, lang }) {
   const [copied, setCopied] = useState(false);
@@ -96,7 +96,19 @@ function renderTextWithLinks(text) {
   });
 }
 
-export default function FormattedContent({ content, className = "" }) {
+export default function FormattedContent({ content, className = "", collapsible = false }) {
+  const contentRef = useRef(null);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+
+  useEffect(() => {
+    if (collapsible && contentRef.current) {
+      if (contentRef.current.scrollHeight > 190) {
+        setIsOverflowing(true);
+      }
+    }
+  }, [content, collapsible]);
+
   if (!content || typeof content !== "string") {
     return <span className="text-slate-400 italic">Tidak ada konten</span>;
   }
@@ -131,21 +143,61 @@ export default function FormattedContent({ content, className = "" }) {
     });
   }
 
+  const needsCollapse = collapsible && isOverflowing && !isExpanded;
+
   return (
-    <div className={`space-y-1 ${className}`}>
-      {parts.map((part, index) => {
-        if (part.type === "code") {
-          return <CodeBlock key={index} code={part.content} lang={part.lang} />;
-        }
-        return (
-          <p
-            key={index}
-            className="text-sm text-slate-700 leading-relaxed font-medium whitespace-pre-line"
+    <div className="relative">
+      <div
+        ref={contentRef}
+        className={`space-y-1 transition-all duration-300 ${
+          needsCollapse ? "max-h-48 overflow-hidden relative" : ""
+        } ${className}`}
+      >
+        {parts.map((part, index) => {
+          if (part.type === "code") {
+            return <CodeBlock key={index} code={part.content} lang={part.lang} />;
+          }
+          return (
+            <p
+              key={index}
+              className="text-sm text-slate-700 leading-relaxed font-medium whitespace-pre-line"
+            >
+              {renderTextWithLinks(part.content)}
+            </p>
+          );
+        })}
+
+        {/* Gradient fade when collapsed */}
+        {needsCollapse && (
+          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none" />
+        )}
+      </div>
+
+      {/* Button Tampilkan Semua / Tampilkan Lebih Sedikit */}
+      {collapsible && isOverflowing && (
+        <div className="pt-2 flex justify-center">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsExpanded(!isExpanded);
+            }}
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors shadow-sm active:scale-95"
           >
-            {renderTextWithLinks(part.content)}
-          </p>
-        );
-      })}
+            {isExpanded ? (
+              <>
+                <ChevronUp size={14} className="text-rose-500" />
+                <span>Tampilkan Lebih Sedikit</span>
+              </>
+            ) : (
+              <>
+                <ChevronDown size={14} className="text-rose-500" />
+                <span>Tampilkan Semua</span>
+              </>
+            )}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

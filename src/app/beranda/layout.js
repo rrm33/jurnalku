@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { BookOpen, Users, LogOut, FileText, User, Menu, X, Megaphone, Home, Map, CheckSquare, ClipboardList, Crop } from "lucide-react";
+import { BookOpen, Users, LogOut, FileText, User, Menu, X, Megaphone, Home, Map, CheckSquare, ClipboardList, Crop, UserCog } from "lucide-react";
 import DbIndicator from "@/components/DbIndicator";
 import TeacherMobileNav from "@/components/TeacherMobileNav";
 import PwaInstallButton from "@/components/PwaInstallButton";
-import { logout } from "@/actions/auth";
+import { logout, getSessionClient } from "@/actions/auth";
 import { getAdminNotifications } from "@/actions/notifications";
 import Swal from "sweetalert2";
 
@@ -15,6 +15,19 @@ export default function BerandaLayout({ children }) {
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [notifications, setNotifications] = useState({ ajuan: 0, penilaian: 0 });
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    async function loadUserSession() {
+      const sess = await getSessionClient();
+      if (sess) setCurrentUser(sess);
+    }
+    loadUserSession();
+    window.addEventListener('refreshUserSession', loadUserSession);
+    return () => {
+      window.removeEventListener('refreshUserSession', loadUserSession);
+    };
+  }, []);
 
   useEffect(() => {
     async function fetchNotifs() {
@@ -140,10 +153,18 @@ export default function BerandaLayout({ children }) {
             <Crop size={18} /> Alat Produktivitas
           </button>
 
+          <button onClick={() => handleNavigation("/beranda/profil")} className={getMenuClass("/beranda/profil")}>
+            <User size={18} /> Profil Saya
+          </button>
+
           <div className="text-[10px] font-bold text-slate-300 uppercase tracking-widest mb-3 mt-8 px-4">Master Data</div>
           
           <button onClick={() => handleNavigation("/beranda/master/siswa")} className={getMenuClass("/beranda/master/siswa")}>
             <Users size={18} /> Data Siswa
+          </button>
+          
+          <button onClick={() => handleNavigation("/beranda/master/user")} className={getMenuClass("/beranda/master/user")}>
+            <UserCog size={18} /> Kelola User
           </button>
           
           <button onClick={() => handleNavigation("/beranda/master/ajuan-profil")} className={`${getMenuClass("/beranda/master/ajuan-profil")} justify-between`}>
@@ -187,13 +208,29 @@ export default function BerandaLayout({ children }) {
         </nav>
 
         <div className="p-4 border-t border-rose-50 bg-white">
-          <button className="w-full flex items-center gap-3 px-4 py-3 bg-slate-50 hover:bg-slate-100 rounded-xl mb-3 transition-colors cursor-pointer">
-            <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 font-bold">
-              G
-            </div>
-            <div className="flex-1 text-left">
-              <p className="text-sm font-semibold text-slate-700">Akun Guru</p>
-              <p className="text-xs text-slate-500">Administrator</p>
+          <button 
+            onClick={() => handleNavigation("/beranda/profil")} 
+            className="w-full flex items-center gap-3 px-3 py-2.5 bg-slate-50 hover:bg-rose-50 rounded-xl mb-3 transition-colors cursor-pointer text-left group border border-slate-100 hover:border-rose-100"
+            title="Klik untuk mengedit profil"
+          >
+            {currentUser?.foto ? (
+              <img 
+                src={currentUser.foto} 
+                alt={currentUser.nama || "User"} 
+                className="w-9 h-9 rounded-full object-cover border border-rose-200 shadow-sm shrink-0" 
+              />
+            ) : (
+              <div className="w-9 h-9 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center font-bold text-sm shrink-0">
+                {(currentUser?.nama || "G").charAt(0).toUpperCase()}
+              </div>
+            )}
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-slate-700 truncate group-hover:text-rose-600 transition-colors">
+                {currentUser?.nama || "Akun Guru"}
+              </p>
+              <p className="text-[11px] text-slate-500 capitalize truncate">
+                {currentUser?.role === "admin" ? "Administrator" : "Guru Pengajar"}
+              </p>
             </div>
           </button>
           <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-rose-600 hover:bg-rose-50 rounded-xl font-medium transition-colors border border-transparent hover:border-rose-100">

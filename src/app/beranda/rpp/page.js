@@ -222,7 +222,7 @@ export default function BerandaPage() {
                   </div>
                   <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
                     <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Aktivitas Pembelajaran</h4>
-                    <FormattedContent content={rpp.aktivitas_pembelajaran} />
+                    <FormattedContent content={rpp.aktivitas_pembelajaran} collapsible={true} />
                     
                     {rpp.upload_file && (
                       <div className="mt-4">

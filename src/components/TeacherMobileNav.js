@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { Home, FileText, CheckSquare, Users, Menu, X, Map, BookOpen, ClipboardList, LogOut, Megaphone } from "lucide-react";
+import { Home, FileText, CheckSquare, Users, Menu, X, Map, BookOpen, ClipboardList, LogOut, Megaphone, User, UserCog, Crop } from "lucide-react";
 
 export default function TeacherMobileNav({ notifications, onLogout }) {
   const router = useRouter();
@@ -181,6 +181,36 @@ export default function TeacherMobileNav({ notifications, onLogout }) {
                 </div>
               </button>
 
+              <button onClick={() => handleNav("/beranda/profil")} className="w-full flex items-center gap-4 px-4 py-3 bg-slate-50 hover:bg-rose-50 rounded-2xl transition-colors text-left">
+                <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-rose-500">
+                  <User size={18} />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-slate-700 text-sm">Profil Saya</h3>
+                  <p className="text-xs text-slate-500">Edit data diri & ganti password</p>
+                </div>
+              </button>
+
+              <button onClick={() => handleNav("/beranda/master/user")} className="w-full flex items-center gap-4 px-4 py-3 bg-slate-50 hover:bg-rose-50 rounded-2xl transition-colors text-left">
+                <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-rose-500">
+                  <UserCog size={18} />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-slate-700 text-sm">Kelola User</h3>
+                  <p className="text-xs text-slate-500">Manajemen akun admin & guru</p>
+                </div>
+              </button>
+
+              <button onClick={() => handleNav("/beranda/resize")} className="w-full flex items-center gap-4 px-4 py-3 bg-slate-50 hover:bg-rose-50 rounded-2xl transition-colors text-left">
+                <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-rose-500">
+                  <Crop size={18} />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-slate-700 text-sm">Alat Produktivitas</h3>
+                  <p className="text-xs text-slate-500">Kompres & resize gambar</p>
+                </div>
+              </button>
+
               <button onClick={() => handleNav("/beranda/chat")} className="w-full flex items-center gap-4 px-4 py-3 bg-slate-50 hover:bg-rose-50 rounded-2xl transition-colors text-left">
                 <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-rose-500">
                   <Megaphone size={18} />
@@ -192,7 +222,7 @@ export default function TeacherMobileNav({ notifications, onLogout }) {
               </button>
 
               <button 
-                onClick={() => handleNavigation('/beranda/broadcast')}
+                onClick={() => handleNav('/beranda/broadcast')}
                 className="w-full flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 transition-colors text-left"
               >
                 <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-indigo-500">
