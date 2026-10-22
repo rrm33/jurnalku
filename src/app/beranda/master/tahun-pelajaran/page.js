@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { getTahunPelajaran, saveTahunPelajaran, setTahunPelajaranAktif, deleteTahunPelajaran } from "@/actions/master";
-import { CheckCircle2, Trash2, Edit, Plus } from "lucide-react";
+import { CheckCircle2, Trash2, Edit, Plus, X } from "lucide-react";
 import Swal from "sweetalert2";
 
 export default function TahunPelajaranPage() {
@@ -142,13 +142,25 @@ export default function TahunPelajaranPage() {
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label className="block text-sm font-bold text-slate-600 mb-1">Nama Tahun (contoh: 2024/2025 Ganjil)</label>
-                <input 
-                  type="text" 
-                  required
-                  value={formData.nama}
-                  onChange={e => setFormData({...formData, nama: e.target.value})}
-                  className="w-full px-4 py-2 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-medium text-slate-800"
-                />
+                <div className="relative">
+                  <input 
+                    type="text" 
+                    required
+                    value={formData.nama}
+                    onChange={e => setFormData({...formData, nama: e.target.value})}
+                    className="w-full px-4 py-2 pr-10 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-medium text-slate-800"
+                  />
+                  {formData.nama && (
+                    <button
+                      type="button"
+                      onClick={() => setFormData({...formData, nama: ""})}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
+                      title="Bersihkan"
+                    >
+                      <X size={15} />
+                    </button>
+                  )}
+                </div>
               </div>
               <div className="flex gap-3 justify-end mt-6">
                 <button type="button" onClick={() => setIsOpen(false)} className="px-5 py-2 rounded-xl font-bold text-slate-500 hover:bg-slate-100 transition-colors">Batal</button>

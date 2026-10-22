@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { getInformasiList, saveInformasi, deleteInformasi } from "@/actions/informasi";
-import { Trash2, Edit, Plus, FileText, Download, Play, Megaphone, Image as ImageIcon, Search, ChevronDown, ChevronUp } from "lucide-react";
+import { Trash2, Edit, Plus, FileText, Download, Play, Megaphone, Image as ImageIcon, Search, ChevronDown, ChevronUp, X } from "lucide-react";
 import FileViewerModal from "@/components/FileViewerModal";
 import Swal from "sweetalert2";
 
@@ -128,8 +128,18 @@ export default function InformasiPage() {
             placeholder="Cari judul atau isi informasi..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-11 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-medium text-slate-700 shadow-sm"
+            className="w-full pl-11 pr-10 py-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-medium text-slate-700 shadow-sm"
           />
+          {search && (
+            <button 
+              type="button"
+              onClick={() => setSearch("")}
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
+              title="Bersihkan"
+            >
+              <X size={16} />
+            </button>
+          )}
         </div>
       </div>
 
@@ -230,13 +240,25 @@ export default function InformasiPage() {
               <div className="p-5 space-y-5">
                 <div>
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Judul (Opsional)</label>
-                  <input 
-                    type="text" 
-                    value={formData.judul} 
-                    onChange={e => setFormData({...formData, judul: e.target.value})}
-                    className="w-full px-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-medium text-slate-800"
-                    placeholder="Kosongkan agar dibuat otomatis dari isi..."
-                  />
+                  <div className="relative">
+                    <input 
+                      type="text" 
+                      value={formData.judul} 
+                      onChange={e => setFormData({...formData, judul: e.target.value})}
+                      className="w-full px-4 py-2.5 pr-10 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-medium text-slate-800"
+                      placeholder="Kosongkan agar dibuat otomatis dari isi..."
+                    />
+                    {formData.judul && (
+                      <button
+                        type="button"
+                        onClick={() => setFormData({...formData, judul: ""})}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
+                        title="Bersihkan"
+                      >
+                        <X size={16} />
+                      </button>
+                    )}
+                  </div>
                   <p className="text-[10px] text-slate-400 mt-1">*Jika dikosongkan, judul akan diambil 40 karakter pertama dari isi.</p>
                 </div>
 

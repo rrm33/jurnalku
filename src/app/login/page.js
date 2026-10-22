@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
-import { Database, ServerCrash } from "lucide-react";
+import { Database, ServerCrash, X } from "lucide-react";
 import { checkConnection, getSiswaTanpaPassword, loginGuru, seedDummyGuru, loginSiswa, loginSiswaTanpaPassword, getSessionClient } from "@/actions/auth";
 
 export default function LoginPage() {
@@ -171,14 +171,26 @@ export default function LoginPage() {
           <form onSubmit={handleLoginGuru} className="space-y-5 animate-in fade-in duration-300">
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-1.5">NIP Guru</label>
-              <input
-                type="text"
-                value={nip}
-                onChange={(e) => setNip(e.target.value)}
-                placeholder="Masukkan NIP Anda"
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-rose-500 focus:border-rose-500 outline-none transition-all"
-                required
-              />
+              <div className="relative">
+                <input
+                  type="text"
+                  value={nip}
+                  onChange={(e) => setNip(e.target.value)}
+                  placeholder="Masukkan NIP Anda"
+                  className="w-full px-4 py-3 pr-10 border border-gray-200 rounded-xl focus:ring-2 focus:ring-rose-500 focus:border-rose-500 outline-none transition-all"
+                  required
+                />
+                {nip && (
+                  <button
+                    type="button"
+                    onClick={() => setNip("")}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1"
+                    title="Bersihkan"
+                  >
+                    <X size={16} />
+                  </button>
+                )}
+              </div>
             </div>
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-1.5">Password</label>
@@ -204,14 +216,26 @@ export default function LoginPage() {
             <form onSubmit={handleLoginSiswa} className="space-y-5">
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-1.5">NISN Siswa</label>
-                <input
-                  type="text"
-                  value={nisnSiswa}
-                  onChange={e => setNisnSiswa(e.target.value)}
-                  placeholder="Masukkan NISN Anda"
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
-                  required
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={nisnSiswa}
+                    onChange={e => setNisnSiswa(e.target.value)}
+                    placeholder="Masukkan NISN Anda"
+                    className="w-full px-4 py-3 pr-10 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
+                    required
+                  />
+                  {nisnSiswa && (
+                    <button
+                      type="button"
+                      onClick={() => setNisnSiswa("")}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1"
+                      title="Bersihkan"
+                    >
+                      <X size={16} />
+                    </button>
+                  )}
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-1.5">Password</label>
@@ -241,13 +265,25 @@ export default function LoginPage() {
                 Belum atur password? Cari nama Anda:
               </h3>
               
-              <input 
-                type="text" 
-                value={searchSiswa}
-                onChange={e => setSearchSiswa(e.target.value)}
-                placeholder="Ketik nama Anda di sini..." 
-                className="w-full px-3 py-2 mb-3 text-sm border rounded-lg focus:ring-2 focus:ring-orange-400 outline-none"
-              />
+              <div className="relative mb-3">
+                <input 
+                  type="text" 
+                  value={searchSiswa}
+                  onChange={e => setSearchSiswa(e.target.value)}
+                  placeholder="Ketik nama Anda di sini..." 
+                  className="w-full px-3 py-2 pr-9 text-sm border rounded-lg focus:ring-2 focus:ring-orange-400 outline-none"
+                />
+                {searchSiswa && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchSiswa("")}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1"
+                    title="Bersihkan pencarian"
+                  >
+                    <X size={15} />
+                  </button>
+                )}
+              </div>
 
               <div className="space-y-2 max-h-48 overflow-y-auto pr-1 pb-1">
                 {filteredSiswa.map((siswa) => (

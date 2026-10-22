@@ -272,8 +272,18 @@ export default function PenilaianPage() {
                 placeholder="Cari nama siswa..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-12 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-100 focus:border-pink-400 transition-all text-sm font-medium"
+                className="w-full pl-12 pr-10 py-2.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-100 focus:border-pink-400 transition-all text-sm font-medium"
               />
+              {search && (
+                <button 
+                  type="button"
+                  onClick={() => setSearch("")}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
+                  title="Bersihkan pencarian"
+                >
+                  <X size={16} />
+                </button>
+              )}
            </div>
            
            <button 

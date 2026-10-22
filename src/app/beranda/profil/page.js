@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { getProfilGuru, updateProfilGuru } from "@/actions/profil";
-import { User, Save, Lock, Mail, Phone, CreditCard, Hash, Upload, Image as ImageIcon } from "lucide-react";
+import { User, Save, Lock, Mail, Phone, CreditCard, Hash, Upload, Image as ImageIcon, X } from "lucide-react";
 import Swal from "sweetalert2";
 
 export default function ProfilPage() {
@@ -131,57 +131,129 @@ export default function ProfilPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-2"><User size={14} /> Nama Lengkap *</label>
-                <input 
-                  type="text" required
-                  value={formData.nama} onChange={e => setFormData({...formData, nama: e.target.value})}
-                  className="w-full px-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-bold text-slate-800"
-                />
+                <div className="relative">
+                  <input 
+                    type="text" required
+                    value={formData.nama} onChange={e => setFormData({...formData, nama: e.target.value})}
+                    className="w-full px-4 py-2.5 pr-10 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-bold text-slate-800"
+                  />
+                  {formData.nama && (
+                    <button
+                      type="button"
+                      onClick={() => setFormData({...formData, nama: ""})}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
+                      title="Bersihkan"
+                    >
+                      <X size={15} />
+                    </button>
+                  )}
+                </div>
               </div>
               <div>
                 <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-2"><Hash size={14} /> NIP *</label>
-                <input 
-                  type="text" required
-                  value={formData.nip} onChange={e => setFormData({...formData, nip: e.target.value})}
-                  className="w-full px-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-bold text-slate-800 bg-slate-50"
-                />
+                <div className="relative">
+                  <input 
+                    type="text" required
+                    value={formData.nip} onChange={e => setFormData({...formData, nip: e.target.value})}
+                    className="w-full px-4 py-2.5 pr-10 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-bold text-slate-800 bg-slate-50"
+                  />
+                  {formData.nip && (
+                    <button
+                      type="button"
+                      onClick={() => setFormData({...formData, nip: ""})}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
+                      title="Bersihkan"
+                    >
+                      <X size={15} />
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-2"><Mail size={14} /> Email</label>
-                <input 
-                  type="email" 
-                  value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})}
-                  className="w-full px-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-medium text-slate-800"
-                />
+                <div className="relative">
+                  <input 
+                    type="email" 
+                    value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})}
+                    className="w-full px-4 py-2.5 pr-10 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-medium text-slate-800"
+                  />
+                  {formData.email && (
+                    <button
+                      type="button"
+                      onClick={() => setFormData({...formData, email: ""})}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
+                      title="Bersihkan"
+                    >
+                      <X size={15} />
+                    </button>
+                  )}
+                </div>
               </div>
               <div>
                 <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-2"><Phone size={14} /> No. HP</label>
-                <input 
-                  type="text" 
-                  value={formData.hp} onChange={e => setFormData({...formData, hp: e.target.value})}
-                  className="w-full px-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-medium text-slate-800"
-                />
+                <div className="relative">
+                  <input 
+                    type="text" 
+                    value={formData.hp} onChange={e => setFormData({...formData, hp: e.target.value})}
+                    className="w-full px-4 py-2.5 pr-10 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-medium text-slate-800"
+                  />
+                  {formData.hp && (
+                    <button
+                      type="button"
+                      onClick={() => setFormData({...formData, hp: ""})}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
+                      title="Bersihkan"
+                    >
+                      <X size={15} />
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-2"><CreditCard size={14} /> NIK KTP</label>
-                <input 
-                  type="text" 
-                  value={formData.nik} onChange={e => setFormData({...formData, nik: e.target.value})}
-                  className="w-full px-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-medium text-slate-800"
-                />
+                <div className="relative">
+                  <input 
+                    type="text" 
+                    value={formData.nik} onChange={e => setFormData({...formData, nik: e.target.value})}
+                    className="w-full px-4 py-2.5 pr-10 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-medium text-slate-800"
+                  />
+                  {formData.nik && (
+                    <button
+                      type="button"
+                      onClick={() => setFormData({...formData, nik: ""})}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
+                      title="Bersihkan"
+                    >
+                      <X size={15} />
+                    </button>
+                  )}
+                </div>
               </div>
               <div>
                 <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-2"><CreditCard size={14} /> No. Kartu Keluarga</label>
-                <input 
-                  type="text" 
-                  value={formData.kk} onChange={e => setFormData({...formData, kk: e.target.value})}
-                  className="w-full px-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-medium text-slate-800"
-                />
+                <div className="relative">
+                  <input 
+                    type="text" 
+                    value={formData.kk} onChange={e => setFormData({...formData, kk: e.target.value})}
+                    className="w-full px-4 py-2.5 pr-10 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-medium text-slate-800"
+                  />
+                  {formData.kk && (
+                    <button
+                      type="button"
+                      onClick={() => setFormData({...formData, kk: ""})}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
+                      title="Bersihkan"
+                    >
+                      <X size={15} />
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -189,12 +261,24 @@ export default function ProfilPage() {
             
             <div>
               <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-2"><Lock size={14} /> Ubah Password</label>
-              <input 
-                type="password" 
-                placeholder="Kosongkan jika tidak ingin mengubah password"
-                value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})}
-                className="w-full px-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 transition-all font-medium text-slate-800"
-              />
+              <div className="relative">
+                <input 
+                  type="password" 
+                  placeholder="Kosongkan jika tidak ingin mengubah password"
+                  value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})}
+                  className="w-full px-4 py-2.5 pr-10 border border-slate-200 rounded-xl outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 transition-all font-medium text-slate-800"
+                />
+                {formData.password && (
+                  <button
+                    type="button"
+                    onClick={() => setFormData({...formData, password: ""})}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
+                    title="Bersihkan"
+                  >
+                    <X size={15} />
+                  </button>
+                )}
+              </div>
             </div>
 
           </div>

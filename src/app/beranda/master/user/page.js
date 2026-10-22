@@ -378,28 +378,52 @@ export default function MasterUserPage() {
                 <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
                   <Hash size={13} /> NIP (Nomor Induk Pegawai) *
                 </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.nip}
-                  onChange={(e) => setFormData({ ...formData, nip: e.target.value })}
-                  placeholder="Contoh: 198501012010011001"
-                  className="w-full px-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-mono font-medium text-sm"
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    required
+                    value={formData.nip}
+                    onChange={(e) => setFormData({ ...formData, nip: e.target.value })}
+                    placeholder="Contoh: 198501012010011001"
+                    className="w-full px-4 py-2.5 pr-10 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-mono font-medium text-sm"
+                  />
+                  {formData.nip && (
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, nip: "" })}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
+                      title="Bersihkan"
+                    >
+                      <X size={15} />
+                    </button>
+                  )}
+                </div>
               </div>
 
               <div>
                 <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">
                   Nama Lengkap & Gelar *
                 </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.nama}
-                  onChange={(e) => setFormData({ ...formData, nama: e.target.value })}
-                  placeholder="Contoh: Ryan Rizqi Maulana, S.Kom."
-                  className="w-full px-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-bold text-sm"
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    required
+                    value={formData.nama}
+                    onChange={(e) => setFormData({ ...formData, nama: e.target.value })}
+                    placeholder="Contoh: Ryan Rizqi Maulana, S.Kom."
+                    className="w-full px-4 py-2.5 pr-10 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-bold text-sm"
+                  />
+                  {formData.nama && (
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, nama: "" })}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
+                      title="Bersihkan"
+                    >
+                      <X size={15} />
+                    </button>
+                  )}
+                </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -407,25 +431,49 @@ export default function MasterUserPage() {
                   <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
                     <Mail size={13} /> Email
                   </label>
-                  <input
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    placeholder="nama@sekolah.com"
-                    className="w-full px-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all text-sm"
-                  />
+                  <div className="relative">
+                    <input
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      placeholder="nama@sekolah.com"
+                      className="w-full px-4 py-2.5 pr-10 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all text-sm"
+                    />
+                    {formData.email && (
+                      <button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, email: "" })}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
+                        title="Bersihkan"
+                      >
+                        <X size={15} />
+                      </button>
+                    )}
+                  </div>
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
                     <Phone size={13} /> No. HP / WhatsApp
                   </label>
-                  <input
-                    type="text"
-                    value={formData.hp}
-                    onChange={(e) => setFormData({ ...formData, hp: e.target.value })}
-                    placeholder="08xxxxxxxxxx"
-                    className="w-full px-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all text-sm"
-                  />
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={formData.hp}
+                      onChange={(e) => setFormData({ ...formData, hp: e.target.value })}
+                      placeholder="08xxxxxxxxxx"
+                      className="w-full px-4 py-2.5 pr-10 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all text-sm"
+                    />
+                    {formData.hp && (
+                      <button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, hp: "" })}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
+                        title="Bersihkan"
+                      >
+                        <X size={15} />
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -530,15 +578,25 @@ export default function MasterUserPage() {
                 Atur password baru untuk akun <b>{resetData.nama}</b>:
               </p>
 
-              <div>
+              <div className="relative">
                 <input
                   type="password"
                   required
                   value={resetData.newPassword}
                   onChange={(e) => setResetData({ ...resetData, newPassword: e.target.value })}
                   placeholder="Ketik password baru..."
-                  className="w-full px-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 transition-all text-sm font-mono"
+                  className="w-full px-4 py-2.5 pr-10 border border-slate-200 rounded-xl outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 transition-all text-sm font-mono"
                 />
+                {resetData.newPassword && (
+                  <button
+                    type="button"
+                    onClick={() => setResetData({ ...resetData, newPassword: "" })}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
+                    title="Bersihkan"
+                  >
+                    <X size={15} />
+                  </button>
+                )}
               </div>
 
               <div className="pt-2 flex justify-end gap-2">

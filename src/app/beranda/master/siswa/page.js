@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, Suspense } from "react";
 import { getSiswa, saveSiswa, deleteSiswa, getKelas, importSiswaBulk } from "@/actions/master";
-import { Trash2, Edit, Plus, Upload, Download, Search, User, MapPin, ExternalLink } from "lucide-react";
+import { Trash2, Edit, Plus, Upload, Download, Search, User, MapPin, ExternalLink, X } from "lucide-react";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { calculateProfileCompletion, getProfileProgressColor } from "@/utils/profile";
@@ -315,12 +315,22 @@ function SiswaContent() {
         {/* Toolbar Data */}
         <div className="p-4 border-b border-slate-200 bg-slate-50 flex flex-col md:flex-row gap-4 justify-between">
           <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-3 py-2 w-full md:w-64">
-            <Search size={18} className="text-slate-400" />
+            <Search size={18} className="text-slate-400 shrink-0" />
             <input 
               type="text" placeholder="Cari NISN atau Nama..." 
               value={search} onChange={e => setSearch(e.target.value)}
               className="w-full text-sm outline-none text-slate-700 font-medium bg-transparent"
             />
+            {search && (
+              <button 
+                type="button"
+                onClick={() => setSearch("")} 
+                className="text-slate-400 hover:text-slate-600 transition-colors p-0.5"
+                title="Bersihkan pencarian"
+              >
+                <X size={16} />
+              </button>
+            )}
           </div>
           <select 
             value={filterKelas} onChange={e => setFilterKelas(e.target.value)}

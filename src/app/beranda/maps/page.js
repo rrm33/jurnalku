@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import dynamic from 'next/dynamic';
 import { getSiswa } from "@/actions/master";
-import { Map, MapPin, Search } from "lucide-react";
+import { Map, MapPin, Search, X } from "lucide-react";
 
 // Import peta secara dinamis untuk menghindari SSR Next.js yang membuat error pada Leaflet
 const StudentMaps = dynamic(() => import('@/components/StudentMaps'), { 
@@ -60,8 +60,18 @@ export default function MapsPage() {
             placeholder="Cari nama / kelas siswa..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full md:w-80 pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 transition-all font-medium text-slate-700 shadow-sm"
+            className="w-full md:w-80 pl-10 pr-10 py-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 transition-all font-medium text-slate-700 shadow-sm"
           />
+          {searchQuery && (
+            <button 
+              type="button"
+              onClick={() => setSearchQuery("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
+              title="Bersihkan pencarian"
+            >
+              <X size={16} />
+            </button>
+          )}
         </div>
       </div>
 

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Users, CheckSquare, ChevronDown, ChevronUp, Trash2, Edit2, Link as LinkIcon, CheckCircle2, Upload, FileText, Copy } from "lucide-react";
+import { Users, CheckSquare, ChevronDown, ChevronUp, Trash2, Edit2, Link as LinkIcon, CheckCircle2, Upload, FileText, Copy, Search, X } from "lucide-react";
 import { getRpps, deleteRpp, toggleStatusRpp, toggleActiveRpp, saveCatatanRpp } from "@/actions/rpp";
 import { getKelas, getMapel } from "@/actions/master";
 import FileViewerModal from "@/components/FileViewerModal";
@@ -18,6 +18,7 @@ export default function BerandaPage() {
   const [expandedId, setExpandedId] = useState(null);
   const [selectedFilterKelas, setSelectedFilterKelas] = useState("");
   const [fileToView, setFileToView] = useState(null);
+  const [search, setSearch] = useState("");
 
   
 
@@ -106,41 +107,50 @@ export default function BerandaPage() {
 
   return (
     <>
-      <header className="mb-8 flex justify-between items-end">
+      <header className="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
         <div>
           <h2 className="text-2xl font-bold text-slate-800">Rencana Pelaksanaan Pembelajaran</h2>
           <p className="text-slate-500 mt-1">Kelola jurnal mengajar, absensi, dan penilaian harian.</p>
         </div>
-        <div className="flex items-center gap-4">
-          <select 
-            value={selectedFilterKelas}
-            onChange={(e) => {
-               setSelectedFilterKelas(e.target.value);
-               sessionStorage.setItem('rpp_filter_kelas', e.target.value);
-            }}
-            className="hidden md:block bg-white border border-slate-200 text-slate-700 px-4 py-2.5 rounded-xl font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-100"
-          >
-            <option value="">Semua Kelas</option>
-            {kelasList.map(k => <option key={k.id} value={k.id}>{k.nama}</option>)}
-          </select>
+        <div>
           <button 
             onClick={() => router.push('/beranda/rpp/form')}
-            className="hidden md:flex bg-rose-600 hover:bg-rose-700 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md shadow-rose-200 transition-colors items-center gap-2"
+            className="w-full sm:w-auto bg-rose-600 hover:bg-rose-700 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md shadow-rose-200 transition-colors flex items-center justify-center gap-2"
           >
             <span className="text-lg leading-none">+</span> Buat RPP Baru
           </button>
         </div>
       </header>
-      
-      {/* Filter Mobile */}
-      <div className="mb-6 md:hidden">
+
+      {/* Toolbar Pencarian & Filter Kelas */}
+      <div className="flex flex-col md:flex-row gap-3 mb-6">
+        <div className="relative flex-1">
+          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+          <input 
+            type="text"
+            placeholder="Cari RPP berdasarkan judul atau topik materi..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pl-10 pr-10 py-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all font-medium text-slate-700 shadow-sm text-sm"
+          />
+          {search && (
+            <button 
+              type="button"
+              onClick={() => setSearch("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
+              title="Bersihkan pencarian"
+            >
+              <X size={16} />
+            </button>
+          )}
+        </div>
         <select 
           value={selectedFilterKelas}
           onChange={(e) => {
              setSelectedFilterKelas(e.target.value);
              sessionStorage.setItem('rpp_filter_kelas', e.target.value);
           }}
-          className="w-full bg-white border border-slate-200 text-slate-700 px-4 py-2.5 rounded-xl font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-100"
+          className="bg-white border border-slate-200 text-slate-700 px-4 py-2.5 rounded-xl font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-100 text-sm md:w-56"
         >
           <option value="">Semua Kelas</option>
           {kelasList.map(k => <option key={k.id} value={k.id}>{k.nama}</option>)}
@@ -165,7 +175,27 @@ export default function BerandaPage() {
               Mulai Buat RPP Pertama
             </button>
           </div>
-        ) : rppList.filter(r => selectedFilterKelas === "" || r.kelas_id === parseInt(selectedFilterKelas)).map((rpp) => (
+        ) : rppList.filter(r => {
+            const matchKelas = selectedFilterKelas === "" || r.kelas_id === parseInt(selectedFilterKelas);
+            const q = search.toLowerCase().trim();
+            const matchSearch = !q || 
+              (r.judul && r.judul.toLowerCase().includes(q)) ||
+              (r.tujuan_pembelajaran && r.tujuan_pembelajaran.toLowerCase().includes(q)) ||
+              (r.mapel?.nama && r.mapel.nama.toLowerCase().includes(q));
+            return matchKelas && matchSearch;
+          }).length === 0 ? (
+          <div className="bg-white border border-slate-200 border-dashed rounded-2xl p-12 text-center text-slate-400 font-medium">
+            Tidak ada RPP yang sesuai dengan pencarian atau filter kelas ini.
+          </div>
+        ) : rppList.filter(r => {
+            const matchKelas = selectedFilterKelas === "" || r.kelas_id === parseInt(selectedFilterKelas);
+            const q = search.toLowerCase().trim();
+            const matchSearch = !q || 
+              (r.judul && r.judul.toLowerCase().includes(q)) ||
+              (r.tujuan_pembelajaran && r.tujuan_pembelajaran.toLowerCase().includes(q)) ||
+              (r.mapel?.nama && r.mapel.nama.toLowerCase().includes(q));
+            return matchKelas && matchSearch;
+          }).map((rpp) => (
           <div key={rpp.id} className={`bg-white border ${rpp.is_active ? 'border-slate-200' : 'border-red-200 opacity-60 bg-slate-50/50'} rounded-2xl shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md hover:opacity-100`}>
             
             {/* Header ListTile */}
