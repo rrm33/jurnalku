@@ -25,7 +25,7 @@ export default async function BerandaSiswa() {
       {parsed.needsPassword && <SetPasswordForm siswaId={parsed.id} nama={parsed.nama} />}
       
       {/* Modern Profile Header */}
-      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-emerald-500 via-green-600 to-teal-700 p-6 md:p-10 text-white shadow-2xl shadow-emerald-500/20 mb-8 mt-2 mx-auto w-full">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-500 via-green-600 to-teal-700 p-6 md:p-10 text-white shadow-2xl shadow-emerald-500/20 mb-8 mt-2 mx-auto w-full">
         {/* Background Decorations */}
         <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-48 h-48 bg-emerald-300 opacity-20 rounded-full blur-2xl"></div>
@@ -44,7 +44,7 @@ export default async function BerandaSiswa() {
           </div>
 
           {/* Profile Completion Card (Glassmorphism) */}
-          <div className="w-full md:w-72 bg-white/10 backdrop-blur-xl p-5 rounded-3xl border border-white/20 shadow-lg shrink-0">
+          <div className="w-full md:w-72 bg-white/10 backdrop-blur-xl p-5 rounded-xl border border-white/20 shadow-lg shrink-0">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2 font-bold text-sm text-white">
                 <div className="p-1.5 bg-white/20 rounded-lg">
@@ -84,9 +84,9 @@ export default async function BerandaSiswa() {
       {/* Modern Grid Metrics */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
         
-        <div className="bg-white p-5 rounded-3xl shadow-sm border border-slate-100/60 flex flex-col justify-between hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+        <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-100/60 flex flex-col justify-between hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
           <div className="flex justify-between items-start mb-4">
-            <div className="w-12 h-12 bg-blue-50 text-blue-500 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-inner">
+            <div className="w-12 h-12 bg-blue-50 text-blue-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-inner">
               <BookOpen size={24} strokeWidth={2.5} />
             </div>
           </div>
@@ -96,9 +96,9 @@ export default async function BerandaSiswa() {
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-3xl shadow-sm border border-slate-100/60 flex flex-col justify-between hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+        <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-100/60 flex flex-col justify-between hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
           <div className="flex justify-between items-start mb-4">
-            <div className="w-12 h-12 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-inner relative">
+            <div className="w-12 h-12 bg-rose-50 text-rose-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-inner relative">
               <ClipboardList size={24} strokeWidth={2.5} />
               {stats.totalTugasBelum > 0 && (
                 <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
@@ -112,7 +112,7 @@ export default async function BerandaSiswa() {
         </div>
 
         {/* This card spans 2 columns on mobile if it's the 3rd item, for a nice varied layout, but standard grid is fine too. Let's make it col-span-2 on mobile */}
-        <div className="col-span-2 md:col-span-1 bg-gradient-to-br from-emerald-50 to-green-100 p-5 rounded-3xl shadow-sm border border-emerald-200/50 flex flex-col justify-between hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group relative overflow-hidden">
+        <div className="col-span-2 md:col-span-1 bg-gradient-to-br from-emerald-50 to-green-100 p-5 rounded-xl shadow-sm border border-emerald-200/50 flex flex-col justify-between hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group relative overflow-hidden">
           <div className="absolute -right-4 -bottom-4 opacity-10 transform rotate-12 scale-150">
              <CheckCircle2 size={100} />
           </div>

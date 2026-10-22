@@ -153,7 +153,7 @@ export default function TugasDetailPage() {
         <ArrowLeft size={20} /> Kembali ke Daftar KBM
       </button>
 
-      <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden mb-6">
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden mb-6">
         <div className="p-6 md:p-8 bg-slate-50 border-b border-slate-100">
            <h1 className="text-2xl md:text-3xl font-black text-slate-800 mb-2">{kbm.judul}</h1>
            <div className="flex flex-wrap items-center gap-3 text-sm font-medium text-slate-500">
@@ -164,11 +164,11 @@ export default function TugasDetailPage() {
 
         <div className="p-6 md:p-8">
           <div className="flex flex-col gap-5">
-            <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100">
+            <div className="bg-slate-50 p-5 rounded-xl border border-slate-100">
               <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Tujuan Pembelajaran</h4>
               <p className="text-sm text-slate-700 leading-relaxed font-medium whitespace-pre-wrap">{kbm.tujuan_pembelajaran}</p>
             </div>
-            <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100">
+            <div className="bg-slate-50 p-5 rounded-xl border border-slate-100">
               <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Aktivitas Pembelajaran</h4>
               <FormattedContent content={kbm.aktivitas_pembelajaran} />
               
@@ -186,7 +186,7 @@ export default function TugasDetailPage() {
 
       {hasTugas && (
         <div className="mt-8">
-          <div className="bg-rose-50 rounded-t-[2rem] p-6 md:p-8 border-x border-t border-rose-100 relative overflow-hidden">
+          <div className="bg-rose-50 rounded-t-2xl p-6 md:p-8 border-x border-t border-rose-100 relative overflow-hidden">
             <h2 className="text-xl font-black text-rose-900 mb-2">Tugas Pertemuan</h2>
             <p className="text-sm font-medium text-rose-800/80 mb-2">{currentTugas.judul}</p>
             <p className="text-sm text-rose-800/80 whitespace-pre-line leading-relaxed">{currentTugas.deskripsi}</p>
@@ -207,7 +207,7 @@ export default function TugasDetailPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-b-[2rem] p-6 md:p-8 border border-slate-100 shadow-sm">
+          <div className="bg-white rounded-b-2xl p-6 md:p-8 border border-slate-100 shadow-sm">
              <form ref={formRef} onSubmit={handleSubmit} className="space-y-6 scroll-mt-24">
                 
                 {/* Jawaban Teks selalu muncul */}
@@ -219,14 +219,14 @@ export default function TugasDetailPage() {
                     onChange={e => setJawabanText(e.target.value)} 
                     disabled={editorDisabled}
                     placeholder="Ketik penjelasan/jawaban teksmu di sini..." 
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50 transition-all font-medium resize-none text-sm shadow-inner disabled:opacity-60"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50 transition-all font-medium resize-none text-sm shadow-inner disabled:opacity-60"
                   ></textarea>
                 </div>
 
                 {/* Code Editor Section (jika tugas koding diaktifkan) */}
                 {currentTugas.gunakan_code_editor && (
                   <div className="flex flex-col lg:flex-row gap-6 mt-6 pt-6 border-t border-slate-100">
-                     <div className="flex-1 bg-slate-900 rounded-2xl overflow-hidden flex flex-col border border-slate-800 shadow-lg relative min-h-[400px]">
+                     <div className="flex-1 bg-slate-900 rounded-xl overflow-hidden flex flex-col border border-slate-800 shadow-lg relative min-h-[400px]">
                         <div className="bg-slate-800 px-4 py-3 flex justify-between items-center border-b border-slate-700">
                            <span className="text-xs font-bold text-slate-300 flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div> Code Editor (Hanya Ketik Manual)</span>
                            <button type="button" onClick={handleRunCode} className="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-[10px] font-bold rounded-lg flex items-center gap-1.5 transition-colors">
@@ -250,7 +250,7 @@ export default function TugasDetailPage() {
                         </div>
                      </div>
                      
-                     <div className="flex-1 bg-slate-50 rounded-2xl overflow-hidden flex flex-col border border-slate-200 shadow-inner min-h-[400px] relative">
+                     <div className="flex-1 bg-slate-50 rounded-xl overflow-hidden flex flex-col border border-slate-200 shadow-inner min-h-[400px] relative">
                         <div className="bg-white px-4 py-3 flex justify-between items-center border-b border-slate-200">
                            <span className="text-xs font-bold text-slate-500 flex flex-col">
                               Live Output (Khusus Menampilkan Hasil)
@@ -292,15 +292,15 @@ export default function TugasDetailPage() {
                       )}
                    </div>
 
-                   <div className="flex-1 w-full bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                   <div className="flex-1 w-full bg-slate-50 p-6 rounded-xl border border-slate-100">
                       {submission && submission.catatan_guru && submission.catatan_guru.trim() !== "" && (
-                        <div className="p-4 bg-blue-50 border border-blue-200 rounded-2xl shadow-sm mb-4">
+                        <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl shadow-sm mb-4">
                           <span className="font-bold text-blue-800 text-xs uppercase tracking-wider mb-2 block">Tanggapan Guru:</span>
                           <p className="text-sm text-blue-900 whitespace-pre-wrap">{submission.catatan_guru}</p>
                         </div>
                       )}
                       {hasGrade ? (
-                        <div className={`p-4 ${submission.nilai === 0 ? 'bg-gradient-to-r from-red-100 to-rose-100 border-red-200' : 'bg-gradient-to-r from-amber-100 to-yellow-100 border-amber-200'} border rounded-2xl flex flex-col items-center justify-center shadow-sm`}>
+                        <div className={`p-4 ${submission.nilai === 0 ? 'bg-gradient-to-r from-red-100 to-rose-100 border-red-200' : 'bg-gradient-to-r from-amber-100 to-yellow-100 border-amber-200'} border rounded-xl flex flex-col items-center justify-center shadow-sm`}>
                           <span className={`font-bold ${submission.nilai === 0 ? 'text-red-800' : 'text-amber-800'} text-xs uppercase tracking-wider mb-1`}>Nilai Akhir</span>
                           <span className={`text-5xl font-black ${submission.nilai === 0 ? 'text-red-600' : 'text-amber-600'} drop-shadow-sm`}>{submission.nilai}</span>
                         </div>
@@ -347,7 +347,7 @@ export default function TugasDetailPage() {
                         <button 
                           type="submit" 
                           disabled={isSubmitting || isDeadlinePast}
-                          className="w-full h-full py-4 rounded-2xl font-bold text-white bg-gradient-to-r from-emerald-500 to-green-600 hover:from-green-600 hover:to-emerald-700 transition-all shadow-lg shadow-emerald-500/30 disabled:opacity-50 disabled:shadow-none flex flex-col justify-center items-center gap-2 text-base"
+                          className="w-full h-full py-4 rounded-xl font-bold text-white bg-gradient-to-r from-emerald-500 to-green-600 hover:from-green-600 hover:to-emerald-700 transition-all shadow-lg shadow-emerald-500/30 disabled:opacity-50 disabled:shadow-none flex flex-col justify-center items-center gap-2 text-base"
                         >
                           <CheckCircle2 size={28} className="mb-1" />
                           {isSubmitting ? 'Mengirim Tugas...' : 'Kumpulkan Tugas'}

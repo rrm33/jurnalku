@@ -50,13 +50,13 @@ export default function KbmSiswaPage() {
           <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
         </div>
       ) : kbmList.length > 0 && kbmList[0].isError ? (
-        <div className="bg-red-50 border border-red-200 rounded-3xl p-8 text-center text-red-600 max-w-2xl mx-auto">
+        <div className="bg-red-50 border border-red-200 rounded-xl p-8 text-center text-red-600 max-w-2xl mx-auto">
           <AlertCircle size={48} className="mx-auto mb-4" />
           <h2 className="text-xl font-bold mb-2">Terjadi Kesalahan Server</h2>
           <p className="text-sm font-medium whitespace-pre-wrap">{kbmList[0].message}</p>
         </div>
       ) : kbmList.length === 0 ? (
-        <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden text-center p-10 hover:shadow-md transition-all duration-300 mx-2">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden text-center p-10 hover:shadow-md transition-all duration-300 mx-2">
           <div className="w-20 h-20 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner">
             <BookOpen size={36} />
           </div>
@@ -74,9 +74,9 @@ export default function KbmSiswaPage() {
             const pastDeadline = hasTugas && isDeadlinePassed(currentTugas.deadline);
 
             return (
-              <div key={kbm.id} className="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col md:flex-row md:items-center gap-4">
+              <div key={kbm.id} className="bg-white border border-slate-100 rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col md:flex-row md:items-center gap-4">
                 {/* Big PERT Box */}
-                <div className="w-14 h-14 bg-blue-50 text-blue-600 rounded-xl flex flex-col items-center justify-center shrink-0 shadow-inner border border-blue-100/50">
+                <div className="w-14 h-14 bg-blue-50 text-blue-600 rounded-lg flex flex-col items-center justify-center shrink-0 shadow-inner border border-blue-100/50">
                   <span className="text-[9px] font-bold uppercase tracking-wider">Pert</span>
                   <span className="text-xl font-black leading-none">{kbm.pertemuan_ke}</span>
                 </div>
@@ -114,7 +114,7 @@ export default function KbmSiswaPage() {
                 <div className="shrink-0 md:ml-auto">
                   <button 
                     onClick={() => router.push(`/beranda-siswa/tugas/${kbm.id}`)}
-                    className="w-full md:w-auto flex items-center justify-center gap-1.5 px-4 py-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-sm rounded-xl transition-colors border border-emerald-200"
+                    className="w-full md:w-auto flex items-center justify-center gap-1.5 px-4 py-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-sm rounded-lg transition-colors border border-emerald-200"
                   >
                     Lihat <ChevronRight size={16} />
                   </button>
