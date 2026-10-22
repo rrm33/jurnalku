@@ -23,8 +23,7 @@ import {
   Upload,
   X,
   Loader2,
-  Check,
-  ZoomIn
+  Check
 } from "lucide-react";
 import Swal from "sweetalert2";
 import FormattedContent from "@/components/FormattedContent";
@@ -42,9 +41,10 @@ export default function AktivitasEditor({
   const [imageModalTab, setImageModalTab] = useState("upload"); // "upload" | "url"
   const [imageFile, setImageFile] = useState(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState("");
-  const [imageAlt, setImageAlt] = useState("");
   const [imageUrlInput, setImageUrlInput] = useState("");
   const [isUploading, setIsUploading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragCounter = useRef(0);
 
   // Link Modal State
   const [showLinkModal, setShowLinkModal] = useState(false);
@@ -112,14 +112,14 @@ export default function AktivitasEditor({
         const file = item.getAsFile();
         if (!file) continue;
 
-        await processAndUploadImage(file, "Gambar Papan Klip");
+        await processAndUploadImage(file);
         break;
       }
     }
   };
 
-  // Helper to upload image and insert into text
-  const processAndUploadImage = async (file, defaultAlt = "Gambar") => {
+  // Helper to upload image and insert into text without showing filename
+  const processAndUploadImage = async (file) => {
     setIsUploading(true);
     try {
       const fd = new FormData();
@@ -127,22 +127,21 @@ export default function AktivitasEditor({
 
       const res = await uploadEditorImage(fd);
       if (res && res.success) {
-        const altText = imageAlt.trim() || defaultAlt || res.name || "Gambar";
-        const markdownImage = `\n\n![${altText}](${res.url})\n\n`;
+        // Tanpa teks nama file / caption: hanya menyisipkan referensi gambar murni
+        const markdownImage = `\n\n![](${res.url})\n\n`;
 
         insertRawText(markdownImage);
 
         setShowImageModal(false);
         setImageFile(null);
         setImagePreviewUrl("");
-        setImageAlt("");
         setImageUrlInput("");
 
         Swal.fire({
           icon: "success",
           title: "Gambar Berhasil Disisipkan!",
-          text: "Gambar telah diunggah dan ditambahkan ke aktivitas.",
-          timer: 1600,
+          text: "Gambar telah diunggah ke aktivitas.",
+          timer: 1400,
           showConfirmButton: false,
         });
       } else {
@@ -153,6 +152,47 @@ export default function AktivitasEditor({
       Swal.fire("Kesalahan", "Gagal memproses unggahan gambar.", "error");
     } finally {
       setIsUploading(false);
+    }
+  };
+
+  // Drag and drop event handlers
+  const handleDragEnter = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCounter.current += 1;
+    if (e.dataTransfer?.items && e.dataTransfer.items.length > 0) {
+      setIsDragging(true);
+    }
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCounter.current -= 1;
+    if (dragCounter.current <= 0) {
+      dragCounter.current = 0;
+      setIsDragging(false);
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    dragCounter.current = 0;
+
+    const files = Array.from(e.dataTransfer?.files || []).filter((file) =>
+      file.type.startsWith("image/")
+    );
+    if (files.length === 0) return;
+
+    for (const file of files) {
+      await processAndUploadImage(file);
     }
   };
 
@@ -178,19 +218,17 @@ export default function AktivitasEditor({
     }, 10);
   };
 
-  // Insert Web URL Image
+  // Insert Web URL Image without filename
   const handleInsertImageUrl = () => {
     if (!imageUrlInput.trim()) {
       Swal.fire("Peringatan", "Masukkan URL gambar terlebih dahulu.", "warning");
       return;
     }
-    const altText = imageAlt.trim() || "Gambar";
-    const markdownImage = `\n\n![${altText}](${imageUrlInput.trim()})\n\n`;
+    const markdownImage = `\n\n![](${imageUrlInput.trim()})\n\n`;
     insertRawText(markdownImage);
 
     setShowImageModal(false);
     setImageUrlInput("");
-    setImageAlt("");
   };
 
   // Insert Link
@@ -348,7 +386,7 @@ export default function AktivitasEditor({
               type="button"
               onClick={() => setShowImageModal(true)}
               className="px-2 py-1.5 hover:bg-rose-50 text-rose-600 rounded-lg transition-colors font-bold text-xs flex items-center gap-1.5"
-              title="Sisipkan Gambar (Upload atau URL Web)"
+              title="Sisipkan Gambar (Upload, Drag-and-Drop, atau URL)"
             >
               <ImageIcon size={15} />
               <span className="hidden sm:inline">+ Gambar</span>
@@ -440,8 +478,34 @@ export default function AktivitasEditor({
         </div>
       </div>
 
-      {/* Editor Body */}
-      <div className="relative">
+      {/* Editor Body with Drag & Drop Container */}
+      <div 
+        className="relative"
+        onDragEnter={handleDragEnter}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+      >
+        {/* DRAG AND DROP HOVER OVERLAY */}
+        {isDragging && (
+          <div className="absolute inset-0 z-40 bg-rose-50/95 backdrop-blur-xs border-2 border-dashed border-rose-500 rounded-xl flex flex-col items-center justify-center p-6 text-center pointer-events-none animate-in fade-in duration-150">
+            <div className="w-16 h-16 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mb-3 animate-bounce shadow-md">
+              <Upload size={30} />
+            </div>
+            <p className="text-base font-extrabold text-rose-700">Lepaskan Gambar di Sini!</p>
+            <p className="text-xs text-rose-500 mt-1">Gambar akan langsung diunggah dan disisipkan secara bersih ke materi</p>
+          </div>
+        )}
+
+        {/* UPLOADING SPINNER OVERLAY */}
+        {isUploading && (
+          <div className="absolute inset-0 z-40 bg-white/85 backdrop-blur-xs flex flex-col items-center justify-center p-6 text-center animate-in fade-in">
+            <Loader2 size={36} className="text-rose-500 animate-spin mb-2" />
+            <p className="text-sm font-bold text-slate-800">Sedang Mengunggah Gambar...</p>
+            <p className="text-xs text-slate-400 mt-0.5">Mohon tunggu sebentar</p>
+          </div>
+        )}
+
         {/* EDIT ONLY MODE */}
         {activeTab === "edit" && (
           <div className="p-3">
@@ -472,7 +536,7 @@ export default function AktivitasEditor({
               <div className="flex flex-col items-center justify-center py-16 text-slate-400 text-center">
                 <Edit3 size={32} className="mb-2 opacity-40 text-rose-400" />
                 <p className="text-sm font-semibold">Belum ada konten kegiatan pembelajaran.</p>
-                <p className="text-xs text-slate-400 mt-1">Pindah ke tab <b>Tulis</b> untuk mulai mengetik.</p>
+                <p className="text-xs text-slate-400 mt-1">Pindah ke tab <b>Tulis</b> untuk mulai mengetik atau seret gambar ke sini.</p>
               </div>
             )}
           </div>
@@ -518,11 +582,11 @@ export default function AktivitasEditor({
           </span>
           <span className="text-slate-300">•</span>
           <span className="hidden sm:inline text-slate-500">
-            💡 <b>Tips Cepat:</b> Kamu bisa langsung <i>paste</i> (Ctrl+V / Cmd+V) screenshot gambar ke teks!
+            💡 <b>Tips Cepat:</b> Bisa langsung <b>Drag & Drop</b> (seret gambar) atau <b>Paste</b> (Ctrl+V) screenshot langsung ke teks!
           </span>
         </div>
         <div className="flex items-center gap-2 text-[11px] text-slate-400">
-          <span>Format: Markdown & Gambar</span>
+          <span>Format: Teks, Gambar & Kode</span>
         </div>
       </div>
 
@@ -538,7 +602,7 @@ export default function AktivitasEditor({
                 </div>
                 <div>
                   <h3 className="font-extrabold text-slate-800 text-base">Sisipkan Gambar</h3>
-                  <p className="text-xs text-slate-500">Tambahkan gambar ke aktivitas pembelajaran</p>
+                  <p className="text-xs text-slate-500">Unggah berkas atau gunakan alamat URL gambar web</p>
                 </div>
               </div>
               <button
@@ -547,7 +611,6 @@ export default function AktivitasEditor({
                   setShowImageModal(false);
                   setImageFile(null);
                   setImagePreviewUrl("");
-                  setImageAlt("");
                   setImageUrlInput("");
                 }}
                 className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors"
@@ -595,9 +658,6 @@ export default function AktivitasEditor({
                       if (file) {
                         setImageFile(file);
                         setImagePreviewUrl(URL.createObjectURL(file));
-                        if (!imageAlt) {
-                          setImageAlt(file.name.replace(/\.[^/.]+$/, ""));
-                        }
                       }
                     }}
                   />
@@ -623,19 +683,6 @@ export default function AktivitasEditor({
                   )}
                 </label>
 
-                <div>
-                  <label className="block text-xs font-bold text-slate-600 mb-1">
-                    Keterangan Gambar / Teks Alternatif (Opsional)
-                  </label>
-                  <input
-                    type="text"
-                    value={imageAlt}
-                    onChange={(e) => setImageAlt(e.target.value)}
-                    placeholder="Contoh: Diagram Alur Pembelajaran State"
-                    className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 text-xs font-medium"
-                  />
-                </div>
-
                 <div className="pt-2 flex justify-end gap-2">
                   <button
                     type="button"
@@ -647,7 +694,7 @@ export default function AktivitasEditor({
                   <button
                     type="button"
                     disabled={!imageFile || isUploading}
-                    onClick={() => processAndUploadImage(imageFile, imageAlt)}
+                    onClick={() => processAndUploadImage(imageFile)}
                     className="px-5 py-2 rounded-xl text-xs font-bold text-white bg-rose-500 hover:bg-rose-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-1.5 shadow-md shadow-rose-200"
                   >
                     {isUploading ? (
@@ -679,19 +726,6 @@ export default function AktivitasEditor({
                     onChange={(e) => setImageUrlInput(e.target.value)}
                     placeholder="https://example.com/gambar.png"
                     className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 text-xs font-mono"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-600 mb-1">
-                    Keterangan Gambar / Teks Alternatif (Opsional)
-                  </label>
-                  <input
-                    type="text"
-                    value={imageAlt}
-                    onChange={(e) => setImageAlt(e.target.value)}
-                    placeholder="Contoh: Ilustrasi Arsitektur"
-                    className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 text-xs font-medium"
                   />
                 </div>
 

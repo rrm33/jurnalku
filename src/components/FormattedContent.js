@@ -123,11 +123,6 @@ function renderInlineFormatting(text, onImageClick) {
               <ZoomIn size={14} />
             </span>
           </span>
-          {alt && (
-            <span className="block text-xs text-slate-500 font-medium italic mt-1">
-              📷 {alt}
-            </span>
-          )}
         </span>
       );
     } else if (match[4] && match[5]) {
@@ -348,11 +343,6 @@ function RichTextBlock({ text, onImageClick }) {
               </span>
             </div>
           </div>
-          {alt && (
-            <p className="text-xs text-slate-500 font-medium italic mt-1">
-              📷 {alt}
-            </p>
-          )}
         </div>
       );
       return;
@@ -497,11 +487,6 @@ export default function FormattedContent({ content, className = "", collapsible 
               className="max-h-[80vh] w-auto max-w-full object-contain rounded-2xl shadow-2xl border border-white/10"
               onClick={(e) => e.stopPropagation()}
             />
-            {modalImage.alt && (
-              <p className="mt-3 text-sm text-slate-200 font-medium text-center bg-black/40 px-4 py-1.5 rounded-full backdrop-blur-sm">
-                {modalImage.alt}
-              </p>
-            )}
           </div>
         </div>
       )}
