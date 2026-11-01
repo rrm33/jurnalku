@@ -12,12 +12,12 @@ export async function getDaftarPenilaian() {
     if (!session) return { success: false, message: "Unauthorized" };
 
     const parsed = JSON.parse(session.value);
-    if (parsed.role !== "guru") return { success: false, message: "Access Denied" };
+    if (parsed.role !== "guru" && parsed.role !== "admin") return { success: false, message: "Access Denied" };
 
     const rppsWithTugas = await prisma.rpp.findMany({
       where: { 
         tugas: { some: {} },
-        guru_id: parsed.id 
+        ...(parsed.role === "admin" ? {} : { guru_id: parsed.id })
       },
       include: {
         kelas: true,
@@ -79,7 +79,7 @@ export async function getTugasDenganPenilaian(rppId) {
     if (!session) return { success: false, message: "Unauthorized" };
 
     const parsed = JSON.parse(session.value);
-    if (parsed.role !== "guru") return { success: false, message: "Access Denied" };
+    if (parsed.role !== "guru" && parsed.role !== "admin") return { success: false, message: "Access Denied" };
 
     const parsedRppId = parseInt(rppId);
 
@@ -136,7 +136,7 @@ export async function simpanNilaiMasal(tugasId, dataNilai) {
     if (!session) return { success: false, message: "Unauthorized" };
 
     const parsed = JSON.parse(session.value);
-    if (parsed.role !== "guru") return { success: false, message: "Access Denied" };
+    if (parsed.role !== "guru" && parsed.role !== "admin") return { success: false, message: "Access Denied" };
 
     const parsedTugasId = parseInt(tugasId);
 
