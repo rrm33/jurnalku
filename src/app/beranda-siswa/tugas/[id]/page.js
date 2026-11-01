@@ -303,11 +303,49 @@ export default function TugasDetailPage() {
                         <div className={`p-4 ${submission.nilai === 0 ? 'bg-gradient-to-r from-red-100 to-rose-100 border-red-200' : 'bg-gradient-to-r from-amber-100 to-yellow-100 border-amber-200'} border rounded-xl flex flex-col items-center justify-center shadow-sm`}>
                           <span className={`font-bold ${submission.nilai === 0 ? 'text-red-800' : 'text-amber-800'} text-xs uppercase tracking-wider mb-1`}>Nilai Akhir</span>
                           <span className={`text-5xl font-black ${submission.nilai === 0 ? 'text-red-600' : 'text-amber-600'} drop-shadow-sm`}>{submission.nilai}</span>
+                          {(submission.updated_at || submission.created_at) && (
+                            <div className="text-[10px] font-semibold text-slate-500 flex items-center gap-1 mt-2">
+                              <Clock size={11} />
+                              <span>
+                                {new Date(submission.updated_at || submission.created_at).toLocaleString('id-ID', {
+                                  day: '2-digit',
+                                  month: 'short',
+                                  year: 'numeric',
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })}
+                              </span>
+                              {submission.updated_at && submission.created_at && (new Date(submission.updated_at).getTime() - new Date(submission.created_at).getTime() > 1000) && (
+                                <span className="text-amber-600 font-bold">(edited)</span>
+                              )}
+                            </div>
+                          )}
                         </div>
                       ) : submission ? (
                          <div className="flex flex-col gap-3">
-                           <div className="flex items-center justify-center gap-2 p-4 bg-emerald-500 text-white rounded-xl shadow-md font-bold text-sm">
-                             <CheckCircle2 size={20} /> Selesai Dikerjakan!
+                           <div className="flex flex-col items-center justify-center p-3.5 bg-emerald-500 text-white rounded-xl shadow-md font-bold text-sm">
+                             <div className="flex items-center gap-2">
+                               <CheckCircle2 size={18} /> Selesai Dikerjakan!
+                             </div>
+                             {(submission.updated_at || submission.created_at) && (
+                               <div className="text-[11px] font-medium text-emerald-100 flex items-center gap-1.5 mt-1">
+                                 <Clock size={12} />
+                                 <span>
+                                   {new Date(submission.updated_at || submission.created_at).toLocaleString('id-ID', {
+                                     day: '2-digit',
+                                     month: 'short',
+                                     year: 'numeric',
+                                     hour: '2-digit',
+                                     minute: '2-digit'
+                                   })}
+                                 </span>
+                                 {submission.updated_at && submission.created_at && (new Date(submission.updated_at).getTime() - new Date(submission.created_at).getTime() > 1000) && (
+                                   <span className="bg-emerald-600/70 text-emerald-100 px-1.5 py-0.5 rounded text-[10px] font-semibold">
+                                     (edited)
+                                   </span>
+                                 )}
+                               </div>
+                             )}
                            </div>
                            {!editorDisabled ? (
                               <div className="flex gap-3">

@@ -338,11 +338,29 @@ export default function PenilaianPage() {
                               <Clock size={14} /> Mengerjakan
                             </div>
                           )}
-                          {submission.created_at && (
-                            <div className="text-[9px] font-bold text-slate-400 flex items-center gap-1">
-                              <Clock size={10} /> {new Date(submission.created_at).toLocaleString('id-ID', {day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'})}
-                            </div>
-                          )}
+                          {(() => {
+                            const displayDate = submission.updated_at || submission.created_at;
+                            if (!displayDate) return null;
+                            const isEdited = Boolean(
+                              submission.updated_at &&
+                              submission.created_at &&
+                              new Date(submission.updated_at).getTime() - new Date(submission.created_at).getTime() > 1000
+                            );
+                            return (
+                              <div 
+                                className="text-[9px] font-bold text-slate-400 flex items-center gap-1 flex-wrap"
+                                title={isEdited ? `Pertama dikirim: ${new Date(submission.created_at).toLocaleString('id-ID', {day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'})}` : undefined}
+                              >
+                                <Clock size={10} className="shrink-0" />
+                                <span>
+                                  {new Date(displayDate).toLocaleString('id-ID', {day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'})}
+                                </span>
+                                {isEdited && (
+                                  <span className="text-amber-500 font-semibold">(edited)</span>
+                                )}
+                              </div>
+                            );
+                          })()}
                         </div>
                       ) : (
                         <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded-lg w-fit">

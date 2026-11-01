@@ -184,7 +184,8 @@ export async function submitTugas(formDataPayload) {
         data: {
           input_jawaban,
           kode_jawaban,
-          ...(filePath && { upload_file: filePath })
+          ...(filePath && { upload_file: filePath }),
+          updated_at: new Date()
         }
       });
     } else {

@@ -171,7 +171,12 @@ export async function simpanNilaiMasal(tugasId, dataNilai) {
               siswa_id: pSiswaId
             }
           },
-          update: { nilai: pNilai, input_jawaban: pJawaban, catatan_guru: pCatatan },
+          update: { 
+            nilai: pNilai, 
+            input_jawaban: pJawaban, 
+            catatan_guru: pCatatan,
+            ...(existingRecord?.updated_at ? { updated_at: existingRecord.updated_at } : {})
+          },
           create: {
             tugas_id: parsedTugasId,
             siswa_id: pSiswaId,
